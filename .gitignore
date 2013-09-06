@@ -1,0 +1,8 @@
+.DS_Store
+./install
+data/
+uc_client/
+uc_server/
+.project
+config/config_ucenter.php
+config/config_global.php
