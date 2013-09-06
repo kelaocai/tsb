@@ -6,3 +6,4 @@ uc_server/
 .project
 config/config_ucenter.php
 config/config_global.php
+app_s/tmp
