@@ -14,28 +14,15 @@
 - (void)dealloc
 {
     [_window release];
+    [_rootViewController release];
     [super dealloc];
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
-    // Override point for customization after application launch.
-    self.window.backgroundColor = [UIColor whiteColor];
-    
-    UIView *uv=[[UIView alloc] initWithFrame:CGRectMake(140, 210, 40, 40)];
-    uv.backgroundColor=[UIColor redColor];
-    [self.window addSubview:uv];
-    [uv release];
-    
-    UIImageView *uiv=[[UIImageView alloc] init];
-    uiv.frame=CGRectMake(0, 0, 320, 100);
-    [uiv setImageWithURL:[NSURL URLWithString:@"http://img.app.diandianzhe.com/banner/wxtx.png"]
-        placeholderImage:[UIImage imageNamed:@"ss-blue"]];
-    uiv.contentMode=UIViewContentModeScaleAspectFit;
-    [self.window addSubview:uiv];
-    [uiv release];
-    
+
+    self.window.backgroundColor=[UIColor orangeColor];
+    //[self.window addSubview:_rootViewController.view];
     [self.window makeKeyAndVisible];
     return YES;
 }

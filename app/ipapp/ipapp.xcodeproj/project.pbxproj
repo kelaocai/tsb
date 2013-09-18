@@ -7,7 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		024920D517DA43A4001A88D4 /* ss-blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 024920D417DA43A4001A88D4 /* ss-blue.png */; };
+		020D98F417E8A42800F8E1C2 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 020D98F317E8A42800F8E1C2 /* MainWindow.xib */; };
+		020D98FC17E978C400F8E1C2 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 020D98FB17E978C400F8E1C2 /* QuartzCore.framework */; };
+		020D990417E9796500F8E1C2 /* FolderCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = 020D98FF17E9796500F8E1C2 /* FolderCoverView.m */; };
+		020D990517E9796500F8E1C2 /* UIFolderTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 020D990117E9796500F8E1C2 /* UIFolderTableView.m */; };
+		020D990617E9796500F8E1C2 /* UIView+screenshot.m in Sources */ = {isa = PBXBuildFile; fileRef = 020D990317E9796500F8E1C2 /* UIView+screenshot.m */; };
+		020D990A17E979BB00F8E1C2 /* CateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 020D990817E979BB00F8E1C2 /* CateViewController.m */; };
+		020D990B17E979BB00F8E1C2 /* CateViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 020D990917E979BB00F8E1C2 /* CateViewController.xib */; };
+		020D991117E981A800F8E1C2 /* CateTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 020D990E17E981A800F8E1C2 /* CateTableCell.m */; };
+		020D991217E981A800F8E1C2 /* HZNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 020D991017E981A800F8E1C2 /* HZNavigationBar.m */; };
+		0210E6B717EA05FF003068AF /* cate_ly.png in Resources */ = {isa = PBXBuildFile; fileRef = 0210E6B617EA05FF003068AF /* cate_ly.png */; };
+		02A3B24717E9A96600205D10 /* tmall_bg_furley.png in Resources */ = {isa = PBXBuildFile; fileRef = 02A3B24617E9A96600205D10 /* tmall_bg_furley.png */; };
+		02A3B24B17E9B6AF00205D10 /* SubCateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02A3B24917E9B6AE00205D10 /* SubCateViewController.m */; };
+		02A3B24C17E9B6AF00205D10 /* SubCateViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02A3B24A17E9B6AE00205D10 /* SubCateViewController.xib */; };
+		02A3B24E17E9C8B900205D10 /* cates.plist in Resources */ = {isa = PBXBuildFile; fileRef = 02A3B24D17E9C8B900205D10 /* cates.plist */; };
+		02A3B25217E9E2D100205D10 /* cate_pt.png in Resources */ = {isa = PBXBuildFile; fileRef = 02A3B25117E9E2D100205D10 /* cate_pt.png */; };
+		02A3B25617E9E42800205D10 /* cate_bd.png in Resources */ = {isa = PBXBuildFile; fileRef = 02A3B25417E9E42800205D10 /* cate_bd.png */; };
+		02A3B25717E9E42800205D10 /* cate_bd@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 02A3B25517E9E42800205D10 /* cate_bd@2x.png */; };
 		02AA3CDC17DA2ED200EC125D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02AA3CDB17DA2ED200EC125D /* UIKit.framework */; };
 		02AA3CDE17DA2ED200EC125D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02AA3CDD17DA2ED200EC125D /* Foundation.framework */; };
 		02AA3CE017DA2ED200EC125D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02AA3CDF17DA2ED200EC125D /* CoreGraphics.framework */; };
@@ -21,7 +37,30 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		024920D417DA43A4001A88D4 /* ss-blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ss-blue.png"; path = "../../../../app/ui/ss-blue.png"; sourceTree = "<group>"; };
+		020D98F317E8A42800F8E1C2 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
+		020D98FB17E978C400F8E1C2 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		020D98FE17E9796500F8E1C2 /* FolderCoverView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FolderCoverView.h; sourceTree = "<group>"; };
+		020D98FF17E9796500F8E1C2 /* FolderCoverView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FolderCoverView.m; sourceTree = "<group>"; };
+		020D990017E9796500F8E1C2 /* UIFolderTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIFolderTableView.h; sourceTree = "<group>"; };
+		020D990117E9796500F8E1C2 /* UIFolderTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIFolderTableView.m; sourceTree = "<group>"; };
+		020D990217E9796500F8E1C2 /* UIView+screenshot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+screenshot.h"; sourceTree = "<group>"; };
+		020D990317E9796500F8E1C2 /* UIView+screenshot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+screenshot.m"; sourceTree = "<group>"; };
+		020D990717E979BB00F8E1C2 /* CateViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CateViewController.h; sourceTree = "<group>"; };
+		020D990817E979BB00F8E1C2 /* CateViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CateViewController.m; sourceTree = "<group>"; };
+		020D990917E979BB00F8E1C2 /* CateViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CateViewController.xib; sourceTree = "<group>"; };
+		020D990D17E981A800F8E1C2 /* CateTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CateTableCell.h; sourceTree = "<group>"; };
+		020D990E17E981A800F8E1C2 /* CateTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CateTableCell.m; sourceTree = "<group>"; };
+		020D990F17E981A800F8E1C2 /* HZNavigationBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HZNavigationBar.h; sourceTree = "<group>"; };
+		020D991017E981A800F8E1C2 /* HZNavigationBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HZNavigationBar.m; sourceTree = "<group>"; };
+		0210E6B617EA05FF003068AF /* cate_ly.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cate_ly.png; sourceTree = "<group>"; };
+		02A3B24617E9A96600205D10 /* tmall_bg_furley.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tmall_bg_furley.png; sourceTree = "<group>"; };
+		02A3B24817E9B6AE00205D10 /* SubCateViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubCateViewController.h; sourceTree = "<group>"; };
+		02A3B24917E9B6AE00205D10 /* SubCateViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubCateViewController.m; sourceTree = "<group>"; };
+		02A3B24A17E9B6AE00205D10 /* SubCateViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SubCateViewController.xib; sourceTree = "<group>"; };
+		02A3B24D17E9C8B900205D10 /* cates.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = cates.plist; sourceTree = "<group>"; };
+		02A3B25117E9E2D100205D10 /* cate_pt.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cate_pt.png; sourceTree = "<group>"; };
+		02A3B25417E9E42800205D10 /* cate_bd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cate_bd.png; sourceTree = "<group>"; };
+		02A3B25517E9E42800205D10 /* cate_bd@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cate_bd@2x.png"; sourceTree = "<group>"; };
 		02AA3CD817DA2ED200EC125D /* ipapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ipapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		02AA3CDB17DA2ED200EC125D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		02AA3CDD17DA2ED200EC125D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -44,6 +83,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				020D98FC17E978C400F8E1C2 /* QuartzCore.framework in Frameworks */,
 				02AA3CDC17DA2ED200EC125D /* UIKit.framework in Frameworks */,
 				02AA3CDE17DA2ED200EC125D /* Foundation.framework in Frameworks */,
 				02AA3CE017DA2ED200EC125D /* CoreGraphics.framework in Frameworks */,
@@ -54,6 +94,43 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		020D98FD17E9796500F8E1C2 /* Floder */ = {
+			isa = PBXGroup;
+			children = (
+				020D990C17E9816D00F8E1C2 /* ItemView */,
+				020D98FE17E9796500F8E1C2 /* FolderCoverView.h */,
+				020D98FF17E9796500F8E1C2 /* FolderCoverView.m */,
+				020D990017E9796500F8E1C2 /* UIFolderTableView.h */,
+				020D990117E9796500F8E1C2 /* UIFolderTableView.m */,
+				020D990217E9796500F8E1C2 /* UIView+screenshot.h */,
+				020D990317E9796500F8E1C2 /* UIView+screenshot.m */,
+			);
+			name = Floder;
+			path = ../Floder;
+			sourceTree = "<group>";
+		};
+		020D990C17E9816D00F8E1C2 /* ItemView */ = {
+			isa = PBXGroup;
+			children = (
+				020D990D17E981A800F8E1C2 /* CateTableCell.h */,
+				020D990E17E981A800F8E1C2 /* CateTableCell.m */,
+				020D990F17E981A800F8E1C2 /* HZNavigationBar.h */,
+				020D991017E981A800F8E1C2 /* HZNavigationBar.m */,
+			);
+			name = ItemView;
+			sourceTree = "<group>";
+		};
+		02A3B25317E9E2D800205D10 /* icons */ = {
+			isa = PBXGroup;
+			children = (
+				0210E6B617EA05FF003068AF /* cate_ly.png */,
+				02A3B25417E9E42800205D10 /* cate_bd.png */,
+				02A3B25517E9E42800205D10 /* cate_bd@2x.png */,
+				02A3B25117E9E2D100205D10 /* cate_pt.png */,
+			);
+			name = icons;
+			sourceTree = "<group>";
+		};
 		02AA3CCF17DA2ED200EC125D = {
 			isa = PBXGroup;
 			children = (
@@ -75,6 +152,7 @@
 		02AA3CDA17DA2ED200EC125D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				020D98FB17E978C400F8E1C2 /* QuartzCore.framework */,
 				02AA3CDB17DA2ED200EC125D /* UIKit.framework */,
 				02AA3CDD17DA2ED200EC125D /* Foundation.framework */,
 				02AA3CDF17DA2ED200EC125D /* CoreGraphics.framework */,
@@ -86,9 +164,17 @@
 		02AA3CE117DA2ED200EC125D /* ipapp */ = {
 			isa = PBXGroup;
 			children = (
+				020D98FD17E9796500F8E1C2 /* Floder */,
 				02AA3CEA17DA2ED200EC125D /* AppDelegate.h */,
 				02AA3CEB17DA2ED200EC125D /* AppDelegate.m */,
 				02AA3CE217DA2ED200EC125D /* Supporting Files */,
+				020D98F317E8A42800F8E1C2 /* MainWindow.xib */,
+				020D990717E979BB00F8E1C2 /* CateViewController.h */,
+				020D990817E979BB00F8E1C2 /* CateViewController.m */,
+				020D990917E979BB00F8E1C2 /* CateViewController.xib */,
+				02A3B24817E9B6AE00205D10 /* SubCateViewController.h */,
+				02A3B24917E9B6AE00205D10 /* SubCateViewController.m */,
+				02A3B24A17E9B6AE00205D10 /* SubCateViewController.xib */,
 			);
 			path = ipapp;
 			sourceTree = "<group>";
@@ -96,7 +182,8 @@
 		02AA3CE217DA2ED200EC125D /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				024920D417DA43A4001A88D4 /* ss-blue.png */,
+				02A3B25317E9E2D800205D10 /* icons */,
+				02A3B24617E9A96600205D10 /* tmall_bg_furley.png */,
 				02AA3CE317DA2ED200EC125D /* ipapp-Info.plist */,
 				02AA3CE417DA2ED200EC125D /* InfoPlist.strings */,
 				02AA3CE717DA2ED200EC125D /* main.m */,
@@ -104,6 +191,7 @@
 				02AA3CED17DA2ED200EC125D /* Default.png */,
 				02AA3CEF17DA2ED200EC125D /* Default@2x.png */,
 				02AA3CF117DA2ED200EC125D /* Default-568h@2x.png */,
+				02A3B24D17E9C8B900205D10 /* cates.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -165,7 +253,15 @@
 				02AA3CEE17DA2ED200EC125D /* Default.png in Resources */,
 				02AA3CF017DA2ED200EC125D /* Default@2x.png in Resources */,
 				02AA3CF217DA2ED200EC125D /* Default-568h@2x.png in Resources */,
-				024920D517DA43A4001A88D4 /* ss-blue.png in Resources */,
+				020D98F417E8A42800F8E1C2 /* MainWindow.xib in Resources */,
+				020D990B17E979BB00F8E1C2 /* CateViewController.xib in Resources */,
+				02A3B24717E9A96600205D10 /* tmall_bg_furley.png in Resources */,
+				02A3B24C17E9B6AF00205D10 /* SubCateViewController.xib in Resources */,
+				02A3B24E17E9C8B900205D10 /* cates.plist in Resources */,
+				02A3B25217E9E2D100205D10 /* cate_pt.png in Resources */,
+				02A3B25617E9E42800205D10 /* cate_bd.png in Resources */,
+				02A3B25717E9E42800205D10 /* cate_bd@2x.png in Resources */,
+				0210E6B717EA05FF003068AF /* cate_ly.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -211,6 +307,13 @@
 			files = (
 				02AA3CE817DA2ED200EC125D /* main.m in Sources */,
 				02AA3CEC17DA2ED200EC125D /* AppDelegate.m in Sources */,
+				020D990417E9796500F8E1C2 /* FolderCoverView.m in Sources */,
+				020D990517E9796500F8E1C2 /* UIFolderTableView.m in Sources */,
+				020D990617E9796500F8E1C2 /* UIView+screenshot.m in Sources */,
+				020D990A17E979BB00F8E1C2 /* CateViewController.m in Sources */,
+				020D991117E981A800F8E1C2 /* CateTableCell.m in Sources */,
+				020D991217E981A800F8E1C2 /* HZNavigationBar.m in Sources */,
+				02A3B24B17E9B6AF00205D10 /* SubCateViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
