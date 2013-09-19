@@ -1,6 +1,6 @@
 .DS_Store
 bbs/install/
-bbs/data
+bbs/data/
 bbs/uc_client
 bbs/uc_server
 bbs/develop
