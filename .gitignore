@@ -12,3 +12,8 @@ bbs/uc_client/data
 bbs/uc_server/data/view/
 bbs/install/images/*.*
 bbs/.project
+bbs/data/cache/
+bbs/data/template/
+bbs/data/threadcache/
+bbs/uc_client/data/cache/
+
