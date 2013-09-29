@@ -12,7 +12,7 @@ class forum_forum extends spModel {
 					'mapkey'=>'fid',
 					'fclass'=>'forum_forum',
 					'fkey'=>'fup',
-					'field'=>'name,fid,fup,status',
+					'field'=>'name,fid,fup,status,img',
 					'condition'=>'status=1',
 					'enabled'=>'true'
 				)

@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "UIFolderTableView.h"
+#import "PostListViewController.h"
 #import "CateTableCell.h"
 #import "AFNetworking.h"
 
@@ -16,5 +17,6 @@
 @property (strong, nonatomic) IBOutlet UIFolderTableView *cateTableView;
 @property(strong,nonatomic) NSArray *cates;
 
+- (IBAction)refreshForumList:(id)sender;
 
 @end

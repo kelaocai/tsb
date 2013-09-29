@@ -33,6 +33,12 @@
 		02AA3CEE17DA2ED200EC125D /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 02AA3CED17DA2ED200EC125D /* Default.png */; };
 		02AA3CF017DA2ED200EC125D /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 02AA3CEF17DA2ED200EC125D /* Default@2x.png */; };
 		02AA3CF217DA2ED200EC125D /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 02AA3CF117DA2ED200EC125D /* Default-568h@2x.png */; };
+		02E3649617F7DAF60050FF31 /* cate_bed.png in Resources */ = {isa = PBXBuildFile; fileRef = 02E3649517F7DAF60050FF31 /* cate_bed.png */; };
+		02E3649A17F859330050FF31 /* PostListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02E3649817F859330050FF31 /* PostListViewController.m */; };
+		02E3649B17F859330050FF31 /* PostListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02E3649917F859330050FF31 /* PostListViewController.xib */; };
+		02E3649E17F8720D0050FF31 /* PostListTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 02E3649D17F8720D0050FF31 /* PostListTableCell.m */; };
+		02E364A117F882BF0050FF31 /* icon_comment.png in Resources */ = {isa = PBXBuildFile; fileRef = 02E3649F17F882BF0050FF31 /* icon_comment.png */; };
+		02E364A217F882BF0050FF31 /* icon_clock.png in Resources */ = {isa = PBXBuildFile; fileRef = 02E364A017F882BF0050FF31 /* icon_clock.png */; };
 		2E5A7AD9D5894CDCAA70B055 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CC6FC6EAAC834023BB5E3434 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -74,6 +80,14 @@
 		02AA3CED17DA2ED200EC125D /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		02AA3CEF17DA2ED200EC125D /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		02AA3CF117DA2ED200EC125D /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		02E3649517F7DAF60050FF31 /* cate_bed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cate_bed.png; sourceTree = "<group>"; };
+		02E3649717F859330050FF31 /* PostListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostListViewController.h; sourceTree = "<group>"; };
+		02E3649817F859330050FF31 /* PostListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostListViewController.m; sourceTree = "<group>"; };
+		02E3649917F859330050FF31 /* PostListViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PostListViewController.xib; sourceTree = "<group>"; };
+		02E3649C17F8720D0050FF31 /* PostListTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostListTableCell.h; sourceTree = "<group>"; };
+		02E3649D17F8720D0050FF31 /* PostListTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostListTableCell.m; sourceTree = "<group>"; };
+		02E3649F17F882BF0050FF31 /* icon_comment.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_comment.png; sourceTree = "<group>"; };
+		02E364A017F882BF0050FF31 /* icon_clock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_clock.png; sourceTree = "<group>"; };
 		CC6FC6EAAC834023BB5E3434 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F98B339802ED4CFEA904D540 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -116,6 +130,8 @@
 				020D990E17E981A800F8E1C2 /* CateTableCell.m */,
 				020D990F17E981A800F8E1C2 /* HZNavigationBar.h */,
 				020D991017E981A800F8E1C2 /* HZNavigationBar.m */,
+				02E3649C17F8720D0050FF31 /* PostListTableCell.h */,
+				02E3649D17F8720D0050FF31 /* PostListTableCell.m */,
 			);
 			name = ItemView;
 			sourceTree = "<group>";
@@ -123,6 +139,9 @@
 		02A3B25317E9E2D800205D10 /* icons */ = {
 			isa = PBXGroup;
 			children = (
+				02E3649F17F882BF0050FF31 /* icon_comment.png */,
+				02E364A017F882BF0050FF31 /* icon_clock.png */,
+				02E3649517F7DAF60050FF31 /* cate_bed.png */,
 				0210E6B617EA05FF003068AF /* cate_ly.png */,
 				02A3B25417E9E42800205D10 /* cate_bd.png */,
 				02A3B25517E9E42800205D10 /* cate_bd@2x.png */,
@@ -175,6 +194,9 @@
 				02A3B24817E9B6AE00205D10 /* SubCateViewController.h */,
 				02A3B24917E9B6AE00205D10 /* SubCateViewController.m */,
 				02A3B24A17E9B6AE00205D10 /* SubCateViewController.xib */,
+				02E3649717F859330050FF31 /* PostListViewController.h */,
+				02E3649817F859330050FF31 /* PostListViewController.m */,
+				02E3649917F859330050FF31 /* PostListViewController.xib */,
 			);
 			path = ipapp;
 			sourceTree = "<group>";
@@ -255,12 +277,16 @@
 				02AA3CF217DA2ED200EC125D /* Default-568h@2x.png in Resources */,
 				020D98F417E8A42800F8E1C2 /* MainWindow.xib in Resources */,
 				020D990B17E979BB00F8E1C2 /* CateViewController.xib in Resources */,
+				02E3649617F7DAF60050FF31 /* cate_bed.png in Resources */,
 				02A3B24717E9A96600205D10 /* tmall_bg_furley.png in Resources */,
 				02A3B24C17E9B6AF00205D10 /* SubCateViewController.xib in Resources */,
 				02A3B24E17E9C8B900205D10 /* cates.plist in Resources */,
 				02A3B25217E9E2D100205D10 /* cate_pt.png in Resources */,
 				02A3B25617E9E42800205D10 /* cate_bd.png in Resources */,
+				02E3649B17F859330050FF31 /* PostListViewController.xib in Resources */,
 				02A3B25717E9E42800205D10 /* cate_bd@2x.png in Resources */,
+				02E364A117F882BF0050FF31 /* icon_comment.png in Resources */,
+				02E364A217F882BF0050FF31 /* icon_clock.png in Resources */,
 				0210E6B717EA05FF003068AF /* cate_ly.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -305,6 +331,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				02E3649A17F859330050FF31 /* PostListViewController.m in Sources */,
 				02AA3CE817DA2ED200EC125D /* main.m in Sources */,
 				02AA3CEC17DA2ED200EC125D /* AppDelegate.m in Sources */,
 				020D990417E9796500F8E1C2 /* FolderCoverView.m in Sources */,
@@ -313,6 +340,7 @@
 				020D990A17E979BB00F8E1C2 /* CateViewController.m in Sources */,
 				020D991117E981A800F8E1C2 /* CateTableCell.m in Sources */,
 				020D991217E981A800F8E1C2 /* HZNavigationBar.m in Sources */,
+				02E3649E17F8720D0050FF31 /* PostListTableCell.m in Sources */,
 				02A3B24B17E9B6AF00205D10 /* SubCateViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -37,6 +37,10 @@
     return _cates;
 }
 
+- (IBAction)refreshForumList:(id)sender {
+    [self remoteGetForumList];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -44,32 +48,8 @@
     //self.cateTableView.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"tmall_bg_furley.png"]];
     self.navigationItem.title=@"热门板块";
     
-    //读取远程板块数据
-    NSString *BaseURLString=@"http://localhost/app_s/";
-    NSString *weatherUrl = [NSString stringWithFormat:@"%@?c=forum&a=forum_list", BaseURLString];
-    NSURL *url = [NSURL URLWithString:weatherUrl];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    [self remoteGetForumList];
     
-    // 2
-    AFJSONRequestOperation *operation =
-    [AFJSONRequestOperation JSONRequestOperationWithRequest:request
-     // 3
-                                                    success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-                                                        self.cates = (NSDictionary *)JSON;
-                                                        self.title = @"JSON Retrieved";
-                                                        [self.cateTableView reloadData];
-                                                    }
-     // 4
-                                                    failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-                                                        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Error Retrieving Weather"
-                                                                                                     message:[NSString stringWithFormat:@"%@",error]
-                                                                                                    delegate:nil
-                                                                                           cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                                                        [av show];
-                                                    }];
-    
-    // 5
-    [operation start];
     
     
     
@@ -88,6 +68,40 @@
     [_subVc release];
     [super dealloc];
 }
+
+-(void) remoteGetForumList{
+    
+    //1 读取远程板块数据
+    NSString *BaseURLString=@"http://localhost/app_s/";
+    NSString *weatherUrl = [NSString stringWithFormat:@"%@?c=forum&a=forum_list", BaseURLString];
+    NSURL *url = [NSURL URLWithString:weatherUrl];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    
+    // 2
+    AFJSONRequestOperation *operation =
+    [AFJSONRequestOperation JSONRequestOperationWithRequest:request
+     // 3
+                                                    success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+                                                        self.cates = (NSDictionary *)JSON;
+                                                        //self.title = @"JSON Retrieved";
+                                                        [self.cateTableView reloadData];
+                                                    }
+     // 4
+                                                    failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+                                                        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Error Retrieving Weather"
+                                                                                                     message:[NSString stringWithFormat:@"%@",error]
+                                                                                                    delegate:nil
+                                                                                           cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                                                        [av show];
+                                                    }];
+    
+    // 5
+    [operation start];
+
+}
+
+
+
 
 #pragma mark
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -119,7 +133,6 @@
         [subTitles addObject:[[subitems objectAtIndex:i] objectForKey:@"name"]];
     }
     cell.subTtile.text=[subTitles componentsJoinedByString:@" / "];
-    
     
     [subTitles release];
     
@@ -159,15 +172,21 @@
 -(void)subCateBtnAction:(UIButton *)btn
 {
     
-    NSDictionary *subCate = [[self.currentCate objectForKey:@"subitems"] objectAtIndex:btn.tag];
-    NSString *name = [subCate objectForKey:@"name"];
-    UIAlertView *Notpermitted=[[UIAlertView alloc] initWithTitle:@"子类信息"
-                                                         message:[NSString stringWithFormat:@"名称:%@, ID: %@", name, [subCate objectForKey:@"name"]]
-                                                        delegate:nil
-                                               cancelButtonTitle:@"确认"
-                                               otherButtonTitles:nil];
-    [Notpermitted show];
-    [Notpermitted release];
+    NSDictionary *subCate = [[self.currentCate objectForKey:@"forums"] objectAtIndex:btn.tag];
+//    NSString *name = [subCate objectForKey:@"name"];
+//    UIAlertView *Notpermitted=[[UIAlertView alloc] initWithTitle:@"子类信息"
+//                                                         message:[NSString stringWithFormat:@"名称:%@, ID: %@", name, [subCate objectForKey:@"fid"]]
+//                                                        delegate:nil
+//                                               cancelButtonTitle:@"确认"
+//                                               otherButtonTitles:nil];
+//    [Notpermitted show];
+//    [Notpermitted release];
+    
+    PostListViewController *postListVc=[[PostListViewController alloc] init];
+    postListVc.fid= [subCate objectForKey:@"fid"];
+    //NSLog(@"fid:%@",postListVc.fid);
+    [self.navigationController pushViewController:postListVc animated:YES];
+    [postListVc release];
 }
 
 
