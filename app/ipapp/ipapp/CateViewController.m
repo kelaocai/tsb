@@ -44,6 +44,34 @@
     //self.cateTableView.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"tmall_bg_furley.png"]];
     self.navigationItem.title=@"热门板块";
     
+    //读取远程板块数据
+    NSString *BaseURLString=@"http://localhost/app_s/";
+    NSString *weatherUrl = [NSString stringWithFormat:@"%@?c=forum&a=forum_list", BaseURLString];
+    NSURL *url = [NSURL URLWithString:weatherUrl];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    
+    // 2
+    AFJSONRequestOperation *operation =
+    [AFJSONRequestOperation JSONRequestOperationWithRequest:request
+     // 3
+                                                    success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+                                                        self.cates = (NSDictionary *)JSON;
+                                                        self.title = @"JSON Retrieved";
+                                                        [self.cateTableView reloadData];
+                                                    }
+     // 4
+                                                    failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+                                                        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Error Retrieving Weather"
+                                                                                                     message:[NSString stringWithFormat:@"%@",error]
+                                                                                                    delegate:nil
+                                                                                           cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                                                        [av show];
+                                                    }];
+    
+    // 5
+    [operation start];
+    
+    
     
 }
 
@@ -63,7 +91,7 @@
 
 #pragma mark
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return 4;
+    return [self.cates count];
 }
 
 
@@ -82,7 +110,7 @@
     //首页板块cell
     NSDictionary *cate=[self.cates objectAtIndex:[indexPath row]];
     cell.title.text=[cate objectForKey:@"name"];
-    NSArray *subitems=[cate objectForKey:@"subitems"];
+    NSArray *subitems=[cate objectForKey:@"forums"];
     NSMutableArray *subTitles=[[NSMutableArray alloc] init];
     //图标
     cell.logo.image=[UIImage imageNamed:[[cate objectForKey:@"img"] stringByAppendingString:@".png"]];
@@ -108,7 +136,7 @@
                                      initWithNibName:NSStringFromClass([SubCateViewController class])
                                      bundle:nil] autorelease];
     NSDictionary *cate = [self.cates objectAtIndex:indexPath.row];
-    subVc.subCates = [cate objectForKey:@"subitems"];
+    subVc.subCates = [cate objectForKey:@"forums"];
     self.currentCate = cate;
     subVc.cateVc = self;
     

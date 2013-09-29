@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "UIFolderTableView.h"
 #import "CateTableCell.h"
+#import "AFNetworking.h"
 
 
 @interface CateViewController : UIViewController<UITableViewDelegate,UITableViewDataSource>
