@@ -6,7 +6,7 @@
 //  Copyright (c) 2013年 tongshibang. All rights reserved.
 //
 
-#import "PostListTableCell.h"
+#import "ThreadListTableCell.h"
 
 @implementation PostListTableCell
 

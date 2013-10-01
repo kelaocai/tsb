@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "AFNetworking.h"
-#import "PostListTableCell.h"
+#import "ThreadListTableCell.h"
 @interface PostListViewController : UITableViewController
 @property(strong,nonatomic)NSArray *posts;
 @property (strong,nonatomic)NSString *fid;

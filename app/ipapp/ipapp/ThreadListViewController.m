@@ -6,13 +6,16 @@
 //  Copyright (c) 2013年 tongshibang. All rights reserved.
 //
 
-#import "PostListViewController.h"
+#import "ThreadListViewController.h"
+#import "common.h"
 
 @interface PostListViewController ()
 
 @end
 
 @implementation PostListViewController
+
+
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -44,8 +47,8 @@
 -(void) remoteGetPostList{
     
     //1 读取远程板块数据
-    NSString *BaseURLString=@"http://localhost/app_s/";
-    NSString *weatherUrl = [NSString stringWithFormat:@"%@?c=forum&a=forum_post_list&fid=%@", BaseURLString,self.fid];
+    NSString *BaseURLString=BASE_URL;
+    NSString *weatherUrl = [NSString stringWithFormat:@"%@?c=forum&a=forum_thread_list&fid=%@", BaseURLString,self.fid];
     NSURL *url = [NSURL URLWithString:weatherUrl];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     

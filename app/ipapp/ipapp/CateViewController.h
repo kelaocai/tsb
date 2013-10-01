@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "UIFolderTableView.h"
-#import "PostListViewController.h"
+#import "ThreadListViewController.h"
 #import "CateTableCell.h"
 #import "AFNetworking.h"
 

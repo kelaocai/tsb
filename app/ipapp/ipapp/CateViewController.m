@@ -8,6 +8,7 @@
 
 #import "CateViewController.h"
 #import "SubCateViewController.h"
+#import "common.h"
 @interface CateViewController ()
 
 @property (strong, nonatomic) SubCateViewController *subVc;
@@ -21,7 +22,6 @@
 @implementation CateViewController
 
 @synthesize cates=_cates;
-
 
 
 //读取首页板块目录
@@ -72,7 +72,7 @@
 -(void) remoteGetForumList{
     
     //1 读取远程板块数据
-    NSString *BaseURLString=@"http://localhost/app_s/";
+    NSString *BaseURLString=BASE_URL;
     NSString *weatherUrl = [NSString stringWithFormat:@"%@?c=forum&a=forum_list", BaseURLString];
     NSURL *url = [NSURL URLWithString:weatherUrl];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
