@@ -182,7 +182,7 @@
 //    [Notpermitted show];
 //    [Notpermitted release];
     
-    PostListViewController *postListVc=[[PostListViewController alloc] init];
+    ThreadListViewController *postListVc=[[ThreadListViewController alloc] init];
     postListVc.fid= [subCate objectForKey:@"fid"];
     //NSLog(@"fid:%@",postListVc.fid);
     [self.navigationController pushViewController:postListVc animated:YES];

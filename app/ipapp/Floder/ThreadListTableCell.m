@@ -8,7 +8,7 @@
 
 #import "ThreadListTableCell.h"
 
-@implementation PostListTableCell
+@implementation ThreadListTableCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {

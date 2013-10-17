@@ -20,9 +20,20 @@ class forum extends spController
 		$fid=$this->spArgs('fid');
 		$ob=spClass('forum_thread');
 		$condition=array('fid'=>$fid);
-		$rs_post_list=$ob->findAll($condition,null,'author,authorid,subject,dateline');
+		$rs_thread_list=$ob->findAll($condition,null,'tid,author,authorid,subject,dateline');
 		header('Content-type:text/json'); 
-		echo json_encode($rs_post_list);
+		echo json_encode($rs_thread_list);
 		//dump($rs_post_list);
 	}
+	
+	//获取主题帖子列表
+	function forum_post_list(){
+		$tid=$this->spArgs('tid');
+		$ob=spClass('forum_post');
+		$condition=array('tid'=>$tid);
+		$rs_post_list=$ob->findAll($condition,null,'tid,author,authorid,subject,message,dateline');
+		header('Content-type:text/json'); 
+		echo json_encode($rs_post_list);
+	}
+	
 }

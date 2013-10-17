@@ -8,12 +8,13 @@
 
 #import "ThreadListViewController.h"
 #import "common.h"
+#import "PostListViewController.h"
 
-@interface PostListViewController ()
+@interface ThreadListViewController ()
 
 @end
 
-@implementation PostListViewController
+@implementation ThreadListViewController
 
 
 
@@ -57,7 +58,7 @@
     [AFJSONRequestOperation JSONRequestOperationWithRequest:request
      // 3
                                                     success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-                                                        self.posts = (NSDictionary *)JSON;                                                       
+                                                        self.threads = (NSDictionary *)JSON;
                                                         [self.postTableView reloadData];
                                                     }
      // 4
@@ -87,8 +88,8 @@
 {
 
     // Return the number of rows in the section.
-    if (self.posts!=nil) {
-        return [self.posts count];
+    if (self.threads!=nil) {
+        return [self.threads count];
     }else{
         return 0;
     }
@@ -98,21 +99,38 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
-    PostListTableCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    ThreadListTableCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[PostListTableCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[[ThreadListTableCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
-    
-    
-    NSDictionary *post=[self.posts objectAtIndex:[indexPath row]];
-    cell.title.text=[post objectForKey:@"subject"];
-    cell.subTtile.text=[post objectForKey:@"author"];
+    NSDictionary *thread=[self.threads objectAtIndex:[indexPath row]];
+    cell.title.text=[thread objectForKey:@"subject"];
+    cell.subTtile.text=[thread objectForKey:@"author"];
     cell.time.text=@"1小时以前";
     cell.comment.text=@"68";
     
     return cell;
 }
+
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    // Navigation logic may go here, for example:
+    // Create the next view controller.
+    
+    // Pass the selected object to the new view controller.
+    
+    //NSLog(@"cell selected");
+    
+    PostListViewController *postListView=[[PostListViewController alloc] init];
+    NSDictionary *thread=[self.threads objectAtIndex:[indexPath row]];
+    postListView.tid=[thread objectForKey:@"tid"];
+    //NSLog(@"tid:%@",[thread objectForKey:@"tid"]);
+    [self.navigationController pushViewController:postListView animated:YES];
+    [postListView release];
+}
+
 
 /*
 // Override to support conditional editing of the table view.
@@ -173,7 +191,7 @@
 
 - (void)dealloc {
     [_postTableView release];
-    [_posts release];
+    [_threads release];
     [super dealloc];
 }
 @end

@@ -9,8 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "AFNetworking.h"
 #import "ThreadListTableCell.h"
-@interface PostListViewController : UITableViewController
-@property(strong,nonatomic)NSArray *posts;
+@interface ThreadListViewController : UITableViewController
+@property(strong,nonatomic)NSArray *threads;
 @property (strong,nonatomic)NSString *fid;
 @property (retain, nonatomic) IBOutlet UITableView *postTableView;
 
