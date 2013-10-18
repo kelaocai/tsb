@@ -34,7 +34,7 @@ class forum extends spController {
 		header('Content-type:text/json');
 		
 		$i=0;
-		$base_url="http://localhost/bbs/uc_server/data/avatar/";
+		$base_url="http://tongshibang.com/bbs/uc_server/data/avatar/";
 		foreach($rs_post_list as $item){			
 			$rs_post_list[$i]['avatar']=$base_url.$this->get_avatar($item['authorid']);
 			$i++;		
