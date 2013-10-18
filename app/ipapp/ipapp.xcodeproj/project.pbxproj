@@ -17,6 +17,8 @@
 		020D991117E981A800F8E1C2 /* CateTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 020D990E17E981A800F8E1C2 /* CateTableCell.m */; };
 		020D991217E981A800F8E1C2 /* HZNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 020D991017E981A800F8E1C2 /* HZNavigationBar.m */; };
 		0210E6B717EA05FF003068AF /* cate_ly.png in Resources */ = {isa = PBXBuildFile; fileRef = 0210E6B617EA05FF003068AF /* cate_ly.png */; };
+		028594EC1810DB920000B4AC /* bubble.png in Resources */ = {isa = PBXBuildFile; fileRef = 028594EB1810DB920000B4AC /* bubble.png */; };
+		028594EE1810E7B10000B4AC /* msg_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 028594ED1810E7B10000B4AC /* msg_bg.png */; };
 		029C49F9180E8F3000A92166 /* PostListTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 029C49F8180E8F3000A92166 /* PostListTableCell.m */; };
 		02A3B24717E9A96600205D10 /* tmall_bg_furley.png in Resources */ = {isa = PBXBuildFile; fileRef = 02A3B24617E9A96600205D10 /* tmall_bg_furley.png */; };
 		02A3B24B17E9B6AF00205D10 /* SubCateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02A3B24917E9B6AE00205D10 /* SubCateViewController.m */; };
@@ -63,6 +65,8 @@
 		020D990F17E981A800F8E1C2 /* HZNavigationBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HZNavigationBar.h; sourceTree = "<group>"; };
 		020D991017E981A800F8E1C2 /* HZNavigationBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HZNavigationBar.m; sourceTree = "<group>"; };
 		0210E6B617EA05FF003068AF /* cate_ly.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cate_ly.png; sourceTree = "<group>"; };
+		028594EB1810DB920000B4AC /* bubble.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bubble.png; sourceTree = "<group>"; };
+		028594ED1810E7B10000B4AC /* msg_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = msg_bg.png; sourceTree = "<group>"; };
 		029C49F7180E8F3000A92166 /* PostListTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostListTableCell.h; sourceTree = "<group>"; };
 		029C49F8180E8F3000A92166 /* PostListTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostListTableCell.m; sourceTree = "<group>"; };
 		02A3B24617E9A96600205D10 /* tmall_bg_furley.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tmall_bg_furley.png; sourceTree = "<group>"; };
@@ -152,6 +156,8 @@
 		02A3B25317E9E2D800205D10 /* icons */ = {
 			isa = PBXGroup;
 			children = (
+				028594ED1810E7B10000B4AC /* msg_bg.png */,
+				028594EB1810DB920000B4AC /* bubble.png */,
 				02E364A317F891990050FF31 /* logo.png */,
 				02E3649F17F882BF0050FF31 /* icon_comment.png */,
 				02E364A017F882BF0050FF31 /* icon_clock.png */,
@@ -299,6 +305,7 @@
 				02E3649617F7DAF60050FF31 /* cate_bed.png in Resources */,
 				02A3B24717E9A96600205D10 /* tmall_bg_furley.png in Resources */,
 				02AE0F3F17FAF9FE0048DD6E /* PostListViewController.xib in Resources */,
+				028594EE1810E7B10000B4AC /* msg_bg.png in Resources */,
 				02A3B24C17E9B6AF00205D10 /* SubCateViewController.xib in Resources */,
 				02A3B24E17E9C8B900205D10 /* cates.plist in Resources */,
 				02A3B25217E9E2D100205D10 /* cate_pt.png in Resources */,
@@ -306,6 +313,7 @@
 				02E3649B17F859330050FF31 /* ThreadListViewController.xib in Resources */,
 				02A3B25717E9E42800205D10 /* cate_bd@2x.png in Resources */,
 				02E364A117F882BF0050FF31 /* icon_comment.png in Resources */,
+				028594EC1810DB920000B4AC /* bubble.png in Resources */,
 				02E364A217F882BF0050FF31 /* icon_clock.png in Resources */,
 				0210E6B717EA05FF003068AF /* cate_ly.png in Resources */,
 			);

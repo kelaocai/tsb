@@ -11,6 +11,7 @@
 #import "AFNetworking.h"
 #import "PostListTableCell.h"
 
+
 @interface PostListViewController ()
 
 @end
@@ -73,12 +74,17 @@
         
         NSDictionary *post=[self.posts objectAtIndex:[indexPath row]];
         NSString *msg=[post objectForKey:@"message"];
-        UIFont *font = [UIFont systemFontOfSize:12.0f];
-        //设置内容块大小上限
+        UIFont *font = [UIFont systemFontOfSize:14.0f];
+        //设置内容块大小
         CGSize size=CGSizeMake(200.0f, MAXFLOAT);
         CGSize lable_size=[msg sizeWithFont:font constrainedToSize:size lineBreakMode:NSLineBreakByWordWrapping];
-        [cell.message setFrame:CGRectMake(85, 5, 200.0f, lable_size.height)];
+        [cell.message setFrame:CGRectMake(85, 10, 200.0f, lable_size.height)];
+        [cell.messageBgView setFrame:CGRectMake(75, 5, 220.0f, lable_size.height+10.0f)];
         cell.message.text=msg;
+        //设置头像
+        //http://tongshibang.com/bbs/uc_server/data/avatar/000/00/00/01_avatar_small.jpg
+        NSURL *avatar_url = [NSURL URLWithString:[post objectForKey:@"avatar"]];
+        [cell.avatar setImageWithURL:avatar_url];
         
     
         
@@ -94,8 +100,8 @@
     
     NSDictionary *post=[self.posts objectAtIndex:[indexPath row]];
     NSString *msg=[post objectForKey:@"message"];
-    UIFont *font = [UIFont systemFontOfSize:12.0f];
-    //设置内容块大小上限
+    UIFont *font = [UIFont systemFontOfSize:14.0f];
+    //设置内容块大小
     CGSize size=CGSizeMake(200.0f, MAXFLOAT);
     CGSize lable_size=[msg sizeWithFont:font constrainedToSize:size lineBreakMode:NSLineBreakByWordWrapping];
     return lable_size.height+42.0f;

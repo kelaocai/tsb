@@ -1,39 +1,59 @@
 <?php
-class forum extends spController
-{
-		
+class forum extends spController {
+
 	//获取板块信息
-	function forum_list(){
-		$ob=spClass('forum_forum');
-		$conditon=array('status'=>'1','type'=>'group');
-		$rs_group=$ob->spLinker()->findAll($conditon,null,'name,fid,fup,img');
+	function forum_list() {
+		$ob = spClass('forum_forum');
+		$conditon = array('status' => '1', 'type' => 'group');
+		$rs_group = $ob -> spLinker() -> findAll($conditon, null, 'name,fid,fup,img');
 		// foreach ($rs_group as $item) {
-			// item[]
+		// item[]
 		// }
-		header('Content-type:text/json'); 
+		header('Content-type:text/json');
 		echo json_encode($rs_group);
 		//dump($rs_group);
 	}
-	
+
 	//获板块取主题列表
-	function forum_thread_list(){
-		$fid=$this->spArgs('fid');
-		$ob=spClass('forum_thread');
-		$condition=array('fid'=>$fid);
-		$rs_thread_list=$ob->findAll($condition,null,'tid,author,authorid,subject,dateline');
-		header('Content-type:text/json'); 
+	function forum_thread_list() {
+		$fid = $this -> spArgs('fid');
+		$ob = spClass('forum_thread');
+		$condition = array('fid' => $fid);
+		$rs_thread_list = $ob -> findAll($condition, null, 'tid,author,authorid,subject,dateline');
+		header('Content-type:text/json');
 		echo json_encode($rs_thread_list);
 		//dump($rs_post_list);
 	}
-	
+
 	//获取主题帖子列表
-	function forum_post_list(){
-		$tid=$this->spArgs('tid');
-		$ob=spClass('forum_post');
-		$condition=array('tid'=>$tid);
-		$rs_post_list=$ob->findAll($condition,null,'tid,author,authorid,subject,message,dateline');
-		header('Content-type:text/json'); 
+	function forum_post_list() {
+		$tid = $this -> spArgs('tid');
+		$ob = spClass('forum_post');
+		$condition = array('tid' => $tid);
+		$rs_post_list = $ob -> findAll($condition, null, 'tid,author,authorid,subject,message,dateline');
+		header('Content-type:text/json');
+		
+		$i=0;
+		$base_url="http://localhost/bbs/uc_server/data/avatar/";
+		foreach($rs_post_list as $item){			
+			$rs_post_list[$i]['avatar']=$base_url.$this->get_avatar($item['authorid']);
+			$i++;		
+		}
+		//dump($rs_post_list);
 		echo json_encode($rs_post_list);
+		
 	}
-	
+
+	//获取头像地址
+	function get_avatar($uid, $size = 'small', $type = '') {
+		$size = in_array($size, array('big', 'middle', 'small')) ? $size : 'middle';
+		$uid = abs(intval($uid));
+		$uid = sprintf("%09d", $uid);
+		$dir1 = substr($uid, 0, 3);
+		$dir2 = substr($uid, 3, 2);
+		$dir3 = substr($uid, 5, 2);
+		$typeadd = $type == 'real' ? '_real' : '';
+		return $dir1 . '/' . $dir2 . '/' . $dir3 . '/' . substr($uid, -2) . $typeadd . "_avatar_$size.jpg";
+	}
+
 }

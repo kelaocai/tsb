@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <UIImageView+WebCache.h>
 
 @interface PostListViewController : UITableViewController
 @property (strong,nonatomic)NSString *tid;
