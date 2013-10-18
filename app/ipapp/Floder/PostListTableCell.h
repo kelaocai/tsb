@@ -10,7 +10,8 @@
 
 @interface PostListTableCell : UITableViewCell
 @property (strong, nonatomic) UIImageView *avatar,*messageBgView;
-@property (strong, nonatomic) UILabel *title, *subTtile,*time,*message;
+@property (strong, nonatomic) UILabel *title, *subTtile,*time,*message,*author;
+@property float messageFontSize;
 
 
 
