@@ -107,7 +107,10 @@
     NSDictionary *thread=[self.threads objectAtIndex:[indexPath row]];
     cell.title.text=[thread objectForKey:@"subject"];
     cell.subTtile.text=[thread objectForKey:@"author"];
-    cell.time.text=@"1小时以前";
+    //设置头像
+    NSURL *avatar_url = [NSURL URLWithString:[thread objectForKey:@"avatar"]];
+    [cell.logo setImageWithURL:avatar_url];
+    cell.time.text=[thread objectForKey:@"date"];
     cell.comment.text=@"68";
     
     return cell;

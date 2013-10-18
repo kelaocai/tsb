@@ -16,18 +16,23 @@
     if (self) {
         // Initialization code
         self.contentView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"tmall_bg_main"]];
-        self.logo = [[[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 70, 70)] autorelease];
+        self.logo = [[[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 48, 48)] autorelease];
         self.logo.backgroundColor = [UIColor clearColor];
+        self.logo.layer.cornerRadius = 8;
+        self.logo.layer.masksToBounds = YES;
+        //自适应图片宽高比例
+        self.logo.contentMode = UIViewContentModeScaleAspectFit;
+
         [self.contentView addSubview:self.logo];
         
-        self.title = [[[UILabel alloc] initWithFrame:CGRectMake(80, 10, 230, 20)] autorelease];
+        self.title = [[[UILabel alloc] initWithFrame:CGRectMake(60, 10, 230, 20)] autorelease];
         self.title.font = [UIFont systemFontOfSize:16.0f];
         self.title.backgroundColor = [UIColor clearColor];
         self.title.opaque = NO;
         [self.contentView addSubview:self.title];
         
-        self.subTtile = [[[UILabel alloc] initWithFrame:CGRectMake(80, 40, 80, 16)] autorelease];
-        self.subTtile.font = [UIFont systemFontOfSize:16.0f];
+        self.subTtile = [[[UILabel alloc] initWithFrame:CGRectMake(70, 40, 80, 16)] autorelease];
+        self.subTtile.font = [UIFont systemFontOfSize:12.0f];
         self.subTtile.textColor = [UIColor colorWithRed:158/255.0
                                                   green:158/255.0
                                                    blue:158/255.0
@@ -40,7 +45,7 @@
 //        icon_clock_view.image=[UIImage imageNamed:@"icon_clock.png"];
 //        [self.contentView addSubview:icon_clock_view];
         
-        self.time = [[[UILabel alloc] initWithFrame:CGRectMake(196, 40, 60, 16)] autorelease];
+        self.time = [[[UILabel alloc] initWithFrame:CGRectMake(180, 40, 60, 16)] autorelease];
         self.time.font = [UIFont systemFontOfSize:11.0f];
         self.time.textColor = [UIColor colorWithRed:158/255.0
                                                   green:158/255.0

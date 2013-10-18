@@ -20,6 +20,13 @@ class forum extends spController {
 		$ob = spClass('forum_thread');
 		$condition = array('fid' => $fid);
 		$rs_thread_list = $ob -> findAll($condition, null, 'tid,author,authorid,subject,dateline');
+		$i = 0;
+		$base_url = "http://tongshibang.com/bbs/uc_server/data/avatar/";
+		foreach ($rs_thread_list as $item) {
+			$rs_thread_list[$i]['avatar'] = $base_url . $this -> get_avatar($item['authorid']);
+			$rs_thread_list[$i]['date'] = $this -> time_tran($item['dateline']);
+			$i++;
+		}
 		header('Content-type:text/json');
 		echo json_encode($rs_thread_list);
 		//dump($rs_post_list);
