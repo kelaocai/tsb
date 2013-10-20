@@ -106,13 +106,23 @@
     }
     NSDictionary *thread=[self.threads objectAtIndex:[indexPath row]];
     cell.title.text=[thread objectForKey:@"subject"];
-    cell.subTtile.text=[thread objectForKey:@"author"];
+    cell.author.text=[thread objectForKey:@"author"];
+    NSDictionary *last_reply=[thread objectForKey:@"last_reply"];
     //设置头像
     NSURL *avatar_url = [NSURL URLWithString:[thread objectForKey:@"avatar"]];
     [cell.logo setImageWithURL:avatar_url];
     cell.time.text=[thread objectForKey:@"date"];
-    cell.comment.text=@"68";
+    cell.comment.text=[thread objectForKey:@"replies"];
+    //最后回复者
+    [cell.lastReplyAvtar setImageWithURL:[last_reply objectForKey:@"avatar"]];
+    //最后回复概要
+    if(nil==[last_reply objectForKey:@"message"]){
+        cell.lastPostMessage.text=[NSString stringWithFormat:@"抢沙发..."];
+    }else{
+    cell.lastPostMessage.text=[NSString stringWithFormat:@"回复:%@", [last_reply objectForKey:@"message"]];
+    }
     
+   
     return cell;
 }
 

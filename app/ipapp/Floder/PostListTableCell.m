@@ -20,7 +20,7 @@
         self.messageFontSize=14.0f;
         self.avatar = [[[UIImageView alloc] initWithFrame:CGRectMake(15, 5, 36, 36)] autorelease];
         self.avatar.backgroundColor = [UIColor clearColor];
-        //设置圆角
+        //头像设置圆角
         self.avatar.layer.cornerRadius = 8;
         self.avatar.layer.masksToBounds = YES;
         //自适应图片宽高比例
@@ -43,12 +43,13 @@
         self.message.lineBreakMode=NSLineBreakByWordWrapping;
         [self.contentView addSubview:self.message];
         //作者+时间戳
-        self.author=[[UILabel alloc] initWithFrame:CGRectMake(85, 25, 200,20)];
+        self.author=[[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0,0)];
         self.author.font=[UIFont systemFontOfSize:12.0f];
         self.author.textColor=[UIColor grayColor];
         [self.contentView addSubview:self.author];
-        
-        
+        self.reply=[[[UIButton alloc] initWithFrame:CGRectMake(0, 0, 0, 0)] autorelease];
+        [self.reply setBackgroundImage:[UIImage imageNamed:@"btn_reply"] forState:UIControlStateNormal];
+        [self.contentView addSubview:self.reply];
         
     }
     return self;

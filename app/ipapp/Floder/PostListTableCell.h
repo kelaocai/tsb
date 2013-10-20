@@ -11,6 +11,7 @@
 @interface PostListTableCell : UITableViewCell
 @property (strong, nonatomic) UIImageView *avatar,*messageBgView;
 @property (strong, nonatomic) UILabel *title, *subTtile,*time,*message,*author;
+@property (strong, nonatomic) UIButton *reply;
 @property float messageFontSize;
 
 

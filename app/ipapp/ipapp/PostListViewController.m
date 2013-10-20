@@ -24,6 +24,7 @@
     if (self) {
         // Custom initialization
     }
+   
     return self;
 }
 
@@ -36,6 +37,9 @@
 
     self.posts=nil;
     [self remoteGetPostList];
+    
+    //禁止高亮选择
+    self.tableView.allowsSelection = NO;
     
 
 }
@@ -88,8 +92,10 @@
         [cell.messageBgView setFrame:CGRectMake(50, 10, 250.0f, lable_size.height+20.0f)];
         cell.message.text=msg;
         //作者+时间戳
-        [cell.author setFrame:CGRectMake(80,lable_size.height+30.0f,200.0f,20.f)];
+        [cell.author setFrame:CGRectMake(80,lable_size.height+30.0f,200.0f,20.0f)];
         cell.author.text=[NSString stringWithFormat:@"%@    %@",[post objectForKey:@"author"],[post objectForKey:@"date"]];
+        //回复按钮
+        [cell.reply setFrame:CGRectMake(266,lable_size.height+30.0f,20.0f,20.0f)];
 
     
         

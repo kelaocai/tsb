@@ -19,17 +19,19 @@ class forum extends spController {
 		$fid = $this -> spArgs('fid');
 		$ob = spClass('forum_thread');
 		$condition = array('fid' => $fid);
-		$rs_thread_list = $ob -> findAll($condition, null, 'tid,author,authorid,subject,dateline');
+		$rs_thread_list = $ob ->spLinker()-> findAll($condition, null, 'tid,author,authorid,subject,replies,dateline');
 		$i = 0;
-		$base_url = "http://tongshibang.com/bbs/uc_server/data/avatar/";
+		$base_url = "http://localhost/bbs/uc_server/data/avatar/";
 		foreach ($rs_thread_list as $item) {
 			$rs_thread_list[$i]['avatar'] = $base_url . $this -> get_avatar($item['authorid']);
 			$rs_thread_list[$i]['date'] = $this -> time_tran($item['dateline']);
+			//最后回复者头像
+			$rs_thread_list[$i]['last_reply']['avatar'] = $base_url . $this -> get_avatar($item['last_reply']['authorid']);
 			$i++;
 		}
 		header('Content-type:text/json');
 		echo json_encode($rs_thread_list);
-		//dump($rs_post_list);
+		//dump($rs_thread_list);
 	}
 
 	//获取主题帖子列表
