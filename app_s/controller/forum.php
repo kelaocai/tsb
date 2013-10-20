@@ -21,7 +21,7 @@ class forum extends spController {
 		$condition = array('fid' => $fid);
 		$rs_thread_list = $ob ->spLinker()-> findAll($condition, null, 'tid,author,authorid,subject,replies,dateline');
 		$i = 0;
-		$base_url = "http://localhost/bbs/uc_server/data/avatar/";
+		$base_url = "http://".$_SERVER['HTTP_HOST']."/bbs/uc_server/data/avatar/";
 		foreach ($rs_thread_list as $item) {
 			$rs_thread_list[$i]['avatar'] = $base_url . $this -> get_avatar($item['authorid']);
 			$rs_thread_list[$i]['date'] = $this -> time_tran($item['dateline']);
@@ -43,7 +43,7 @@ class forum extends spController {
 		header('Content-type:text/json');
 
 		$i = 0;
-		$base_url = "http://tongshibang.com/bbs/uc_server/data/avatar/";
+		$base_url = "http://".$_SERVER['HTTP_HOST']."/bbs/uc_server/data/avatar/";
 		foreach ($rs_post_list as $item) {
 			$rs_post_list[$i]['avatar'] = $base_url . $this -> get_avatar($item['authorid']);
 			$rs_post_list[$i]['date'] = $this -> time_tran($item['dateline']);
