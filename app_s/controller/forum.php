@@ -19,7 +19,7 @@ class forum extends spController {
 		$fid = $this -> spArgs('fid');
 		$ob = spClass('forum_thread');
 		$condition = array('fid' => $fid);
-		$rs_thread_list = $ob ->spLinker()-> findAll($condition, null, 'tid,author,authorid,subject,replies,dateline');
+		$rs_thread_list = $ob ->spLinker()-> findAll($condition, 'dateline DESC', 'tid,author,authorid,subject,replies,dateline');
 		$i = 0;
 		$base_url = "http://".$_SERVER['HTTP_HOST']."/bbs/uc_server/data/avatar/";
 		foreach ($rs_thread_list as $item) {
@@ -36,21 +36,26 @@ class forum extends spController {
 
 	//获取主题帖子列表
 	function forum_post_list() {
+		$size=2;
 		$tid = $this -> spArgs('tid');
+		$page=$this->spArgs('page',1);
 		$ob = spClass('forum_post');
 		$condition = array('tid' => $tid);
-		$rs_post_list = $ob -> findAll($condition, null, 'tid,author,authorid,subject,message,dateline');
-		header('Content-type:text/json');
-
+		$rs_post_list = $ob ->spPager($page,$size)->findAll($condition, null, 'tid,author,authorid,subject,message,dateline');
 		$i = 0;
 		$base_url = "http://".$_SERVER['HTTP_HOST']."/bbs/uc_server/data/avatar/";
 		foreach ($rs_post_list as $item) {
 			$rs_post_list[$i]['avatar'] = $base_url . $this -> get_avatar($item['authorid']);
 			$rs_post_list[$i]['date'] = $this -> time_tran($item['dateline']);
+			$rs_post_list[$i]['time']=time();
 			$i++;
-		}
-		//dump($rs_post_list);
-		echo json_encode($rs_post_list);
+		}		
+		//获取分页数据
+		$pager=$ob->spPager()->getPager();
+		$rs=array('pager'=>$pager,'data'=>$rs_post_list);
+		//dump($rs);
+		header('Content-type:text/json');
+		echo json_encode($rs);
 
 	}
 

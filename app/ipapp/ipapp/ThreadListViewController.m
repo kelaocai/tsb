@@ -10,6 +10,7 @@
 #import "common.h"
 #import "PostListViewController.h"
 
+
 @interface ThreadListViewController ()
 
 @end
@@ -30,6 +31,14 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    //进度条
+    self.hud=[[[MBProgressHUD alloc] initWithView:self.tableView] autorelease];
+    [self.view addSubview:self.hud];
+    [self.view bringSubviewToFront:self.hud];
+    self.hud.delegate=self;
+    self.hud.labelText=@"数据加载中...";
+    
     [self remoteGetPostList];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -47,6 +56,8 @@
 
 -(void) remoteGetPostList{
     
+    [self.hud show:YES];
+    
     //1 读取远程板块数据
     NSString *BaseURLString=BASE_URL;
     NSString *weatherUrl = [NSString stringWithFormat:@"%@?c=forum&a=forum_thread_list&fid=%@", BaseURLString,self.fid];
@@ -60,6 +71,7 @@
                                                     success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
                                                         self.threads = (NSDictionary *)JSON;
                                                         [self.postTableView reloadData];
+                                                        [self.hud hide:YES];
                                                     }
      // 4
                                                     failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
@@ -68,6 +80,7 @@
                                                                                                     delegate:nil
                                                                                            cancelButtonTitle:@"OK" otherButtonTitles:nil];
                                                         [av show];
+                                                        [self.hud hide:YES];
                                                     }];
     
     // 5
@@ -137,9 +150,12 @@
     //NSLog(@"cell selected");
     
     PostListViewController *postListView=[[PostListViewController alloc] init];
+    
+    
     NSDictionary *thread=[self.threads objectAtIndex:[indexPath row]];
     postListView.tid=[thread objectForKey:@"tid"];
-    //NSLog(@"tid:%@",[thread objectForKey:@"tid"]);
+    NSLog(@"tid:%@",[thread objectForKey:@"tid"]);
+    
     [self.navigationController pushViewController:postListView animated:YES];
     [postListView release];
 }

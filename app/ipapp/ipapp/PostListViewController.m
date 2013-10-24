@@ -10,13 +10,21 @@
 #import "common.h"
 #import "AFNetworking.h"
 #import "PostListTableCell.h"
+//#import "MJRefresh.h"
 
 
-@interface PostListViewController ()
+
+@interface PostListViewController () 
+{
+    ///MJRefreshFooterView *_footer;
+    //NSMutableArray *_data;
+
+}
 
 @end
 
 @implementation PostListViewController
+@synthesize _posts=posts;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -24,22 +32,41 @@
     if (self) {
         // Custom initialization
     }
-   
+    
     return self;
+  
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    UIColor *bgColor = [UIColor colorWithPatternImage: [UIImage imageNamed:@"background"]];
-    //[self.contentView setBackGroundColor:bgColor];
-    self.view.backgroundColor=bgColor;
+    
+    _current_page=1;
+    _next_page=1;
+    _page_size=2;
+    
+    
+    posts=[[NSMutableArray alloc] initWithCapacity:10];
 
-    self.posts=nil;
-    [self remoteGetPostList];
+
+    
+    
+    //进度条
+    self.hud=[[MBProgressHUD alloc] initWithView:self.tableView];
+    [self.view addSubview:self.hud];
+    [self.view bringSubviewToFront:self.hud];
+    self.hud.delegate=self;
+    self.hud.labelText=@"数据加载中...";
+    
+
+    [self loadMore];
     
     //禁止高亮选择
-    self.tableView.allowsSelection = NO;
+    //self.tableView.allowsSelection = NO;
+    
+
+    
+ 
     
 
 }
@@ -61,57 +88,97 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-
-    // Return the number of rows in the section.
-    if(self.posts!=nil){
-        return [self.posts count];
-    }else{
-        return 0;
-    }
+    return [posts count]+1;
     
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
-    PostListTableCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        
-        
-        cell = [[[PostListTableCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-        
-        NSDictionary *post=[self.posts objectAtIndex:[indexPath row]];
-        NSString *msg=[post objectForKey:@"message"];
-        //设置头像
-        //http://tongshibang.com/bbs/uc_server/data/avatar/000/00/00/01_avatar_small.jpg
-        NSURL *avatar_url = [NSURL URLWithString:[post objectForKey:@"avatar"]];
-        [cell.avatar setImageWithURL:avatar_url];
-        //设置内容块大小
-        CGSize lable_size=[self countMassage:msg sizeForIndex:indexPath];
-        [cell.message setFrame:CGRectMake(80, 20, 200.0f, lable_size.height)];
-        [cell.messageBgView setFrame:CGRectMake(50, 10, 250.0f, lable_size.height+20.0f)];
-        cell.message.text=msg;
-        //作者+时间戳
-        [cell.author setFrame:CGRectMake(80,lable_size.height+30.0f,200.0f,20.0f)];
-        cell.author.text=[NSString stringWithFormat:@"%@    %@",[post objectForKey:@"author"],[post objectForKey:@"date"]];
-        //回复按钮
-        [cell.reply setFrame:CGRectMake(266,lable_size.height+30.0f,20.0f,20.0f)];
+    
 
     
+    
+    
+    // 如果是最后一行，则显示加载更多，或是提示已加载完全
+    
+    //NSLog(@"indexPath:%d,post_count:%d",[indexPath row],[posts count]);
+    if([indexPath row] == ([posts count])) {
+        
+        static NSString *idd=@"cell";
+        //NSString *identifier=[NSString stringWithFormat:@"cell%d",indexPath.row];
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:idd];
+        if (cell==nil) {
+            cell=[[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:idd] autorelease];
+        }else{
+            NSLog(@"from deque%d",[indexPath row]);
+        }
+
+        
+        if (_current_page==_total_page) {
+            cell.textLabel.text=@"已到最后一页";
+        }else{
+            cell.textLabel.text=@"加载更多..";
+        }
+        
+        return cell;
+        
+        // cell.accessoryType = UITableViewCellAccessoryNone;
+    }else {
+        
+        NSString *idd=[NSString stringWithFormat:@"cell%d",indexPath.row];
+         
+         PostListTableCell *cell = [tableView dequeueReusableCellWithIdentifier:idd];
+        if (nil==cell) {
+            cell = [[PostListTableCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:idd];
+            NSDictionary *post=[posts objectAtIndex:[indexPath row]];
+            NSString *msg=[post objectForKey:@"message"];
+            //设置头像
+            NSURL *avatar_url = [NSURL URLWithString:[post objectForKey:@"avatar"]];
+            [cell.avatar setImageWithURL:avatar_url];
+            //设置内容块大小
+            CGSize lable_size=[self countMassage:msg sizeForIndex:indexPath];
+            [cell.message setFrame:CGRectMake(80, 20, 200.0f, lable_size.height)];
+            [cell.messageBgView setFrame:CGRectMake(50, 10, 250.0f, lable_size.height+20.0f)];
+            cell.message.text=msg;
+            //作者+时间戳
+            [cell.author setFrame:CGRectMake(80,lable_size.height+30.0f,200.0f,20.0f)];
+            cell.author.text=[NSString stringWithFormat:@"%@    %@",[post objectForKey:@"author"],[post objectForKey:@"date"]];
+            //回复按钮
+            [cell.reply setFrame:CGRectMake(266,lable_size.height+30.0f,20.0f,20.0f)];
+            
+        }else{
+            NSLog(@"custormCell from deque%d",[indexPath row]);
+        }
+         
+         return cell;
+
         
     }
+
+    
+    
+    
+    
+        
+    
     
     // Configure the cell...
     
-    return cell;
+    
 }
 
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    
-    NSDictionary *post=[self.posts objectAtIndex:[indexPath row]];
-    NSString *msg=[post objectForKey:@"message"];
-    return [self countMassage:msg sizeForIndex:indexPath].height+60.0f;
+    if ([indexPath row]==[posts count]) {
+        return 40.0f;
+    }else{
+        
+        NSDictionary *post=[posts objectAtIndex:[indexPath row]];
+        NSString *msg=[post objectForKey:@"message"];
+        return [self countMassage:msg sizeForIndex:indexPath].height+60.0f;
+    }
+
+
 };
 
 
@@ -124,96 +191,119 @@
 }
 
 
--(void) remoteGetPostList{
+
+
+
+
+
+
+// 加载更多数据，此处可以换成从远程服务器获取最新的_size条数据
+-(void)loadMore
+{
     
-    //1 读取远程板块数据
+    [_hud show:YES];
+    NSMutableArray *more;
+    more = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
+    [self.hud show:YES];
+    //NSLog(@"current_page:%d",_current_page);
+    //读取远程板块数据
     NSString *BaseURLString=BASE_URL;
-    NSString *weatherUrl = [NSString stringWithFormat:@"%@?c=forum&a=forum_post_list&tid=%@", BaseURLString,self.tid];
-    NSURL *url = [NSURL URLWithString:weatherUrl];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    NSString *url = [NSString stringWithFormat:@"%@?c=forum&a=forum_post_list&tid=%@&page=%d", BaseURLString,self.tid,_next_page];
+    // 把远程数据转成NSDictionary的数据
+    NSDictionary *data = [NSDictionary dictionaryWithContentsOfURLString:url];
+    if (nil!=data) {
+        [self.hud hide:YES];
+        NSArray *posts_data=[data objectForKey:@"data"];
+        for (int i=0; i<[posts_data count]; i++) {
+            [more addObject:[posts_data objectAtIndex:i]];
+        }
+        
+        
+        if([posts_data count]>1){
+            NSDictionary *mypager=[data objectForKey:@"pager"];
+            _next_page=[[mypager objectForKey:@"next_page"] intValue];
+            _current_page=[[mypager objectForKey:@"current_page"] intValue];
+            _total_page=[[mypager objectForKey:@"total_page"] intValue];
+            _page_size=[[mypager objectForKey:@"page_size"] intValue];
+        
+        }else{
+            _next_page=1;
+            _current_page=1;
+            _total_page=1;
+            _page_size=1;
+        }
+
+        [self appendTableWith:more];
+        
+    }
+
+   
     
-    // 2
-    AFJSONRequestOperation *operation =
-    [AFJSONRequestOperation JSONRequestOperationWithRequest:request
-     // 3
-                                                    success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-                                                        self.posts = (NSDictionary *)JSON;
-                                                        [self.postTableView reloadData];
-                                                    }
-     // 4
-                                                    failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-                                                        UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Error Retrieving Weather"
-                                                                                                     message:[NSString stringWithFormat:@"%@",error]
-                                                                                                    delegate:nil
-                                                                                           cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                                                        [av show];
-                                                    }];
+}
+
+// 添加数据到当前TableView中去
+-(void) appendTableWith:(NSMutableArray *)data
+{
+    // 添加到当前的数据源中
+    for (int i=0; i<[data count]; i++) {
+        [posts addObject:[data objectAtIndex:i]];
+    }
+    //[self.tableView reloadData];
+    NSMutableArray *insertIndexPaths = [NSMutableArray arrayWithCapacity:[data count]];
+    for(int ind =0;ind<[data count];ind++)
+    {
+        NSIndexPath *newPath = [NSIndexPath indexPathForRow:[posts indexOfObject:[data objectAtIndex:ind]] inSection:0];
+        [insertIndexPaths addObject:newPath];
+    }
+    [self.tableView insertRowsAtIndexPaths:insertIndexPaths withRowAnimation:UITableViewRowAnimationBottom];
+    [self.tableView reloadData];
     
-    // 5
-    [operation start];
+    // 选到当前的行数
+    int begin = [posts count];//(_current_page-1)*_page_size;
+    //NSLog(@"bging:%d",begin);
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:begin inSection:0];
+    [self.tableView selectRowAtIndexPath:indexPath  animated:YES scrollPosition:UITableViewScrollPositionTop];
     
 }
 
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
 
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
 
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
 
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
 
-/*
-#pragma mark - Table view delegate
 
-// In a xib-based application, navigation from a table can be handled in -tableView:didSelectRowAtIndexPath:
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Navigation logic may go here, for example:
-    // Create the next view controller.
-    <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-
-    // Pass the selected object to the new view controller.
     
-    // Push the view controller.
-    [self.navigationController pushViewController:detailViewController animated:YES];
+    if([indexPath row] == [posts count])
+    {
+        
+        if (_current_page<_total_page) {
+             [self loadMore];
+        }
+        
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        //[self remoteGetPostList];
+
+    }
 }
- 
- */
+
+
+
 
 - (void)dealloc {
     [_postTableView release];
+    [_hud release];
+    //[_footer release];
     [super dealloc];
+}
+
+
+- (IBAction)moreButton:(id)sender {
+    [self performSelectorInBackground:@selector(loadMore) withObject:nil];
+    //[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+
+    
 }
 @end

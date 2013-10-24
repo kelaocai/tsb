@@ -7,22 +7,37 @@
 		<key>Pods-AFNetworking.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>1</integer>
+			<integer>0</integer>
 		</dict>
-		<key>Pods-SDWebImage.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>2</integer>
-		</dict>
-		<key>Pods.xcscheme</key>
+		<key>Pods-MBProgressHUD.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>3</integer>
 		</dict>
+		<key>Pods-SDWebImage.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
+		<key>Pods.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>2</integer>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>0DB0C5A382334252A450B11E</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>39DA290B088E454EBBC2DB57</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>572F026839BB4587907E3191</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -42,7 +57,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>BBAD571A0CDD4877AF299335</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>BF261F11AF1C4C9BA05A2DB5</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>F2959E751AE9408A93D5CFB3</key>
 		<dict>
 			<key>primary</key>
 			<true/>

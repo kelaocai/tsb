@@ -5,7 +5,7 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>C21CE1DE-297C-4CDF-93BD-D99DF37E8097</string>
+	<string>44A76DA5-671C-4AB1-8DEE-B22BAD9E69CE</string>
 	<key>IDESourceControlProjectName</key>
 	<string>ipapp</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
@@ -14,11 +14,11 @@
 		<string>https://github.com/kelaocai/tsb.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>app/ipapp/ipapp.xcworkspace</string>
+	<string>app/ipapp/ipapp.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>BF7D7F6E-53FA-427D-9F35-B814D74C6C91</key>
-		<string>../../..</string>
+		<string>../../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/kelaocai/tsb.git</string>

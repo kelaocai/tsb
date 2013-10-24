@@ -9,6 +9,6 @@
 #ifndef ipapp_common_h
 #define ipapp_common_h
 
-#define BASE_URL @"http://tongshibang.com/app_s/";
+#define BASE_URL @"http://localhost/app_s/";
 
 #endif

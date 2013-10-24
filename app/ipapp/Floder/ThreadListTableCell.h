@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
+
 @interface ThreadListTableCell : UITableViewCell
 @property (strong, nonatomic) UIImageView *logo,*lastReplyAvtar;
 @property (strong, nonatomic) UILabel *title, *author,*time,*comment,*lastPostMessage;

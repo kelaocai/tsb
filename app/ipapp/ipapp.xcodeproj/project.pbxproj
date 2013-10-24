@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		02098B0E1817BCC5001D0B51 /* NSDictionary+Json.m in Sources */ = {isa = PBXBuildFile; fileRef = 02098B0D1817BCC5001D0B51 /* NSDictionary+Json.m */; };
+		02098B111817ED98001D0B51 /* testTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02098B101817ED98001D0B51 /* testTableViewController.m */; };
 		020D98F417E8A42800F8E1C2 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 020D98F317E8A42800F8E1C2 /* MainWindow.xib */; };
 		020D98FC17E978C400F8E1C2 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 020D98FB17E978C400F8E1C2 /* QuartzCore.framework */; };
 		020D990417E9796500F8E1C2 /* FolderCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = 020D98FF17E9796500F8E1C2 /* FolderCoverView.m */; };
@@ -44,7 +46,6 @@
 		02AA3CF017DA2ED200EC125D /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 02AA3CEF17DA2ED200EC125D /* Default@2x.png */; };
 		02AA3CF217DA2ED200EC125D /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 02AA3CF117DA2ED200EC125D /* Default-568h@2x.png */; };
 		02AE0F3E17FAF9FE0048DD6E /* PostListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02AE0F3C17FAF9FE0048DD6E /* PostListViewController.m */; };
-		02AE0F3F17FAF9FE0048DD6E /* PostListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02AE0F3D17FAF9FE0048DD6E /* PostListViewController.xib */; };
 		02E3649617F7DAF60050FF31 /* cate_bed.png in Resources */ = {isa = PBXBuildFile; fileRef = 02E3649517F7DAF60050FF31 /* cate_bed.png */; };
 		02E3649A17F859330050FF31 /* ThreadListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02E3649817F859330050FF31 /* ThreadListViewController.m */; };
 		02E3649B17F859330050FF31 /* ThreadListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02E3649917F859330050FF31 /* ThreadListViewController.xib */; };
@@ -52,10 +53,20 @@
 		02E364A117F882BF0050FF31 /* icon_comment.png in Resources */ = {isa = PBXBuildFile; fileRef = 02E3649F17F882BF0050FF31 /* icon_comment.png */; };
 		02E364A217F882BF0050FF31 /* icon_clock.png in Resources */ = {isa = PBXBuildFile; fileRef = 02E364A017F882BF0050FF31 /* icon_clock.png */; };
 		02E364A417F891990050FF31 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 02E364A317F891990050FF31 /* logo.png */; };
+		02ECA3911816579800F6C406 /* MJRefresh.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 02ECA3891816579800F6C406 /* MJRefresh.bundle */; };
+		02ECA3921816579800F6C406 /* MJRefreshBaseView.m in Sources */ = {isa = PBXBuildFile; fileRef = 02ECA38C1816579800F6C406 /* MJRefreshBaseView.m */; };
+		02ECA3931816579800F6C406 /* MJRefreshFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 02ECA38E1816579800F6C406 /* MJRefreshFooterView.m */; };
+		02ECA3941816579800F6C406 /* MJRefreshHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 02ECA3901816579800F6C406 /* MJRefreshHeaderView.m */; };
+		02ECA39618165A4000F6C406 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02ECA39518165A4000F6C406 /* AudioToolbox.framework */; };
+		02ECA39818165A4800F6C406 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02ECA39718165A4800F6C406 /* AVFoundation.framework */; };
 		2E5A7AD9D5894CDCAA70B055 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CC6FC6EAAC834023BB5E3434 /* libPods.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		02098B0C1817BCC5001D0B51 /* NSDictionary+Json.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+Json.h"; sourceTree = "<group>"; };
+		02098B0D1817BCC5001D0B51 /* NSDictionary+Json.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+Json.m"; sourceTree = "<group>"; };
+		02098B0F1817ED98001D0B51 /* testTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testTableViewController.h; sourceTree = "<group>"; };
+		02098B101817ED98001D0B51 /* testTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = testTableViewController.m; sourceTree = "<group>"; };
 		020D98F317E8A42800F8E1C2 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 		020D98FB17E978C400F8E1C2 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		020D98FE17E9796500F8E1C2 /* FolderCoverView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FolderCoverView.h; sourceTree = "<group>"; };
@@ -107,7 +118,6 @@
 		02AE0F3717FAF5070048DD6E /* common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
 		02AE0F3B17FAF9FE0048DD6E /* PostListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostListViewController.h; sourceTree = "<group>"; };
 		02AE0F3C17FAF9FE0048DD6E /* PostListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostListViewController.m; sourceTree = "<group>"; };
-		02AE0F3D17FAF9FE0048DD6E /* PostListViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PostListViewController.xib; sourceTree = "<group>"; };
 		02E3649517F7DAF60050FF31 /* cate_bed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cate_bed.png; sourceTree = "<group>"; };
 		02E3649717F859330050FF31 /* ThreadListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadListViewController.h; sourceTree = "<group>"; };
 		02E3649817F859330050FF31 /* ThreadListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreadListViewController.m; sourceTree = "<group>"; };
@@ -117,6 +127,16 @@
 		02E3649F17F882BF0050FF31 /* icon_comment.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_comment.png; sourceTree = "<group>"; };
 		02E364A017F882BF0050FF31 /* icon_clock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_clock.png; sourceTree = "<group>"; };
 		02E364A317F891990050FF31 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
+		02ECA3891816579800F6C406 /* MJRefresh.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = MJRefresh.bundle; sourceTree = "<group>"; };
+		02ECA38A1816579800F6C406 /* MJRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJRefresh.h; sourceTree = "<group>"; };
+		02ECA38B1816579800F6C406 /* MJRefreshBaseView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJRefreshBaseView.h; sourceTree = "<group>"; };
+		02ECA38C1816579800F6C406 /* MJRefreshBaseView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MJRefreshBaseView.m; sourceTree = "<group>"; };
+		02ECA38D1816579800F6C406 /* MJRefreshFooterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJRefreshFooterView.h; sourceTree = "<group>"; };
+		02ECA38E1816579800F6C406 /* MJRefreshFooterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MJRefreshFooterView.m; sourceTree = "<group>"; };
+		02ECA38F1816579800F6C406 /* MJRefreshHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJRefreshHeaderView.h; sourceTree = "<group>"; };
+		02ECA3901816579800F6C406 /* MJRefreshHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MJRefreshHeaderView.m; sourceTree = "<group>"; };
+		02ECA39518165A4000F6C406 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		02ECA39718165A4800F6C406 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		CC6FC6EAAC834023BB5E3434 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F98B339802ED4CFEA904D540 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -126,6 +146,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				02ECA39818165A4800F6C406 /* AVFoundation.framework in Frameworks */,
+				02ECA39618165A4000F6C406 /* AudioToolbox.framework in Frameworks */,
 				020D98FC17E978C400F8E1C2 /* QuartzCore.framework in Frameworks */,
 				02AA3CDC17DA2ED200EC125D /* UIKit.framework in Frameworks */,
 				02AA3CDE17DA2ED200EC125D /* Foundation.framework in Frameworks */,
@@ -219,6 +241,8 @@
 		02AA3CDA17DA2ED200EC125D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				02ECA39718165A4800F6C406 /* AVFoundation.framework */,
+				02ECA39518165A4000F6C406 /* AudioToolbox.framework */,
 				020D98FB17E978C400F8E1C2 /* QuartzCore.framework */,
 				02AA3CDB17DA2ED200EC125D /* UIKit.framework */,
 				02AA3CDD17DA2ED200EC125D /* Foundation.framework */,
@@ -231,6 +255,7 @@
 		02AA3CE117DA2ED200EC125D /* ipapp */ = {
 			isa = PBXGroup;
 			children = (
+				02ECA3881816579800F6C406 /* MJRefresh */,
 				020D98FD17E9796500F8E1C2 /* Floder */,
 				02AA3CEA17DA2ED200EC125D /* AppDelegate.h */,
 				02AA3CEB17DA2ED200EC125D /* AppDelegate.m */,
@@ -241,14 +266,17 @@
 				020D990917E979BB00F8E1C2 /* CateViewController.xib */,
 				02A3B24817E9B6AE00205D10 /* SubCateViewController.h */,
 				02A3B24917E9B6AE00205D10 /* SubCateViewController.m */,
+				02098B0C1817BCC5001D0B51 /* NSDictionary+Json.h */,
+				02098B0D1817BCC5001D0B51 /* NSDictionary+Json.m */,
 				02A3B24A17E9B6AE00205D10 /* SubCateViewController.xib */,
 				02E3649717F859330050FF31 /* ThreadListViewController.h */,
 				02E3649817F859330050FF31 /* ThreadListViewController.m */,
+				02098B0F1817ED98001D0B51 /* testTableViewController.h */,
+				02098B101817ED98001D0B51 /* testTableViewController.m */,
 				02E3649917F859330050FF31 /* ThreadListViewController.xib */,
 				02AE0F3717FAF5070048DD6E /* common.h */,
 				02AE0F3B17FAF9FE0048DD6E /* PostListViewController.h */,
 				02AE0F3C17FAF9FE0048DD6E /* PostListViewController.m */,
-				02AE0F3D17FAF9FE0048DD6E /* PostListViewController.xib */,
 			);
 			path = ipapp;
 			sourceTree = "<group>";
@@ -269,6 +297,21 @@
 				02A3B24D17E9C8B900205D10 /* cates.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		02ECA3881816579800F6C406 /* MJRefresh */ = {
+			isa = PBXGroup;
+			children = (
+				02ECA3891816579800F6C406 /* MJRefresh.bundle */,
+				02ECA38A1816579800F6C406 /* MJRefresh.h */,
+				02ECA38B1816579800F6C406 /* MJRefreshBaseView.h */,
+				02ECA38C1816579800F6C406 /* MJRefreshBaseView.m */,
+				02ECA38D1816579800F6C406 /* MJRefreshFooterView.h */,
+				02ECA38E1816579800F6C406 /* MJRefreshFooterView.m */,
+				02ECA38F1816579800F6C406 /* MJRefreshHeaderView.h */,
+				02ECA3901816579800F6C406 /* MJRefreshHeaderView.m */,
+			);
+			path = MJRefresh;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -335,7 +378,6 @@
 				02E3649617F7DAF60050FF31 /* cate_bed.png in Resources */,
 				0223A1B01811387000E2D957 /* background.png in Resources */,
 				02A3B24717E9A96600205D10 /* tmall_bg_furley.png in Resources */,
-				02AE0F3F17FAF9FE0048DD6E /* PostListViewController.xib in Resources */,
 				0223A1B318113AEA00E2D957 /* pop_bg@2x.png in Resources */,
 				028594EE1810E7B10000B4AC /* msg_bg.png in Resources */,
 				02A3B24C17E9B6AF00205D10 /* SubCateViewController.xib in Resources */,
@@ -347,6 +389,7 @@
 				02A3B25617E9E42800205D10 /* cate_bd.png in Resources */,
 				02E3649B17F859330050FF31 /* ThreadListViewController.xib in Resources */,
 				02A3B25717E9E42800205D10 /* cate_bd@2x.png in Resources */,
+				02ECA3911816579800F6C406 /* MJRefresh.bundle in Resources */,
 				02E364A117F882BF0050FF31 /* icon_comment.png in Resources */,
 				0223A1B71811547C00E2D957 /* pop_bg.png in Resources */,
 				0223A1B11811387000E2D957 /* background@2x.png in Resources */,
@@ -400,12 +443,17 @@
 				02AA3CEC17DA2ED200EC125D /* AppDelegate.m in Sources */,
 				020D990417E9796500F8E1C2 /* FolderCoverView.m in Sources */,
 				020D990517E9796500F8E1C2 /* UIFolderTableView.m in Sources */,
+				02098B111817ED98001D0B51 /* testTableViewController.m in Sources */,
 				020D990617E9796500F8E1C2 /* UIView+screenshot.m in Sources */,
 				020D990A17E979BB00F8E1C2 /* CateViewController.m in Sources */,
 				020D991117E981A800F8E1C2 /* CateTableCell.m in Sources */,
 				02AE0F3E17FAF9FE0048DD6E /* PostListViewController.m in Sources */,
 				020D991217E981A800F8E1C2 /* HZNavigationBar.m in Sources */,
+				02ECA3941816579800F6C406 /* MJRefreshHeaderView.m in Sources */,
+				02ECA3921816579800F6C406 /* MJRefreshBaseView.m in Sources */,
 				02E3649E17F8720D0050FF31 /* ThreadListTableCell.m in Sources */,
+				02ECA3931816579800F6C406 /* MJRefreshFooterView.m in Sources */,
+				02098B0E1817BCC5001D0B51 /* NSDictionary+Json.m in Sources */,
 				02A3B24B17E9B6AF00205D10 /* SubCateViewController.m in Sources */,
 				029C49F9180E8F3000A92166 /* PostListTableCell.m in Sources */,
 			);

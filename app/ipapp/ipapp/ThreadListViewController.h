@@ -9,9 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "AFNetworking.h"
 #import "ThreadListTableCell.h"
-@interface ThreadListViewController : UITableViewController
+#import "MBProgressHUD.h"
+@interface ThreadListViewController : UITableViewController <MBProgressHUDDelegate>
 @property(strong,nonatomic)NSArray *threads;
 @property (strong,nonatomic)NSString *fid;
+@property (strong, nonatomic) MBProgressHUD *hud;
 @property (retain, nonatomic) IBOutlet UITableView *postTableView;
 
 @end

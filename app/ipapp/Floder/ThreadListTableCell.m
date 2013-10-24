@@ -13,8 +13,13 @@
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+   
+    
     if (self) {
         // Initialization code
+        
+        
+        
         self.logo = [[[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 36, 36)] autorelease];
         self.logo.backgroundColor = [UIColor clearColor];
         self.logo.layer.cornerRadius = 8;
