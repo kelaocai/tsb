@@ -96,21 +96,14 @@
 {
     
 
-    
-    
-    
-    // 如果是最后一行，则显示加载更多，或是提示已加载完全
-    
-    //NSLog(@"indexPath:%d,post_count:%d",[indexPath row],[posts count]);
-    if([indexPath row] == ([posts count])) {
+     if([indexPath row] == ([posts count])) {
         
         static NSString *idd=@"cell";
-        //NSString *identifier=[NSString stringWithFormat:@"cell%d",indexPath.row];
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:idd];
         if (cell==nil) {
             cell=[[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:idd] autorelease];
         }else{
-            NSLog(@"from deque%d",[indexPath row]);
+            //NSLog(@"from deque%d",[indexPath row]);
         }
 
         
@@ -122,7 +115,6 @@
         
         return cell;
         
-        // cell.accessoryType = UITableViewCellAccessoryNone;
     }else {
         
         NSString *idd=[NSString stringWithFormat:@"cell%d",indexPath.row];
@@ -147,22 +139,13 @@
             [cell.reply setFrame:CGRectMake(266,lable_size.height+30.0f,20.0f,20.0f)];
             
         }else{
-            NSLog(@"custormCell from deque%d",[indexPath row]);
+            //NSLog(@"custormCell from deque%d",[indexPath row]);
         }
          
          return cell;
 
         
     }
-
-    
-    
-    
-    
-        
-    
-    
-    // Configure the cell...
     
     
 }
@@ -300,10 +283,5 @@
 }
 
 
-- (IBAction)moreButton:(id)sender {
-    [self performSelectorInBackground:@selector(loadMore) withObject:nil];
-    //[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 
-    
-}
 @end

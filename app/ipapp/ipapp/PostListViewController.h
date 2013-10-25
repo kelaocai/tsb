@@ -27,7 +27,7 @@
 @property (strong,nonatomic)NSMutableArray *_posts;
 @property (strong,nonatomic)NSDictionary *pager;
 @property (strong, nonatomic) MBProgressHUD *hud;
-@property (retain, nonatomic) IBOutlet UITableView *postTableView;
+
 
 - (IBAction)moreButton:(id)sender;
 
