@@ -22,8 +22,10 @@ class ucc extends spController {
 				setcookie('Example_auth', uc_authcode($uid . "\t" . $username, 'ENCODE'));
 				//生成同步登录的代码
 				$ucsynlogin = uc_user_synlogin($uid);
-				echo '登录成功' . $ucsynlogin . '<br><a href="' . $_SERVER['PHP_SELF'] . '">继续</a>';
-				exit ;
+				//echo '登录成功' . $ucsynlogin . '<br><a href="' . $_SERVER['PHP_SELF'] . '">继续</a>';
+				echo empty($ucsynlogin);
+				echo 'ok'.$ucsynlogin;
+				//exit ;
 			} elseif ($uid == -1) {
 				echo '用户不存在,或者被删除';
 			} elseif ($uid == -2) {

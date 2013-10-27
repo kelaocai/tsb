@@ -23,3 +23,7 @@ app/ipapp/ipapp.xcworkspace/xcuserdata/kelaocai.xcuserdatad/UserInterfaceState.x
 bbs/data/cache/
 
 *.xcbkptlist
+
+app_s/uc_client/data/cache/apps.php
+
+app_s/uc_client/data/cache/settings.php
