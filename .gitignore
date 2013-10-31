@@ -25,3 +25,4 @@ ask/install/index.php
 ask/system/config/database.php
 ask/tmp
 ask/cache
+app_s/include/config.php
