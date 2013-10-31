@@ -24,3 +24,4 @@ app_s/include/config.php
 ask/install/index.php
 ask/system/config/database.php
 ask/tmp
+ask/cache
