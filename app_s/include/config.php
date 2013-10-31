@@ -44,5 +44,3 @@ $dbcharset = 'utf8';			// MySQL 字符集, 可选 'gbk', 'big5', 'utf8', 'latin1
 //同步登录 Cookie 设置
 $cookiedomain = ''; 			// cookie 作用域
 $cookiepath = '/';			// cookie 作用路径
-
-?>
