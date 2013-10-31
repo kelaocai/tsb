@@ -21,4 +21,5 @@ bbs/data/cache/
 *.xcbkptlist
 app_s/uc_client/data/cache/
 app_s/include/config.php
+ask/install/index.php
 
