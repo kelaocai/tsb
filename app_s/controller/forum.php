@@ -16,10 +16,12 @@ class forum extends spController {
 
 	//获板块取主题列表
 	function forum_thread_list() {
+		$size=10;
 		$fid = $this -> spArgs('fid');
+		$page=$this->spArgs('page',1);
 		$ob = spClass('forum_thread');
 		$condition = array('fid' => $fid);
-		$rs_thread_list = $ob ->spLinker()-> findAll($condition, 'dateline DESC', 'tid,author,authorid,subject,replies,dateline');
+		$rs_thread_list = $ob ->spLinker()->spPager($page,$size)-> findAll($condition, 'dateline DESC', 'tid,author,authorid,subject,replies,dateline');
 		$i = 0;
 		$base_url = "http://".$_SERVER['HTTP_HOST']."/bbs/uc_server/data/avatar/";
 		foreach ($rs_thread_list as $item) {
@@ -29,14 +31,18 @@ class forum extends spController {
 			$rs_thread_list[$i]['last_reply']['avatar'] = $base_url . $this -> get_avatar($item['last_reply']['authorid']);
 			$i++;
 		}
+		//获取分页数据
+		$pager=$ob->spLinker()->spPager()->getPager();
+		$rs=array('pager'=>$pager,'data'=>$rs_thread_list);
+
 		header('Content-type:text/json');
-		echo json_encode($rs_thread_list);
-		//dump($rs_thread_list);
+		echo json_encode($rs);
+		//dump($rs);
 	}
 
 	//获取主题帖子列表
 	function forum_post_list() {
-		$size=2;
+		$size=10;
 		$tid = $this -> spArgs('tid');
 		$page=$this->spArgs('page',1);
 		$ob = spClass('forum_post');

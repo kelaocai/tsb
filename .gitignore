@@ -16,14 +16,8 @@ bbs/data/cache/
 bbs/data/template/
 bbs/data/threadcache/
 bbs/uc_client/data/cache/
-
-
 app/ipapp/ipapp.xcworkspace/xcuserdata/kelaocai.xcuserdatad/UserInterfaceState.xcuserstate
-
 bbs/data/cache/
-
 *.xcbkptlist
+app_s/uc_client/data/cache/
 
-app_s/uc_client/data/cache/apps.php
-
-app_s/uc_client/data/cache/settings.php

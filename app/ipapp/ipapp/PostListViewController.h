@@ -13,13 +13,13 @@
 
 @interface PostListViewController : UITableViewController <MBProgressHUDDelegate>
 {
-    // 当前的页数
+    //当前的页数
     int _current_page;
     //下一页
     int _next_page;
     //总页数
     int _total_page;
-    // 每页大小
+    //每页大小
     int _page_size;
 
 }
@@ -27,8 +27,5 @@
 @property (strong,nonatomic)NSMutableArray *_posts;
 @property (strong,nonatomic)NSDictionary *pager;
 @property (strong, nonatomic) MBProgressHUD *hud;
-
-
-- (IBAction)moreButton:(id)sender;
 
 @end

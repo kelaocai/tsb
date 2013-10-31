@@ -43,14 +43,10 @@
     
     _current_page=1;
     _next_page=1;
-    _page_size=2;
-    
-    
+    _page_size=1;
     posts=[[NSMutableArray alloc] initWithCapacity:10];
 
 
-    
-    
     //进度条
     self.hud=[[MBProgressHUD alloc] initWithView:self.tableView];
     [self.view addSubview:self.hud];
@@ -180,7 +176,7 @@
 
 
 
-// 加载更多数据，此处可以换成从远程服务器获取最新的_size条数据
+// 加载更多数据
 -(void)loadMore
 {
     
@@ -197,18 +193,20 @@
     if (nil!=data) {
         [self.hud hide:YES];
         NSArray *posts_data=[data objectForKey:@"data"];
-        for (int i=0; i<[posts_data count]; i++) {
-            [more addObject:[posts_data objectAtIndex:i]];
+        if ((NSNull *)posts_data!=[NSNull null]) {
+            for (int i=0; i<[posts_data count]; i++) {
+                [more addObject:[posts_data objectAtIndex:i]];
+            }
         }
         
         
-        if([posts_data count]>1){
-            NSDictionary *mypager=[data objectForKey:@"pager"];
+        //更新分页数据
+        NSDictionary *mypager=[data objectForKey:@"pager"];
+        if ((NSNull*) mypager!=[NSNull null]) {
             _next_page=[[mypager objectForKey:@"next_page"] intValue];
             _current_page=[[mypager objectForKey:@"current_page"] intValue];
             _total_page=[[mypager objectForKey:@"total_page"] intValue];
             _page_size=[[mypager objectForKey:@"page_size"] intValue];
-        
         }else{
             _next_page=1;
             _current_page=1;
@@ -276,7 +274,7 @@
 
 
 - (void)dealloc {
-    [_postTableView release];
+    
     [_hud release];
     //[_footer release];
     [super dealloc];
