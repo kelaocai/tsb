@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		02098B0E1817BCC5001D0B51 /* NSDictionary+Json.m in Sources */ = {isa = PBXBuildFile; fileRef = 02098B0D1817BCC5001D0B51 /* NSDictionary+Json.m */; };
-		02098B111817ED98001D0B51 /* testTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02098B101817ED98001D0B51 /* testTableViewController.m */; };
 		020D98F417E8A42800F8E1C2 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 020D98F317E8A42800F8E1C2 /* MainWindow.xib */; };
 		020D98FC17E978C400F8E1C2 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 020D98FB17E978C400F8E1C2 /* QuartzCore.framework */; };
 		020D990417E9796500F8E1C2 /* FolderCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = 020D98FF17E9796500F8E1C2 /* FolderCoverView.m */; };
@@ -65,8 +64,6 @@
 /* Begin PBXFileReference section */
 		02098B0C1817BCC5001D0B51 /* NSDictionary+Json.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+Json.h"; sourceTree = "<group>"; };
 		02098B0D1817BCC5001D0B51 /* NSDictionary+Json.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+Json.m"; sourceTree = "<group>"; };
-		02098B0F1817ED98001D0B51 /* testTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testTableViewController.h; sourceTree = "<group>"; };
-		02098B101817ED98001D0B51 /* testTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = testTableViewController.m; sourceTree = "<group>"; };
 		020D98F317E8A42800F8E1C2 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 		020D98FB17E978C400F8E1C2 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		020D98FE17E9796500F8E1C2 /* FolderCoverView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FolderCoverView.h; sourceTree = "<group>"; };
@@ -271,8 +268,6 @@
 				02A3B24A17E9B6AE00205D10 /* SubCateViewController.xib */,
 				02E3649717F859330050FF31 /* ThreadListViewController.h */,
 				02E3649817F859330050FF31 /* ThreadListViewController.m */,
-				02098B0F1817ED98001D0B51 /* testTableViewController.h */,
-				02098B101817ED98001D0B51 /* testTableViewController.m */,
 				02E3649917F859330050FF31 /* ThreadListViewController.xib */,
 				02AE0F3717FAF5070048DD6E /* common.h */,
 				02AE0F3B17FAF9FE0048DD6E /* PostListViewController.h */,
@@ -443,7 +438,6 @@
 				02AA3CEC17DA2ED200EC125D /* AppDelegate.m in Sources */,
 				020D990417E9796500F8E1C2 /* FolderCoverView.m in Sources */,
 				020D990517E9796500F8E1C2 /* UIFolderTableView.m in Sources */,
-				02098B111817ED98001D0B51 /* testTableViewController.m in Sources */,
 				020D990617E9796500F8E1C2 /* UIView+screenshot.m in Sources */,
 				020D990A17E979BB00F8E1C2 /* CateViewController.m in Sources */,
 				020D991117E981A800F8E1C2 /* CateTableCell.m in Sources */,
