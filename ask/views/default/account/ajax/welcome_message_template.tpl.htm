@@ -32,8 +32,10 @@
 					<div class="pull-left">
 						<ul>
 							<li>
-								<?php _e('一句话介绍'); ?><br />
-								<input type="text" placeholder="<?php _e('如：80后IT男..'); ?>" id="welcome_signature" value="<?php if ($this->user_info['signature']) { echo $this->user_info['signature']; } ?>" name="signature" />
+								<!-- <?php _e('一句话介绍'); ?><br />
+								<input type="text" placeholder="<?php _e('如：80后IT男..'); ?>" id="welcome_signature" value="<?php if ($this->user_info['signature']) { echo $this->user_info['signature']; } ?>" name="signature" /> -->
+								<?php _e('常用邮箱（重要！）'); ?><br />
+                                <input type="text" placeholder="<?php _e('常用邮箱将用来找回密码等'); ?>" name="email" />
 							</li>
 							<li>
 								<?php _e('性别'); ?>:

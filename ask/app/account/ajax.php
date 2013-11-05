@@ -29,6 +29,7 @@ class ajax extends AWS_CONTROLLER
 		$rule_action['actions'] = array(
 			'check_username',
 			'check_email',
+			'check_mobile',
 			'register_process',
 			'login_process',
 			'register_agreement',
@@ -50,6 +51,17 @@ class ajax extends AWS_CONTROLLER
 	{
 		if ($this->model('account')->check_username_char($_GET['username']))
 		{
+			switch(get_setting('username_rule'))
+		{
+			default:{
+				H::ajax_json_output(AWS_APP::RSM(null, -1, AWS_APP::lang()->_t('用户名不符合规则')));
+			}
+			break;
+
+		}	
+				
+				
+				
 			H::ajax_json_output(AWS_APP::RSM(null, -1, AWS_APP::lang()->_t('用户名不符合规则')));
 		}
 		
@@ -59,6 +71,24 @@ class ajax extends AWS_CONTROLLER
 		}
 		
 		H::ajax_json_output(AWS_APP::RSM(null, 1, AWS_APP::lang()->_t('该用户名可以使用')));
+	}
+	
+	
+	public function check_mobile_action()
+	{
+		if (!$_GET['mobile'])
+		{
+			H::ajax_json_output(AWS_APP::RSM(null, -1, AWS_APP::lang()->_t('请输入手机号码')));
+		}
+		
+		if ($this->model('account')->check_mobile($_GET['mobile']))
+		{
+			H::ajax_json_output(AWS_APP::RSM(null, -1, AWS_APP::lang()->_t('手机号码已被使用')));
+		}else{
+		
+		H::ajax_json_output(AWS_APP::RSM(null, 1, AWS_APP::lang()->_t('该手机号码可以使用')));
+		}
+		
 	}
 	
 	public function check_email_action()
@@ -119,10 +149,25 @@ class ajax extends AWS_CONTROLLER
 			H::ajax_json_output(AWS_APP::RSM(null, -1, AWS_APP::lang()->_t('用户名中包含敏感词或系统保留字')));
 		}
 		
+		if (trim($_POST['mobile']) == '')
+		{
+			H::ajax_json_output(AWS_APP::RSM(null, -1, AWS_APP::lang()->_t('请输入手机号码')));
+		}
+		else if ($this->model('account')->check_mobile_char($_POST['mobile'])){
+			H::ajax_json_output(AWS_APP::RSM(null, -1, AWS_APP::lang()->_t('请输入11位有效手机号码')));
+		}
+		else if ($this->model('account')->check_mobile($_POST['mobile']))
+		{
+			H::ajax_json_output(AWS_APP::RSM(null, -1, AWS_APP::lang()->_t('手机号码已被使用')));
+		}
+		
+		//注册环节暂时不提供邮箱
+		/*
 		if ($this->model('account')->check_email($_POST['email']))
 		{
 			H::ajax_json_output(AWS_APP::RSM(null, -1, AWS_APP::lang()->_t('E-Mail 已经被使用, 或格式不正确')));
 		}
+		 */
 		
 		if (strlen($_POST['password']) < 6 OR strlen($_POST['password']) > 16)
 		{
@@ -142,11 +187,22 @@ class ajax extends AWS_CONTROLLER
 		
 		if (get_setting('ucenter_enabled') == 'Y')
 		{
-			$result = $this->model('ucenter')->register($_POST['user_name'], $_POST['password'], $_POST['email'], $email_valid);
+			//ucenter提交注册信息	
+			//手机用户简化注册流程，注册初期不用提供email信息，先置系统默认值 default@tongshibang.com	
+			//$result = $this->model('ucenter')->register($_POST['user_name'], $_POST['password'], $_POST['email'], $email_valid);
+			$result = $this->model('ucenter')->register($_POST['user_name'], $_POST['password'], 'default@tongshibang.com', $email_valid);
 			
 			if (is_array($result))
 			{				
 				$uid = $result['user_info']['uid'];
+				//预留：补充一下手机号码信息
+				$this->model('account')->update_users_fields(array(
+						'mobile' => $_POST['mobile']
+					), $uid);
+				//清除uc_center注册要求的默认email信息
+				$this->model('account')->update_users_fields(array(
+						'email' => ''
+					), $uid);	
 			}
 			else
 			{
@@ -155,7 +211,10 @@ class ajax extends AWS_CONTROLLER
 		}
 		else
 		{
-			$uid = $this->model('account')->user_register($_POST['user_name'], $_POST['password'], $_POST['email'], $email_valid);
+			//提交注册信息	
+			//手机用户简化注册流程，注册初期不用提供email信息，先置系统默认值 default@tongshibang.com
+			// $uid = $this->model('account')->user_register($_POST['user_name'], $_POST['password'], $_POST['email'], $email_valid);
+			$uid = $this->model('account')->user_register($_POST['user_name'], $_POST['password'],'default@tongshibang.com',  $email_valid);
 		}
 		
 		if ($uid)
@@ -1041,8 +1100,9 @@ class ajax extends AWS_CONTROLLER
 		}
 		
 		$update_attrib_data['qq'] = htmlspecialchars($_POST['qq']);
-		$update_attrib_data['homepage'] = htmlspecialchars($_POST['homepage']);		
-		$update_data['mobile'] = htmlspecialchars($_POST['mobile']);
+		$update_attrib_data['homepage'] = htmlspecialchars($_POST['homepage']);
+		//手机在注册的时候已经绑定，此处不修改		
+		//$update_data['mobile'] = htmlspecialchars($_POST['mobile']);
 		
 		if (($update_attrib_data['qq'] OR $update_attrib_data['homepage'] OR $update_data['mobile']) AND !$this->model('integral')->fetch_log($this->user_id, 'UPDATE_CONTACT'))
 		{

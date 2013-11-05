@@ -27,3 +27,5 @@ ask/tmp
 ask/cache
 app_s/include/config.php
 ask/uc_client/config.inc.php
+ask/cache
+ask/uploads

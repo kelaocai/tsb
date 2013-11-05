@@ -2254,7 +2254,37 @@ function verify_register_form(element)
                         $(this).parent().append('<span class="aw-reg-tips aw-reg-right"><i class="aw-icon i-followed"></i></span>');
                     }        
                     return;
-
+                    
+                //手机验证
+                case 'mobile' : 
+                    $(this).parent().find('.aw-reg-tips').detach();
+                    var _this = $(this);
+                    var mobilereg = /^1(3|5|8)\d{9}$/;
+                    if (!mobilereg.test($(this).val()))
+                    {
+                        $(this).parent().find('.aw-reg-tips').detach();
+                        $(this).parent().append('<span class="aw-reg-tips aw-reg-err"><i class="aw-icon i-err"></i>' + $(this).attr('errortips') + '</span>');
+                        return;
+                    }else{
+                    //检查手机号码是否已经被使用
+                    $.get(G_BASE_URL + '/account/ajax/check_mobile/mobile' + '-' + encodeURIComponent($(this).val()), function (result)
+                        {
+                            if (result.errno == -1)
+                            {
+                                
+                                _this.parent().find('.aw-reg-tips').detach();
+                                _this.parent().append('<span class="aw-reg-tips aw-reg-err"><i class="aw-icon i-err"></i>' + result.err + '</span>');
+                            }
+                            else
+                            {
+                                
+                                _this.parent().find('.aw-reg-tips').detach();
+                                _this.parent().append('<span class="aw-reg-tips aw-reg-right"><i class="aw-icon i-followed"></i></span>');
+                            }
+                        }, 'json');
+                     } 
+                    return;
+                        
                 case 'password' :
                     $(this).parent().find('.aw-reg-tips').detach();
                     if ($(this).val().length >= 0 && $(this).val().length < 6)
