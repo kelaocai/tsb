@@ -18,11 +18,11 @@
 					
 					<?php if (get_setting('invite_reg_only') == 'N') { ?>
 					<div class="title clearfix">
-						<a class="pull-right btn-register" href="m/register/"><?php _e('注册'); ?><i class="icon-sign icon-sign-arrow"></i></a>
+						<a class="pull-right btn-register" href="m/register_one/"><?php _e('注册'); ?><i class="icon-sign icon-sign-arrow"></i></a>
 					</div>
 					<?php } ?>
 					<div class="email">
-						<input type="text" id="user_name" name="user_name" placeholder="<?php _e('邮箱'); ?>/<?php _e('用户名'); ?>" />
+						<input type="text" id="user_name" name="user_name" placeholder="<?php _e('用户名'); ?>" />
 					</div>
 					<div class="password">
 						<input type="password" id="password" name="password" placeholder="<?php _e('密码'); ?>" onkeydown="if (event.keyCode == 13) { ajax_post($('#login_form')); }" />

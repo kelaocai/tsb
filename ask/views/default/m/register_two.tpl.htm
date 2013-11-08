@@ -1,0 +1,100 @@
+<?php TPL::output('m/header.tpl.htm'); ?>
+
+<div class="explore-page">
+    <div class="explore-wrap">
+        <div class="aw-mod-header">
+            <!-- <img src="<?php echo G_STATIC_URL; ?>/js/mobile/img/login_logo.png" width="114"> -->
+        </div>
+        <div class="aw-mod-body">
+            <h1><!-- <?php echo get_setting('site_name'); ?> --><?php _e(AWS_APP::session()->authcode) ?></h1>
+        </div>
+        <div class="aw-mod-footer">
+            <form id="register_form" method="post"  action="m/register_three/">
+                <input type="hidden" name="agreement_chk" value="agree" />
+
+                <?php if ($_GET['weixin_id']) { ?>
+                <input type="hidden" name="weixin_id" value="<?php echo base64_decode($_GET['weixin_id']); ?>" />
+                <?php } ?>
+
+                <?php if ($this->icode) { ?>
+                <input type="hidden" name="icode" id="icode" value="<?php echo $this->icode; ?>" />
+                <?php } ?>
+
+                <?php if ($this->return_url) { ?>
+                <input type="hidden" name="return_url" value="<?php echo $this->return_url; ?>" />
+                <?php } ?>
+
+                <?php if ($this->fromuid AND $_GET['invite_question_id']) { ?>
+                <input type="hidden" name="invite_question_id" value="<?php echo htmlspecialchars($_GET['invite_question_id']); ?>"/>
+                <?php } ?>
+
+                <div class="register ">
+
+                    <div class="mobile input-append">
+                        <input type="hidden" id="mobile" value="<?php _e(AWS_APP::session()->auth_mobile) ?>" />
+                        <input type="text" style="width:120px;height: 30px;line-height: 30px;"  id="mobile" name="authcode" placeholder="<?php _e('输入收到的验证码'); ?>" value="<?php echo htmlspecialchars($_GET['mobile']); ?>" />
+                        <button disabled class="btn btn-large" type="button" id="btn_authcode" ><small>重新发送!</small></button>
+                    </div>
+                    <a class="btn-submit" href="javascript:;" onclick="ajax_post($('#register_form'));"><?php _e('下一步'); ?></a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div>
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+
+                
+                /*-------------------------------------------*/
+                var InterValObj;
+
+                var count = 6;
+
+                var curCount=6;
+                
+                InterValObj = window.setInterval(SetRemainTime, 1000);
+
+                $('#btn_authcode').click(function() {
+                    sendAuthCode();
+                });
+
+                function sendAuthCode() {
+
+                    curCount = count;
+                    var mobile=$('#mobile').val();
+
+                    $("#btn_authcode").attr("disabled", "true");
+                    $("#btn_authcode").html("<small>" + curCount + "秒内输入</small>");
+                    InterValObj = window.setInterval(SetRemainTime, 1000);
+                    $.get(G_BASE_URL + '/account/ajax/send_mobile_authcode/mobile' + '-' + encodeURIComponent(mobile)+'__resend-1', function(result) {
+                        if (result.errno == -1) {
+                            alert(result.err);
+                            curCount = 0;
+                        } else {
+                            alert(result.err);
+                        }
+                    }, 'json');
+                }
+
+                //timer处理函数
+                function SetRemainTime() {
+                    if (curCount == 0) {
+                        window.clearInterval(InterValObj);
+
+                        $("#btn_authcode").removeAttr("disabled");
+
+                        $("#btn_authcode").html("<small>重新发送!</small>");
+                        code = "";
+
+                    } else {
+                        curCount--;
+                        $("#btn_authcode").html("<small>" + curCount + "秒内输入</small>");
+                    }
+                }
+
+            });
+
+        </script>
+
+        <?php TPL::output('m/footer.tpl.htm'); ?>

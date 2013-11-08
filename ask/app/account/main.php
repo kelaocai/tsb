@@ -113,6 +113,7 @@ class main extends AWS_CONTROLLER
 	
 	public function register_action()
 	{
+		//如果是带着问题id过来，直接转向问题页	
 		if ($this->user_id AND $_GET['invite_question_id'])
 		{
 			if ($invite_question_id = intval($_GET['invite_question_id']))
@@ -129,6 +130,7 @@ class main extends AWS_CONTROLLER
 			}
 		}
 		
+		//判断是否启用手机版页面
 		if (is_mobile() AND HTTP::get_cookie('_ignore_ua_check') != 'TRUE' AND !$_GET['ignore_ua_check'])
 		{
 			HTTP::redirect('/m/register/?email=' . $_GET['email'] . '&icode=' . $_GET['icode']);
@@ -139,6 +141,7 @@ class main extends AWS_CONTROLLER
 			H::redirect_msg(AWS_APP::lang()->_t('本站只能通过邀请注册'), '/');
 		}
 		
+		//判断邀请码
 		if ($_GET['icode'])
 		{
 			if ($this->model('invitation')->check_code_available($_GET['icode']))

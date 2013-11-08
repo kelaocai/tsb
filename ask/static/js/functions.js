@@ -2254,7 +2254,7 @@ function verify_register_form(element)
                         $(this).parent().append('<span class="aw-reg-tips aw-reg-right"><i class="aw-icon i-followed"></i></span>');
                     }        
                     return;
-                    
+                   
                 //手机验证
                 case 'mobile' : 
                     $(this).parent().find('.aw-reg-tips').detach();
@@ -2284,6 +2284,16 @@ function verify_register_form(element)
                         }, 'json');
                      } 
                     return;
+                    
+                case 'authcode':
+                    $(this).parent().find('.aw-reg-tips').detach();
+                    if ($(this).val().length!=6)
+                    {
+                        $(this).parent().find('.aw-reg-tips').detach();
+                        $(this).parent().append('<span class="aw-reg-tips aw-reg-err"><i class="aw-icon i-err"></i>' + $(this).attr('errortips') + '</span>');
+                        return;
+                    }
+                    return;    
                         
                 case 'password' :
                     $(this).parent().find('.aw-reg-tips').detach();
@@ -2437,6 +2447,8 @@ function at_user_lists(selecter) {
         });
     }
 }
+
+
 
 function getCursorPosition(textarea) {
     var rangeData = {

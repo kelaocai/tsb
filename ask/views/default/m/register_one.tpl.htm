@@ -1,0 +1,45 @@
+<?php TPL::output('m/header.tpl.htm'); ?>
+
+<div class="explore-page">
+	<div class="explore-wrap">
+		<div class="aw-mod-header">
+			<!-- <img src="<?php echo G_STATIC_URL; ?>/js/mobile/img/login_logo.png" width="114"> -->
+		</div>
+		<div class="aw-mod-body">
+			<h1><!-- <?php echo get_setting('site_name'); ?> --><?php _e('1-注册手机号码'); ?></h1>
+		</div>
+		<div class="aw-mod-footer">
+			<form id="register_form" method="get"  action="account/ajax/send_mobile_authcode/">
+				<input type="hidden" name="agreement_chk" value="agree" />
+				
+				<?php if ($_GET['weixin_id']) { ?>
+					<input type="hidden" name="weixin_id" value="<?php echo base64_decode($_GET['weixin_id']); ?>" />
+				<?php } ?>
+				
+				<?php if ($this->icode) { ?>
+					<input type="hidden" name="icode" id="icode" value="<?php echo $this->icode; ?>" />
+				<?php } ?>
+				
+				<?php if ($this->return_url) { ?>
+					<input type="hidden" name="return_url" value="<?php echo $this->return_url; ?>" />
+				<?php } ?>
+				
+				<?php if ($this->fromuid AND $_GET['invite_question_id']) { ?>
+				  	<input type="hidden" name="invite_question_id" value="<?php echo htmlspecialchars($_GET['invite_question_id']); ?>"/> 
+				<?php } ?>
+				
+				<div class="register">
+					<!-- <div class="title clearfix">
+						<a class="pull-right btn-login" href="m/login/"><?php _e('已有帐号登录'); ?><i class="icon-sign icon-sign-arrow"></i></a>
+					</div> -->
+					<div class="mobile">
+						<input type="text" id="mobile" name="mobile" placeholder="<?php _e('手机号码'); ?>" value="<?php echo htmlspecialchars($_GET['mobile']); ?>" />
+					</div>
+					<a class="btn-submit" href="javascript:;" onclick="ajax_post($('#register_form'));"><?php _e('下一步'); ?></a>
+				</div>
+			</form>
+		</div>
+	</div>
+<div>
+
+<?php TPL::output('m/footer.tpl.htm'); ?>

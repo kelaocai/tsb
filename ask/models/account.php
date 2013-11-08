@@ -182,6 +182,12 @@ class account_class extends AWS_MODEL {
 			return $this -> get_user_info_by_uid($uid, $attrb);
 		}
 	}
+	
+	function get_user_info_by_mobile($mobile) {
+		if ($uid = $this -> fetch_one('users', 'uid', "mobile = '" . $this -> quote($mobile) . "'")) {
+			return $this -> get_user_info_by_uid($uid, $attrb);
+		}
+	}
 
 	function get_user_info_by_url_token($url_token, $attrb = false) {
 		if ($uid = $this -> fetch_one('users', 'uid', "url_token = '" . $this -> quote($url_token) . "'")) {
@@ -342,12 +348,12 @@ class account_class extends AWS_MODEL {
 		return $this -> query("UPDATE " . $this -> get_table('users') . " SET invitation_available = invitation_available - 1 WHERE uid = " . intval($uid));
 	}
 
-	function insert_user($user_name, $password, $email, $sex = 0, $mobile = null) {
-		if (!$user_name OR !$password OR !$email) {
+	function insert_user($user_name, $password, $email, $sex = 0, $mobile) {
+		if (!$user_name OR !$password OR !$mobile) {
 			return false;
 		}
-
-		if ($user_info = $this -> get_user_info_by_username($user_name)) {
+		
+		if ($user_info = $this -> get_user_info_by_mobile($mobile)) {
 			return $user_info['uid'];
 		}
 
@@ -368,8 +374,8 @@ class account_class extends AWS_MODEL {
 		return $uid;
 	}
 
-	function user_register($user_name, $password, $email, $email_valid = false) {
-		if ($uid = $this -> insert_user($user_name, $password, $email)) {
+	function user_register($user_name, $password, $email, $mobile, $email_valid = false) {
+		if ($uid = $this -> insert_user($user_name, $password, $email,'0', $mobile)) {
 			if ($def_focus_uids_str = get_setting('def_focus_uids')) {
 				$def_focus_uids = explode(',', $def_focus_uids_str);
 
