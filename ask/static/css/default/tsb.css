@@ -1,0 +1,49 @@
+/*热点话题*/
+.tsb-content {
+	padding: 0 10px;
+}
+
+.tsb-content .tsb-hot section {
+	margin: 4px 0 2px;
+	padding: 2px;
+	border: 0px solid #D5D5D5;
+	height:120px;
+	border-radius: 8px;
+}
+.tsb-content .tsb-hot dl {
+	height: auto;
+	overflow: hidden;
+}
+
+.tsb-topic-tags {
+	clear:both;
+	padding: 10px 0;
+	border-bottom: 1px solid #EEEEEE;
+}
+.tsb-topic-tags ul li {
+	float: left;
+	
+	margin: 0 4px 2px 0;
+}
+.tsb-topic-tags ul li a {
+	display: block;
+	padding: 0 10px;
+	border: 1px solid #DAECF5;
+	border-radius: 30px;
+	text-decoration: none;
+}
+.tsb-topic-tags ul li a:hover, .tsb-topic-tags ul li.active a {
+	background: #225599;
+	border-color: #225599;
+	color: #fff;
+}
+
+.sum {
+	float:left;
+	font-size: 10px;
+	width: 128px;
+	height: 84px;
+	line-height: 14px;
+	overflow: hidden;
+	
+}

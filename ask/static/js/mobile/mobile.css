@@ -364,7 +364,7 @@ nav #aw-top-nav-notic .badge{position: absolute;right: 0;top:1px;z-index:100;pad
 .icon-sign-arrow, .icon-sign-arrow-l{height: 19px;width: 18px;background-position: -1px -1px;margin-left: 8px;vertical-align: -5px;}
 .icon-sign-arrow-l{margin: 0 8px 0 0;background-position:-70px -1px;}
 
-.aw-icon{display: inline-block;;background-image:url('img/aw-icon.png');background-repeat: no-repeat; background-size: 100px 45px;}
+.aw-icon{display: inline-block;background-image:url('img/aw-icon.png');background-repeat: no-repeat; background-size: 100px 45px;}
 .aw-icon.agree{width: 13px;height: 12px;background-position: -18px 0;}
 .aw-icon.disagree{width: 13px;height: 12px;background-position: -17px -13px;vertical-align: -1px;}
 .aw-icon.agree.active{background-position: -2px 0;}

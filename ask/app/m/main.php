@@ -59,13 +59,20 @@ class main extends AWS_CONTROLLER {
 
 		TPL::import_clean();
 
-		TPL::import_css(array('js/mobile/mobile.css', ));
+		//样式目录可以不用加，比如此处不用写default/***
+		TPL::import_css(array('js/mobile/mobile.css','css/tsb.css' ));
 
 		TPL::import_js(array('js/jquery.js', 'js/jquery.form.js', 'js/mobile/framework.js', 'js/mobile/mobile.js', 'js/mobile/aw-mobile-template.js'));
 	}
 
 	public function index_action() {
 		$this -> crumb(AWS_APP::lang() -> _t('首页'), '/m/');
+		
+		$nav_menu = $this -> model('menu') -> get_nav_menu_list(null, true);
+
+		unset($nav_menu['feature_ids']);
+
+		TPL::assign('content_nav_menu', $nav_menu);
 
 		TPL::output('m/index');
 	}
