@@ -62,7 +62,7 @@ class main extends AWS_CONTROLLER {
 		//样式目录可以不用加，比如此处不用写default/***
 		TPL::import_css(array('js/mobile/mobile.css','css/tsb.css' ));
 
-		TPL::import_js(array('js/jquery.js', 'js/jquery.form.js', 'js/mobile/framework.js', 'js/mobile/mobile.js', 'js/mobile/aw-mobile-template.js'));
+		TPL::import_js(array('js/jquery.js', 'js/jquery.form.js', 'js/mobile/framework.js', 'js/mobile/mobile.js', 'js/mobile/aw-mobile-template.js','js/mobile/flipsnap.min.js'));
 	}
 
 	public function index_action() {
