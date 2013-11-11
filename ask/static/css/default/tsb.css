@@ -10,29 +10,36 @@
 	height:120px;
 	border-radius: 8px;
 }
-.tsb-content .tsb-hot dl {
+.hotitem dl {
 	height: auto;
 	overflow: hidden;
 }
 
 .tsb-topic-tags {
 	clear:both;
+	margin: 0 auto;
+	text-align:center;
 	padding: 10px 0;
-	border-bottom: 1px solid #EEEEEE;
+	text-align: center;
 }
 .tsb-topic-tags ul li {
 	float: left;
-	
-	margin: 0 4px 2px 0;
+	margin: 2px 5px;
 }
 .tsb-topic-tags ul li a {
 	display: block;
-	padding: 0 10px;
+	padding: 0 20px;
 	border: 1px solid #DAECF5;
 	border-radius: 30px;
 	text-decoration: none;
 }
-.tsb-topic-tags ul li a:hover, .tsb-topic-tags ul li.active a {
+.tsb-topic-tags ul li a:hover {
+	background: #225599;
+	border-color: #225599;
+	color: #fff;
+}
+
+.tsb-topic-tags ul li .active{
 	background: #225599;
 	border-color: #225599;
 	color: #fff;
@@ -46,4 +53,31 @@
 	line-height: 14px;
 	overflow: hidden;
 	
+}
+
+
+.hotview {
+    width: 300px;
+    
+    overflow: hidden;
+    margin: 0 auto;
+    float:left;
+    -webkit-transform: translateZ(0); /* Optional: When heavy at iOS6+ */
+}
+
+.flipsnap {
+    width: 900px; /* 320px(item width) * 3(item count) */
+}
+
+.hotitem {
+    float: left;
+    height:120px;
+    width: 296px;
+    font-size: 50px;
+    padding: 4px 2px;
+}
+.hotpointer{
+	margin: 0 auto;
+	text-align:center;
+	clear: left;
 }
