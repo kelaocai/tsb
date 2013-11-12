@@ -1,55 +1,6 @@
-<!-- 顶部 -->
-
-<!-- <a href="m/" class="logo"><img src="<?php echo G_STATIC_URL; ?>/js/mobile/img/logo.png" width="57"/></a>
-<div class="aw-search-bar">
-<!-- <form class="aw-relative" action="m/search/" method="post">
-<input type="hidden" name="_is_mobile" value="true" />
-<input placeholder="<?php _e('搜索话题、问题或人'); ?>..." class="aw-search-input" id="aw-search-query" name="q" autocomplete="off" />
-<div class="dropdown-list"><ul></ul></div>
-</form>
-</div>
-<!-- <button class="aw-publish" onclick="alert_box('publish', {'category_enable':'<?php echo (get_setting('category_enable') == 'Y') ? '1' : '0'; ?>', 'category_id':'<?php echo intval($_GET['category']); ?>'});"><?php _e('发起'); ?></button>
-</header>
-<!-- end 顶部 -->
-
-<!-- 导航 -->
-<!-- <nav >
-<ul>
-<li>
-<a href="m/"><?php _e('首页'); ?></a>
-</li>
-<li>
-<form class="aw-relative" action="m/search/" method="post">
-<input type="hidden" name="_is_mobile" value="true" />
-<input placeholder="<?php _e('搜索话题、问题或人'); ?>..." class="aw-search-input" id="aw-search-query" name="q" autocomplete="off" />
-<div class="dropdown-list">
-<ul></ul>
-</div>
-</form>
-</li>
-<li>
-<a href="m/topic_square/"><?php _e('话题'); ?></a>
-</li>
-<li id="aw-top-nav-notic">
-<a><?php _e('通知'); ?><?php if ($this->user_info['notification_unread']) { ?><span class="badge badge-info"><?php echo $this->user_info['notification_unread']; ?></span><?php } ?></a><i class="aw-arrow"></i>
-</li>
-<li id="aw-top-nav-profile">
-<a><?php _e('我'); ?></a><i class="aw-arrow"></i>
-</li>
-</ul>
-</nav> -->
-
 <div class="navbar ">
     <div class="navbar-inner " style="padding-right: 2px; padding-left: 2px;">
-
-        <!-- <form class="navbar-search pull-right input-append" >
-        <input type="text" class="search" placeholder="Search" style="width: 100px;">
-        <button type="submit" class="btn ">
-        发起
-        </button>
-        </form> -->
         <ul class="nav pull-left"  >
-
             <li class="dropdown" >
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" ><i class="icon-th-list"></i><b class="caret"></b></a>
                 <ul class="dropdown-menu">
@@ -65,7 +16,6 @@
 
                 </ul>
             </li>
-
             <li>
 
                 <form class="navbar-search" action="m/search/" method="post">
@@ -82,6 +32,7 @@
                     <div class="dropdown-list">
                         <ul></ul>
                     </div>
+                </form>
 
             </li>
             <li>

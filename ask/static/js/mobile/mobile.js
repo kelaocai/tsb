@@ -685,6 +685,7 @@ function ajax_post(formEl, processer)	// 表单对象，用 jQuery 获取，回�
 		_is_mobile:'true'
 	};
 	
+	
 	$.loading('show');
 	
 	formEl.ajaxSubmit({

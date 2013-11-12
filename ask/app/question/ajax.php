@@ -627,7 +627,7 @@ class ajax extends AWS_CONTROLLER
 	}
 	
 	public function save_answer_action()
-	{				
+	{
 		if ($this->user_info['integral'] < 0 and get_setting('integral_system_enabled') == 'Y')
 		{
 			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang()->_t('你的剩余积分已经不足以进行此操作')));
