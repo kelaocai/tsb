@@ -225,9 +225,22 @@
         <div class="aw-mod-body">
             <form action="question/ajax/save_answer/"  method="post" id="answer_form">
                 <input type="hidden" name="post_hash" value="<?php echo new_post_hash(); ?>" />
+                <input type="hidden" name="_is_attach" id="_is_attach"  />
                 <input type="hidden" name="question_id" value="<?php echo $this->question_info['question_id']; ?>" />
+                <input type="hidden" name="attach_access_key" value="<?php echo $this->attach_access_key; ?>" />
+                <input type="hidden" name="item_type" value="answer" />
+                <input type="hidden" name="image_name" id="image_name" value="answer" />
+                <input type="hidden" name="image_data" id="image_data"  />
                 <textarea rows="5" name="answer_content"><?php echo htmlspecialchars($this->draft_content['message']); ?></textarea>
             </form>
+        </div>
+        <div class="aw-mod-body">
+            <input type="file" name="image_file" id="image_file" style="display: none"/>
+            <button class="btn btn-register" id="btn_image" style="float: left;"><i class="icon-picture"></i>图片</button>
+            <img id="preview" style="width: 40px; height: 30px; display: none; float: left; margin:0px 10px;" class="img-polaroid" />
+            <canvas id="canvas"  style="display: none">
+                对不起，你的浏览器不支持图片上传功能
+            </canvas>
         </div>
         <div class="aw-mod-footer clearfix">
             <span class="num" id="answer_content_message">&nbsp;</span>
@@ -260,8 +273,8 @@
 <!-- end 内容 -->
 
 <script type="text/javascript">
-    var QUESTION_ID =  <?php echo $this->question_info['question_id'];?>;
-    var UNINTERESTED_COUNT =  <?php echo get_setting('uninterested_fold'); ?>;
+    var QUESTION_ID =   <?php echo $this->question_info['question_id'];?>;
+    var UNINTERESTED_COUNT =   <?php echo get_setting('uninterested_fold'); ?>;
 
     $(document).ready(function() {
         // 自动保存草稿

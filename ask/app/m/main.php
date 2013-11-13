@@ -62,7 +62,7 @@ class main extends AWS_CONTROLLER {
 		//样式目录可以不用加，比如此处不用写default/***
 		TPL::import_css(array('js/mobile/mobile.css','css/tsb.css' ));
 
-		TPL::import_js(array('js/jquery.js', 'js/jquery.form.js', 'js/mobile/framework.js', 'js/mobile/mobile.js', 'js/mobile/aw-mobile-template.js','js/mobile/flipsnap.min.js'));
+		TPL::import_js(array('js/jquery.js', 'js/jquery.form.js', 'js/mobile/framework.js', 'js/mobile/mobile.js', 'js/mobile/aw-mobile-template.js','js/mobile/flipsnap.min.js','js/tsb_upload.js'));
 	}
 
 	public function index_action() {
@@ -140,6 +140,9 @@ class main extends AWS_CONTROLLER {
 	}
 
 	public function question_action() {
+		
+	
+		
 		if (!isset($_GET['id'])) {
 			HTTP::redirect('/m/explore/');
 		}
@@ -310,6 +313,8 @@ class main extends AWS_CONTROLLER {
 
 			TPL::assign('next_page', $_GET['page']);
 		}
+
+		TPL::assign('attach_access_key', md5($this->user_id . time()));
 
 		TPL::output('m/question');
 	}

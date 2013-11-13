@@ -431,7 +431,7 @@ class ajax extends AWS_CONTROLLER {
 			H::ajax_json_output(AWS_APP::RSM(null, -1, AWS_APP::lang() -> _t('手机号码已被使用')));
 		} else {
 			//生成验证码
-			$mobile_authcode = load_class(tsb_common) -> genauthcode();
+			$mobile_authcode = load_class('tsb_common') -> genauthcode();
 
 			//发送验证码
 			

@@ -1,7 +1,7 @@
 <?php
 
 class tsb_common {
-		
+
 	/**
 	 * 生成验证码
 	 */
@@ -19,8 +19,40 @@ class tsb_common {
 			// 10+26;
 			$authnum .= $list[$randnum];
 		}
-		AWS_APP::session()->authcode=$authnum;
+		AWS_APP::session() -> authcode = $authnum;
 		return $authnum;
+
+	}
+
+	/**
+	 * 移动版上传图片
+	 */
+
+	function m_upload($image_data, $image_name, $type, $attach_access_key) {
+
+		switch ($type) {
+			case 'question' :
+				$item_type = 'questions';
+				break;
+
+			default :
+				$item_type = 'answer';
+
+				$_POST['id'] = 'answer';
+				break;
+		}
+
+		$data = $image_data;
+
+		$file_name = md5(rand(1, 99999999) . microtime()) . '.png';
+
+		$full_path = get_setting('upload_dir') . '/' . $item_type . '/' . date('Ymd') . '/' . $file_name;
+
+		$uri = substr($data, strpos($data, ",") + 1);
+
+		file_put_contents($full_path, base64_decode($uri));
+
+		return $file_name;
 
 	}
 
