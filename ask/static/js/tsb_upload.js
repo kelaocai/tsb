@@ -82,8 +82,8 @@ $(document).ready(function() {
 
                 //调整画布大小
 
-                //$("#canvas").attr("width", draw_width);
-                //$("#canvas").attr("height", draw_height);
+                $("#canvas").attr("width", draw_width);
+                $("#canvas").attr("height", draw_height);
                 var canvas = document.getElementById('canvas');
                 var ctx = canvas.getContext("2d");
                 ctx.save();
