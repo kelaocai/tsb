@@ -12,8 +12,8 @@ $(document).ready(function() {
     var iBytesUploaded = 0;
     var iBytesTotal = 0;
     var iPreviousBytesLoaded = 0;
-    var iMaxFilesize = 10485760;
-    // 10MB
+    var iMaxFilesize = 1048576*2;
+    // 2MB
     var oTimer = 0;
     var sResultFileSize = '';
 
@@ -38,6 +38,7 @@ $(document).ready(function() {
         // get preview element
 
         var oImage = document.getElementById('preview');
+        //var oImage = new Image(); 
 
         //定义允许图片宽度，当宽度大于这个值时等比例缩小
         var iwidth = 280;
@@ -82,17 +83,22 @@ $(document).ready(function() {
 
                 //调整画布大小
 
-                $("#canvas").attr("width", draw_width);
-                $("#canvas").attr("height", draw_height);
+                // $("#canvas").attr("width", draw_width);
+                // $("#canvas").attr("height", draw_height);
                 var canvas = document.getElementById('canvas');
                 var ctx = canvas.getContext("2d");
-                ctx.save();
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                // 重置canvas宽高
+                canvas.width = draw_width;
+                canvas.height = draw_height;
                 //alert("5,h:"+draw_height+",w:"+draw_width);
                 ctx.drawImage(oImage, 0, 0, draw_width, draw_height);
-                
+                //ctx.drawImage(oImage, 0, 0, oImage.width*(0.09), oImage.height*(0.09));
+
                 //ctx.restore();
 
                 var dataurl = canvas.toDataURL("image/png");
+                //$("#preview").src=e.target.result;
                 $("#preview").css("display", "block");
                 //document.getElementById('preview').style.display = 'block';
                 $('#image_data').val(dataurl);
