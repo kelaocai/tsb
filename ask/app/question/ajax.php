@@ -709,10 +709,15 @@ class ajax extends AWS_CONTROLLER
 			//移动版上传图片
 			if ($_POST['_is_mobile']&&$_POST['_is_attach']){
 				$file_name=load_class('tsb_common')->m_upload($_POST['image_data'], $_POST['image_name'], 'answer', $_POST['attach_access_key']);
+				if(!$file_name){
+					H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang()->_t('图片上传失败')));
+				}
 				//插入附件数据
 				$attach_id = $this -> model('publish') -> add_attach('answer',$_POST['image_name'], $_POST['attach_access_key'], time(), $file_name, '1');
 
-				//H::ajax_json_output(AWS_APP::RSM(null, '-1', 'a:'.$attach_id));
+				if(!$attach_id){
+					H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang()->_t('图片保存失败')));
+				}
 				
 			}
 				

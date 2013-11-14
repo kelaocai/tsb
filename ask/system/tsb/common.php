@@ -46,9 +46,21 @@ class tsb_common {
 
 		$file_name = md5(rand(1, 99999999) . microtime()) . '.png';
 
-		$full_path = get_setting('upload_dir') . '/' . $item_type . '/' . date('Ymd') . '/' . $file_name;
+		$file_dir = get_setting('upload_dir') . '/' . $item_type . '/' . date('Ymd');
+
+		$full_path = $file_dir . '/' . $file_name;
 
 		$uri = substr($data, strpos($data, ",") + 1);
+
+		if (!is_dir($file_dir)) {
+			if (!make_dir($file_dir)) {
+				return FALSE;
+			}
+		}
+
+		// $fp = @fopen($full_path, 'w');
+		// @fwrite($fp, base64_decode($uri));
+		// @fclose($fp);
 
 		file_put_contents($full_path, base64_decode($uri));
 

@@ -52,26 +52,28 @@ $(document).ready(function() {
             oImage.src = e.target.result;
 
             oImage.onload = function() {
+                
+                
 
                 var draw_width = iwidth;
                 var draw_height = iheight;
 
-                //alert(oImage.naturalWidth / oImage.naturalHeight + "," + iwidth / iheight);
+                //alert(oImage.width / oImage.naturalHeight + "," + iwidth / iheight);
 
-                if (oImage.naturalWidth / oImage.naturalHeight >= iwidth / iheight) {
-                    if (oImage.naturalWidth > iwidth) {
+                if (oImage.width / oImage.naturalHeight >= iwidth / iheight) {
+                    if (oImage.width > iwidth) {
                         draw_width = iwidth;
-                        draw_height = (oImage.naturalHeight * iwidth) / oImage.naturalWidth;
+                        draw_height = (oImage.naturalHeight * iwidth) / oImage.width;
                     } else {
-                        draw_width = oImage.naturalWidth;
+                        draw_width = oImage.width;
                         draw_height = oImage.naturalHeight;
                     }
                 } else {
                     if (oImage.naturalHeight > iheight) {
                         draw_height = iheight;
-                        draw_width = (oImage.naturalWidth * iheight) / oImage.naturalHeight;
+                        draw_width = (oImage.width * iheight) / oImage.naturalHeight;
                     } else {
-                        draw_width = oImage.naturalWidth;
+                        draw_width = oImage.width;
                         draw_height = oImage.naturalHeight;
                     }
                 }
