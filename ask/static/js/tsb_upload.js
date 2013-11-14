@@ -31,8 +31,8 @@ $(document).ready(function() {
 
         // little test for filesize
         if (oFile.size > iMaxFilesize) {
-            alert('上传文件太大');
-            return;
+            //alert('上传文件太大');
+            //return;
         }
 
         // get preview element
