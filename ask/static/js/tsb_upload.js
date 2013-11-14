@@ -3,7 +3,7 @@ $(document).ready(function() {
     $('#image_file').change(function() {
         fileSelected();
     });
-    
+
     $('#btn_image').click(function() {
         $('#image_file').click();
     });
@@ -52,39 +52,45 @@ $(document).ready(function() {
             oImage.src = e.target.result;
 
             oImage.onload = function() {
-                
-                
 
                 var draw_width = iwidth;
                 var draw_height = iheight;
 
-                //alert(oImage.width / oImage.naturalHeight + "," + iwidth / iheight);
+                //alert(oImage.width + "," + oImage.height + "," + oImage.width / oImage.height + "," + iwidth / iheight);
 
-                if (oImage.width / oImage.naturalHeight >= iwidth / iheight) {
+                if (oImage.width / oImage.height >= iwidth / iheight) {
                     if (oImage.width > iwidth) {
                         draw_width = iwidth;
-                        draw_height = (oImage.naturalHeight * iwidth) / oImage.width;
+                        draw_height = (oImage.height * iwidth) / oImage.width;
+                        //alert("1,h:"+draw_height+",w:"+draw_width);
                     } else {
                         draw_width = oImage.width;
-                        draw_height = oImage.naturalHeight;
+                        draw_height = oImage.height;
+                        //alert("2,h:"+draw_height+",w:"+draw_width);
                     }
                 } else {
-                    if (oImage.naturalHeight > iheight) {
+                    if (oImage.height > iheight) {
                         draw_height = iheight;
-                        draw_width = (oImage.width * iheight) / oImage.naturalHeight;
+                        draw_width = (oImage.width * iheight) / oImage.height;
+                        //alert("3,h:"+draw_height+",w:"+draw_width);
                     } else {
                         draw_width = oImage.width;
-                        draw_height = oImage.naturalHeight;
+                        draw_height = oImage.height;
+                        //alert("4,h:"+draw_height+",w:"+draw_width);
                     }
                 }
 
                 //调整画布大小
-                var canvas = document.getElementById('canvas');
-                $("#canvas").attr("width", draw_width);
-                $("#canvas").attr("height", draw_height);
-                var ctx = canvas.getContext("2d");
 
+                //$("#canvas").attr("width", draw_width);
+                //$("#canvas").attr("height", draw_height);
+                var canvas = document.getElementById('canvas');
+                var ctx = canvas.getContext("2d");
+                ctx.save();
+                //alert("5,h:"+draw_height+",w:"+draw_width);
                 ctx.drawImage(oImage, 0, 0, draw_width, draw_height);
+                
+                //ctx.restore();
 
                 var dataurl = canvas.toDataURL("image/png");
                 $("#preview").css("display", "block");

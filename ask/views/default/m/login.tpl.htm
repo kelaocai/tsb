@@ -11,6 +11,7 @@
 		<div class="aw-mod-footer">
 			<div class="login">
 				<form id="login_form" method="post" onsubmit="return false;" action="account/ajax/login_process/">
+				    <input id="net_auto_login" type="hidden" value="1" name="net_auto_login" />
 					<?php if ($_GET['weixin_id']) { ?>
 					<input type="hidden" name="weixin_id" value="<?php echo base64_decode($_GET['weixin_id']); ?>" />
 					<?php } ?>
