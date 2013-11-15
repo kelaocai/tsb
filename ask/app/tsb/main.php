@@ -28,11 +28,9 @@ class main extends AWS_CONTROLLER {
 
 	public function test_action() {
 		TPL::import_js(array('js/tsb_upload.js'));
-		$nn=load_class('core_upload')->prep_filename('侧面.jpg');
+		fb($a=100,FirePHP::TRACE);
 		TPL::assign('test', $nn);
 		TPL::output("tsb/test");
 	}
-
-	
 
 }
