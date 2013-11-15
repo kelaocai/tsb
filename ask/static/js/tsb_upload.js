@@ -12,7 +12,7 @@ $(document).ready(function() {
     var iBytesUploaded = 0;
     var iBytesTotal = 0;
     var iPreviousBytesLoaded = 0;
-    var iMaxFilesize = 1048576*2;
+    var iMaxFilesize = 1048576 * 2;
     // 2MB
     var oTimer = 0;
     var sResultFileSize = '';
@@ -38,7 +38,7 @@ $(document).ready(function() {
         // get preview element
 
         var oImage = document.getElementById('preview');
-        //var oImage = new Image(); 
+        //var oImage = new Image();
 
         //定义允许图片宽度，当宽度大于这个值时等比例缩小
         var iwidth = 280;
@@ -59,43 +59,52 @@ $(document).ready(function() {
 
                 //alert(oImage.width + "," + oImage.height + "," + oImage.width / oImage.height + "," + iwidth / iheight);
 
-                if (oImage.width / oImage.height >= iwidth / iheight) {
-                    if (oImage.width > iwidth) {
-                        draw_width = iwidth;
-                        draw_height = (oImage.height * iwidth) / oImage.width;
-                        //alert("1,h:"+draw_height+",w:"+draw_width);
-                    } else {
-                        draw_width = oImage.width;
-                        draw_height = oImage.height;
-                        //alert("2,h:"+draw_height+",w:"+draw_width);
-                    }
-                } else {
-                    if (oImage.height > iheight) {
-                        draw_height = iheight;
-                        draw_width = (oImage.width * iheight) / oImage.height;
-                        //alert("3,h:"+draw_height+",w:"+draw_width);
-                    } else {
-                        draw_width = oImage.width;
-                        draw_height = oImage.height;
-                        //alert("4,h:"+draw_height+",w:"+draw_width);
-                    }
+                if (oImage.width / oImage.height > iwidth / iheight && oImage.width >= iwidth) {
+                    draw_width = iwidth;
+                    draw_height = Math.ceil(iwidth / oImage.width * oImage.height);
+                } else if (oImage.width / oImage.height <= iwidth / iheight && oImage.height >= iheight) {
+                    draw_height = iheight;
+                    draw_width = Math.ceil(iheight / oImage.height * oImage.width);
                 }
 
-                //调整画布大小
+                var detectverticalsquash = function(img, imgheight) {
+                    var tmpcanvas = document.createElement('canvas');
+                    tmpcanvas.width = 1;
+                    tmpcanvas.height = imgheight;
+                    var tmpctx = tmpcanvas.getContext('2d');
+                    tmpctx.drawImage(img, 0, 0);
+                    var data = tmpctx.getImageData(0, 0, 1, imgheight).data;
+                    var sy = 0;
+                    var ey = imgheight;
+                    var py = imgheight;
+                    while (py > sy) {
+                        var alpha = data[(py - 1) * 4 + 3];
+                        if (alpha === 0) {
+                            ey = py;
+                        } else {
+                            sy = py;
+                        }
+                        py = (ey + sy) >> 1;
+                    }
+                    var ratio = py / imgheight;
+                    return (ratio === 0) ? 1 : ratio;
+                };
 
-                // $("#canvas").attr("width", draw_width);
-                // $("#canvas").attr("height", draw_height);
+                //调整画布大小
                 var canvas = document.getElementById('canvas');
                 var ctx = canvas.getContext("2d");
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.save();
+
                 // 重置canvas宽高
                 canvas.width = draw_width;
                 canvas.height = draw_height;
                 //alert("5,h:"+draw_height+",w:"+draw_width);
-                ctx.drawImage(oImage, 0, 0, draw_width, draw_height);
-                //ctx.drawImage(oImage, 0, 0, oImage.width*(0.09), oImage.height*(0.09));
+                //ctx.drawImage(oImage, 0, 0, draw_width, draw_height);
+                var vertsquashratio = detectverticalsquash(oImage, oImage.height);
 
-                //ctx.restore();
+                ctx.drawImage(oImage, 0, 0, oImage.width, oImage.height, 0, 0, draw_width, draw_height/vertsquashratio);
+
+                ctx.restore();
 
                 var dataurl = canvas.toDataURL("image/png");
                 //$("#preview").src=e.target.result;
