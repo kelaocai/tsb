@@ -3,6 +3,19 @@
     weixin share;
 </div>
 <script type="text/javascript">
+    function WeiXinShareBtn() {
+        if ( typeof WeixinJSBridge == "undefined") {
+            alert(" 错误提示");
+        } else {
+            WeixinJSBridge.invoke('shareTimeline', {
+                "title" : "同事帮微信分享",
+                "link" : "http://tongshibang.com/ask/?/tsb/test/",
+                "desc" : "内容描述 ",
+                "img_url" : "http://tongshibang.com/ask/uploads/answer/20131115/59909c581afff2925bb0bb625fb3f959.png"
+            });
+        }
+    }
+
     var dataForWeixin = {
         appId : "",
         MsgImg : "http://tongshibang.com/ask/uploads/answer/20131115/59909c581afff2925bb0bb625fb3f959.png",
