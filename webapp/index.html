@@ -2,13 +2,14 @@
 <html lang="zh-CN">
     <head>
         <title>webapp</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" >
+        <meta name="viewport" content="width=device-width, initial-scale=1.0 maximum-scale=1.0, user-scalable=no" >
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <!-- Bootstrap -->
         <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/mycss.css" rel="stylesheet">
 
         <script src="http://cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
-
+        <script src="js/flipsnap.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -19,20 +20,107 @@
     </head>
     <body style="background: url('img/bg.gif')" >
 
-        <div class="container">
-            <h4>读美文</h4>
+        <nav class="navbar navbar-default" role="navigation">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <span><a class="navbar-brand" href="#">读美文<small style="font-size: 9px;">&nbsp;去你的大鸭梨 每天5篇 爱藏不藏</small></a></span>
+            </div>
 
-            <div class="row" >
-                <div class="col-xs-12">
-                    <div class="thumbnail"  style="box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);-webkit-box-shadow:0px 1px 1px rgba(0, 0, 0, 0.3);
-                    -moz-box-shadow:0px 1px 1px rgba(0, 0, 0, 0.3);">
-                        <img src="img/mw.png" class="img-responsive img-rounded">
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="active">
+                        <a href="#">今日美文</a>
+                    </li>
+                    <li>
+                        <a href="#" >我的收藏</a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">名家名作 <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="#">席慕容</a>
+                            </li>
+                            <li>
+                                <a href="#">舒婷</a>
+                            </li>
+                            <li>
+                                <a href="#">毕淑敏</a>
+                            </li>
+                            <li>
+                                <a href="#">林语堂</a>
+                            </li>
+                            <li class="divider"></li>
+
+                        </ul>
+                    </li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">分类浏览 <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="#">抒情</a>
+                            </li>
+                            <li>
+                                <a href="#">忧伤</a>
+                            </li>
+                            <li>
+                                <a href="#">励志</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="#">离别</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </nav>
+
+        <div class="container">
+
+            <div class="row " >
+                <div class="col-xs-12 col-md-4">
+                    <div class="thumbnail mybg"  >
+                        <div class="viewport">
+                            <div class="flipsnap">
+                                <div class="picitem"><img src="img/mw.png" class="img-responsive img-rounded ">
+                                </div>
+                                <div class="picitem"><img src="img/mw.png" class="img-responsive img-rounded ">
+                                </div>
+                            </div>
+                        </div>
                         <div class="caption">
-                            <h3>无怨的青春</h3>
-                            <p>
-                                作者：席慕容
-                            </p>
-                            <p class="">
+
+                            <div class="attribution" style="padding: 5px 15px;margin:auto -13px;margin-top:-10px;">
+                                <div class="row">
+                                    <div class="col-xs-8">
+                                        <h3>无怨的青春</h3>
+                                        <p>
+                                            作者：席慕容
+                                        </p>
+                                    </div>
+                                    <div class="col-xs-4" >
+                                        <h5 id="btn_tip">PLAY</h5>
+                                        <p>
+                                            <i class="glyphicon glyphicon-play" style="font-size: 28px;" id="btn_play" ></i>
+                                        </p>
+                                        <p>
+                                            <i class="glyphicon glyphicon-pause" style="font-size: 28px; display: none" id="btn_pause" ></i>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <p style="margin-top: 5px;">
                                 在年轻的时候，如果你爱上一个人，
                                 <br>
                                 请你，请你一定要温柔的对待他。
@@ -60,9 +148,48 @@
                         </div>
                     </div>
                 </div>
-            </div>
 
+            </div>
+            <div class="col-xs-12 "><img src="img/logo.png"  class="pull-left" style="width: 55%;height:55%"/><small class="pull-right">最闹腾的白骨精社区</small>
+            </div>
         </div>
+
+        <audio id="myaudio">
+            <source src="audio/one.mp3" type="audio/mp3">
+            Your browser does not support the audio tag.
+        </audio>
+
+        <br />
+        <script type="text/javascript">
+            $(document).ready(function() {
+                var flipsnap = Flipsnap('.flipsnap');
+                var myaudio = document.getElementById("myaudio");
+
+                flipsnap.element.addEventListener('fspointmove', function() {
+                    myaudio.pause();
+                    myaudio.currentTime = 0.0;
+                    $("#btn_play").show();
+                    $("#btn_pause").hide();
+                    $("#btn_tip").html('PLAY');
+                }, false);
+
+                $("#btn_play").click(function() {
+
+                    myaudio.play();
+                    $(this).hide();
+                    $("#btn_pause").show();
+                    $("#btn_tip").html('PAUSE');
+                });
+
+                $("#btn_pause").click(function() {
+                    var myaudio = document.getElementById("myaudio");
+                    myaudio.pause();
+                    $(this).hide();
+                    $("#btn_play").show();
+                    $("#btn_tip").html('PLAY');
+                });
+            });
+        </script>
 
     </body>
 </html>
