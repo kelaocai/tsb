@@ -27,11 +27,11 @@ class main extends spController {
 		$title=$this->spArgs('title');
 		$author=$this->spArgs('author');
 		$pic_url=$this->spArgs('pic_url');
-		$muisc_url=$this->spArgs('muisc_url');
+		$music_url=$this->spArgs('music_url');
 
 		
 		$db=spDB('soft_content');
-		$new=array("title"=>$title,"author"=>$author,"pic_url"=>$pic_url,"music_url"=>$muisc_url,"content"=>$htmlData);
+		$new=array("title"=>$title,"author"=>$author,"pic_url"=>$pic_url,"music_url"=>$music_url,"content"=>$htmlData);
 		
 		echo $db->create($new);
 		
