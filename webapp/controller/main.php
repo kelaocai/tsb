@@ -48,5 +48,10 @@ class main extends spController {
 		// //dump($info);
 		 echo json_encode($rs);
 	}
+	
+	function qrcode(){
+		require_once 'qrcode/qrlib.php';
+		QRcode::png('validate ：tongshibang.com?a=1233&b=11'); 
+	}
 
 }
