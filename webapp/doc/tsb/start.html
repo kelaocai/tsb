@@ -1,6 +1,5 @@
 ﻿<!DOCTYPE html>
-
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
     <title>Untitled Document</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -14,7 +13,7 @@
         }
     </script>
 
-    <script type="text/javascript" src="resources/scripts/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="resources/scripts/jquery-1.7.1.min.js"></script>
     <script type="text/javascript" src="resources/scripts/splitter.js"></script>
     <script type="text/javascript" src="resources/scripts/axutils.js"></script>
     <script type="text/javascript" src="resources/scripts/axprototype.js"></script>
@@ -24,8 +23,8 @@
     <style type="text/css">
 
 #outerContainer {
-	width:100%;
-	height:1000px;
+	width:1000px;
+	height:20000px;
 }
 
 .vsplitbar {
@@ -75,17 +74,19 @@
             });
 
             $(document).ready(function () {
+
                 $axure.page.bind('load.start', mainFrame_onload);
                 $axure.messageCenter.addMessageListener(messageCenter_message);
 
-                if($axure.player.settings.loadFeedbackPlugin == true) {
-                    if($axure.player.settings.isAxshare == true) {
+                if ($axure.player.settings.loadFeedbackPlugin == true) {
+                    if ($axure.player.settings.isAxshare == true) {
                         $axure.utils.loadJS('/Scripts/plugins/feedback/feedback.js');
                     } else {
                         $axure.utils.loadJS('http://share.axure.com/Scripts/plugins/feedback/feedback.js');
                     }
                 }
 
+                if(navigator.userAgent.indexOf("MSIE") >= 0) $('#outerContainer').width('100%');
                 initialize();
                 $('#outerContainer').splitter({
                     //outline: true,
@@ -97,11 +98,19 @@
                     resizeContent();
                 });
 
+                //                $('#outerContainer').resize(function() { return false; });
+
                 $('#maximizePanelContainer').hide();
 
                 initializeLogo();
 
                 $(window).resize();
+                //                $('#outerContainer').trigger('resize');
+                resizeContent();
+                if ($.browser.msie && $.browser.version == "6.0") {
+                    // wait for ie to get to a good state and resize
+                    setTimeout(function() { $('#outerContainer').trigger('resize'); }, 30);
+                }
             });
 
 
@@ -115,12 +124,14 @@
 
         function resizeContent() {
             var newHeight = $(window).height();
+            var newWidth = $(window).width();
+            
             var controlContainerHeight = newHeight - 37;
             if ($('#interfaceControlFrameLogoContainer').is(':visible')) {
                 controlContainerHeight -= $('#interfaceControlFrameLogoContainer').height() + 16;
             }
 
-            $('#outerContainer').height(newHeight);
+            $('#outerContainer').height(newHeight).width(newWidth);
             $('#leftPanel').height(newHeight);
             $('#interfaceControlFrame').height(newHeight);
             $('#interfaceControlFrameContainer').height(controlContainerHeight);
@@ -129,8 +140,6 @@
             $('#mainFrame').height(newHeight);
 
             $('#rightPanel').width($(window).width() - $('#leftPanel').width() - $('.vsplitbar').width());
-
-            $('#outerContainer').trigger('resize');
         }
 
         function collapse() {
@@ -140,6 +149,7 @@
             $('.vsplitbar').hide();
             $('#rightPanel').width($(window).width());
             $(window).resize();
+            $('#outerContainer').trigger('resize');
         }
 
         function expand() {
@@ -149,6 +159,7 @@
             $('.vsplitbar').show();
             $('#rightPanel').width($(window).width() - $('#leftPanel').width() - $('.vsplitbar').width());
             $(window).resize();
+            $('#outerContainer').trigger('resize');
         }
 
         function initialize() {

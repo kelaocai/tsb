@@ -1,4 +1,4 @@
-body {
+﻿body {
     margin: 0px;
 }
 
@@ -14,7 +14,7 @@ div {
 .preload {
     display: none;
 }
-div.main_container {
+#main_container {
 }
 
 .form_sketch {
@@ -52,5 +52,9 @@ div.main_container {
     font-weight:normal;
     text-decoration:none;
     
+}
+
+.u1_text_sketch {
+    font-family: 'Applied Font';
 }
 

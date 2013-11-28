@@ -1,4 +1,4 @@
-body {
+﻿body {
     margin: 0px;
 }
 
@@ -14,7 +14,7 @@ div {
 .preload {
     display: none;
 }
-div.main_container {
+#main_container {
 }
 
 .form_sketch {
@@ -22,8 +22,8 @@ div.main_container {
     background-color: transparent;
 }
 
-.u0_original {
-    background-image: url('../profile_files/u0_original.png');
+.u0_normal {
+    background-image: url('../profile_files/u0_normal.png');
 }
 
 .u0_container {
@@ -56,16 +56,8 @@ div.main_container {
     word-wrap:break-word;
 }
 
-.u0 {
-    position:absolute;
-    left:210px;
-    top:30px;
-    width:320px;
-    height:480px
-}
-
-.u2_original {
-    background-image: url('../profile_files/u2_original.png');
+.u2_normal {
+    background-image: url('../profile_files/u2_normal.png');
 }
 
 .u2_container {
@@ -98,16 +90,8 @@ div.main_container {
     word-wrap:break-word;
 }
 
-.u2 {
-    position:absolute;
-    left:239px;
-    top:150px;
-    width:80px;
-    height:80px
-}
-
-.u4_original {
-    background-image: url('../profile_files/u4_original.png');
+.u4_normal {
+    background-image: url('../profile_files/u4_normal.png');
 }
 
 .u4_container {
@@ -140,14 +124,6 @@ div.main_container {
     word-wrap:break-word;
 }
 
-.u4 {
-    position:absolute;
-    left:210px;
-    top:70px;
-    width:320px;
-    height:40px
-}
-
 .u6 {
     position:absolute;
     left:260px;
@@ -164,6 +140,10 @@ div.main_container {
     font-weight:normal;
     text-decoration:none;
     
+}
+
+.u6_text_sketch {
+    font-family: 'Applied Font';
 }
 
 .u7 {
@@ -184,6 +164,10 @@ div.main_container {
     
 }
 
+.u7_text_sketch {
+    font-family: 'Applied Font';
+}
+
 .u8 {
     position:absolute;
     left:484px;
@@ -202,14 +186,18 @@ div.main_container {
     
 }
 
+.u8_text_sketch {
+    font-family: 'Applied Font';
+}
+
 .u9_line {
     background-image: url('../profile_files/u9_line.png');
 }
 
 .u9_line {
     position:absolute;
-    left:220px;
-    top:244px;
+    left:0px;
+    top:4px;
     width:300px;
     height:3px;
 }
@@ -217,9 +205,10 @@ div.main_container {
 .u9 {
     position:absolute;
     left:220px;
-    top:244px;
+    top:240px;
     width:300px;
-    height:3px
+    height:10px;
+    
 }
 
 .u10_line {
@@ -228,8 +217,8 @@ div.main_container {
 
 .u10_line {
     position:absolute;
-    left:220px;
-    top:134px;
+    left:0px;
+    top:4px;
     width:300px;
     height:3px;
 }
@@ -237,9 +226,10 @@ div.main_container {
 .u10 {
     position:absolute;
     left:220px;
-    top:134px;
+    top:130px;
     width:300px;
-    height:3px
+    height:10px;
+    
 }
 
 .u11 {
@@ -258,6 +248,10 @@ div.main_container {
     font-weight:normal;
     text-decoration:none;
     
+}
+
+.u11_text_sketch {
+    font-family: 'Applied Font';
 }
 
 .u12 {
@@ -292,6 +286,10 @@ div.main_container {
     
 }
 
+.u13_text_sketch {
+    font-family: 'Applied Font';
+}
+
 .u14 {
     position:absolute;
     left:390px;
@@ -308,6 +306,10 @@ div.main_container {
     font-weight:normal;
     text-decoration:none;
     
+}
+
+.u14_text_sketch {
+    font-family: 'Applied Font';
 }
 
 .u15 {
@@ -330,8 +332,8 @@ div.main_container {
 
 .u16_line {
     position:absolute;
-    left:220px;
-    top:284px;
+    left:0px;
+    top:4px;
     width:300px;
     height:3px;
 }
@@ -339,9 +341,10 @@ div.main_container {
 .u16 {
     position:absolute;
     left:220px;
-    top:284px;
+    top:280px;
     width:300px;
-    height:3px
+    height:10px;
+    
 }
 
 .u17 {
@@ -448,8 +451,8 @@ div.main_container {
 
 .u24_line {
     position:absolute;
-    left:220px;
-    top:454px;
+    left:0px;
+    top:4px;
     width:300px;
     height:3px;
 }
@@ -457,9 +460,10 @@ div.main_container {
 .u24 {
     position:absolute;
     left:220px;
-    top:454px;
+    top:450px;
     width:300px;
-    height:3px
+    height:10px;
+    
 }
 
 .u25_line {
@@ -468,8 +472,8 @@ div.main_container {
 
 .u25_line {
     position:absolute;
-    left:220px;
-    top:424px;
+    left:0px;
+    top:4px;
     width:300px;
     height:3px;
 }
@@ -477,13 +481,14 @@ div.main_container {
 .u25 {
     position:absolute;
     left:220px;
-    top:424px;
+    top:420px;
     width:300px;
-    height:3px
+    height:10px;
+    
 }
 
-.u26_original {
-    background-image: url('../profile_files/u4_original.png');
+.u26_normal {
+    background-image: url('../profile_files/u4_normal.png');
 }
 
 .u26_container {
@@ -516,16 +521,8 @@ div.main_container {
     word-wrap:break-word;
 }
 
-.u26 {
-    position:absolute;
-    left:210px;
-    top:470px;
-    width:320px;
-    height:40px
-}
-
-.u28_original {
-    background-image: url('../profile_files/u4_original.png');
+.u28_normal {
+    background-image: url('../profile_files/u4_normal.png');
 }
 
 .u28_container {
@@ -556,13 +553,5 @@ div.main_container {
     font-family:Arial;
     text-align:left;
     word-wrap:break-word;
-}
-
-.u28 {
-    position:absolute;
-    left:210px;
-    top:30px;
-    width:320px;
-    height:40px
 }
 

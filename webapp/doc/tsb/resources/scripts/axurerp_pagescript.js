@@ -25,7 +25,7 @@ if ((index = navigator.userAgent.indexOf("MSIE")) >= 0) {
 
 var Forms = document.getElementsByTagName("FORM");
 for (var i = 0; i < Forms.length; i++) {
-    var Form = Forms(i);
+    var Form = Forms[i];
     Form.onclick = SuppressBubble;
 }
 
@@ -73,11 +73,24 @@ function Workflow(id) {
     return id + 'WF';
 }
 
-function BringToFront(id) {
+function BringToFront(id, skipFixed) {
+    BringToFrontHelper(id);
+    if (!skipFixed) BringFixedToFront();
+}
+
+function BringToFrontHelper(id) {
     var target = document.getElementById(id);
     if (target == null) return;
     MaxZIndex = MaxZIndex + 1;
     target.style.zIndex = MaxZIndex;
+};
+
+function BringFixedToFront() {
+    $axure(function (diagramObject) { return diagramObject.fixedKeepInFront; }).each(function (diagramObject) {
+        $.each(diagramObject.scriptIds, function (index, item) {
+            BringToFrontHelper(item);
+        });
+    });
 }
 
 function SendToBack(id) {
@@ -103,20 +116,26 @@ function RefreshScreen() {
 function getAbsoluteLeft(node) {
     var currentNode = node;
     var left = 0;
-    while (currentNode.tagName != "BODY") {
+    var fixed = false;
+    while (currentNode != null && currentNode.tagName != "BODY") {
         left += currentNode.offsetLeft;
+        if (currentNode.id != '' && $('#' + currentNode.id).css('position') == 'fixed') fixed = true;
         currentNode = currentNode.offsetParent;
     }
+    if (fixed) left += document.body.scrollLeft;
     return left;
 }
 
 function getAbsoluteTop(node) {
     var currentNode = node;
     var top = 0;
-    while (currentNode.tagName != "BODY") {
+    var fixed = false;
+    while (currentNode != null && currentNode.tagName != "BODY") {
         top += currentNode.offsetTop;
+        if (currentNode.id != '' && $('#' + currentNode.id).css('position') == 'fixed') fixed = true;
         currentNode = currentNode.offsetParent;
     }
+    if (fixed) top += document.body.scrollTop;
     return top;
 }
 
@@ -176,15 +195,19 @@ function ToggleWorkflow(event, id, width, height, hasWorkflow) {
 	
     if (bIE) height += 50;
 
-    var ann = window[id + 'Ann'];
+    MaxZIndex = MaxZIndex + 1;
+    
+    var dObj = $axure.pageData.scriptIdToObject[id];
+    var ann = dObj.annotation;
     var $dialog = $('<div></div>')
         .appendTo('body')
 		.html(GetAnnotationHtml(ann))
 		.dialog({
-		    title: ann.label,
+		    title: dObj.label,
 		    width: width,
 		    height: height,
 		    minHeight: 150,
+		    zIndex: MaxZIndex,
             position: [left, top],
 		    dialogClass: 'dialogFix'
 		});
@@ -201,15 +224,15 @@ function ToggleLinks(event, linksid) {
     if (links.style.visibility == "visible") { HideElement(linksid); }
     else {
         if (bIE) {
-            links.style.top = window.event.y + document.body.scrollTop;
-            links.style.left = window.event.x + document.body.scrollLeft;
+            links.style.top = window.event.clientY + document.body.scrollTop;
+            links.style.left = window.event.clientX + document.body.scrollLeft;
         }
         else {
             links.style.top = event.pageY;
             links.style.left = event.pageX;
         }
         links.style.visibility = "visible";
-        BringToFront(linksid);
+        BringToFront(linksid, true);
     }
     RefreshScreen();
 }
@@ -217,45 +240,30 @@ function ToggleLinks(event, linksid) {
 // ******************  Utils for Interaction Action Functions ****************** //
 
 function IsTrueMouseOut(idNoSpace, e) {
-    if (!e) var e = window.event;
-    var tg = (window.event) ? e.srcElement : e.target;
-    if (tg.id != idNoSpace && tg.id != 'o' + idNoSpace) return false;
+    if (!e) e = window.event;
+    var target = window.event ? e.srcElement : e.target;
 
-    while (tg.nodeName != 'HTML') {
-        if (tg.style.visibility == 'hidden') return false;
-        tg = tg.parentNode;
+    while (target.nodeName != 'HTML') {
+        if (target.style.visibility == 'hidden') return false;
+        target = target.parentNode;
     }
 
-    var reltg = (e.relatedTarget) ? e.relatedTarget : e.toElement;
-    while (reltg != null && reltg.nodeName != 'HTML') {
-        var id = reltg.id
-        var i = id.indexOf('Links')
-        if (i > 0) {
-            if (id.substring(0, i) == tg.id) {
-                return false;
-            }
-        }
-        reltg = reltg.parentNode;
-        if (reltg.id == idNoSpace) return false;
-    }
-    return true;
+    return IsTrueMouseEvent(idNoSpace, e.relatedTarget || e.toElement);
 }
 
 function IsTrueMouseOver(idNoSpace, e) {
-    if (!e) var e = window.event;
-    var tg = (window.event) ? e.srcElement : e.target;
-    if (tg.id != idNoSpace && tg.id != 'o' + idNoSpace) return false;
-    var reltg = (e.relatedTarget) ? e.relatedTarget : e.fromElement;
-    while (reltg != null && reltg.nodeName != 'HTML') {
-        var id = reltg.id
-        var i = id.indexOf('Links')
-        if (i > 0) {
-            if (id.substring(0, i) == tg.id) {
-                return false;
-            }
-        }
-        reltg = reltg.parentNode
-        if (reltg.id == idNoSpace) return false;
+    if (!e) e = window.event;
+    return IsTrueMouseEvent(idNoSpace, e.relatedTarget || e.toElement);
+}
+
+function IsTrueMouseEvent(idNoSpace, relTarget) {
+    while (relTarget != null && relTarget.nodeName != 'HTML') {
+        var id = relTarget.id;
+        var index = id.indexOf('Links');
+        if (index > 0 && id.substring(0, index) == idNoSpace) return false;
+
+        relTarget = relTarget.parentNode;
+        if (relTarget == null || relTarget.id == idNoSpace) return false;
     }
     return true;
 }
@@ -305,16 +313,64 @@ function FrameWindowNeedsReload(iframe, newPageName) {
     return reload;
 }
 
-function ScrollToWidget(id, scrollX, scrollY) {
+function GetScrollable(target) {
+    var $target = $(target);
+    var inScrollable = false;
+    var current = $target;
+    var last = $target;
+    while (!current.is('body')) {
+        var elementId = current.attr('id');
+        var diagramObject = elementId && $axure.pageData.scriptIdToObject[elementId];
+        if (diagramObject && diagramObject.type == 'dynamicPanel' && diagramObject.scrollbars != 'none') {
+            //returns the panel diagram div which handles scrolling
+            return document.getElementById(last.attr('id'));
+        }
+        last = current;
+        current = current.parent();
+    }
+    return document.body;
+}
+
+function ScrollToWidget(id, scrollX, scrollY, easing, duration) {
     var target = document.getElementById(id);
-    var targetLeft = getAbsoluteLeft(target);
-    var targetTop = getAbsoluteTop(target);
-    if (scrollY) {
-        document.body.scrollTop = targetTop;
+    var scrollable = GetScrollable(target);
+    var targetLeft = getRelativeLeft(target, scrollable);
+    var targetTop = getRelativeTop(target, scrollable);
+    if (!scrollX) targetLeft = scrollable.scrollLeft;
+    if (!scrollY) targetTop = scrollable.scrollTop;
+
+    if (easing == 'none') {
+        if (scrollY) scrollable.scrollTop = targetTop;
+        if (scrollX) scrollable.scrollLeft = targetLeft;
+    } else {
+        var $scrollable = $(scrollable);
+        if ($(target).is('body')) { $scrollable = $('html,body'); }
+        if (!scrollX) { $scrollable.animate({ scrollTop: targetTop }, duration, easing);
+        } else if (!scrollY) { $scrollable.animate({ scrollLeft: targetLeft }, duration, easing);
+        } else { $scrollable.animate({ scrollTop: targetTop, scrollLeft: targetLeft }, duration, easing); }
+    }    
+}
+
+function getRelativeLeft(node, parent) {
+    var currentNode = node;
+    var left = 0;
+    while (currentNode != null && currentNode.tagName != "BODY") {
+        left += currentNode.offsetLeft;
+        currentNode = currentNode.offsetParent;
+        if (currentNode == parent) break;
     }
-    if (scrollX) {
-        document.body.scrollLeft = targetLeft;
+    return left;
+}
+
+function getRelativeTop(node, parent) {
+    var currentNode = node;
+    var top = 0;
+    while (currentNode != null && currentNode.tagName != "BODY") {
+        top += currentNode.offsetTop;
+        currentNode = currentNode.offsetParent;
+        if (currentNode == parent) break;
     }
+    return top;
 }
 
 // ******************  Visibility and State Functions ****************** //
@@ -323,35 +379,39 @@ var widgetIdToShowFunction = new Object();
 var widgetIdToHideFunction = new Object();
 
 function SetPanelVisibility(dpId, value, easing, duration) {
-    var dp = document.getElementById(dpId);
+    var dp = $('#' + dpId);
+    var dpVisibility = document.getElementById(dpId).style.visibility;
+    //cannot use dp.css('visibility') because that gets the effective visiblity
+    //i.e. won't be able to set visibility on panels inside hidden panels
+
     if (value == 'toggle') {
-        if (dp.style.visibility == 'hidden') {
+        if (dpVisibility == 'hidden') {
             value = '';
         } else {
             value = 'hidden';
         }
     }
 
-    if ((dp.style.visibility == 'hidden' && value == 'hidden') ||
-        (dp.style.visibility == '' && value == '')) {
+    if ((dpVisibility == 'hidden' && value == 'hidden') ||
+        (dpVisibility == '' && value == '')) {
         return;
     }
 
     if (easing == 'none') {
-        dp.style.display = '';
-        dp.style.visibility = value;
+        dp.css('display', '');
+        dp.css('visibility', value);
     } else if (easing == 'fade') {
         if (value == 'hidden') {
-            if (dp.style.visibility != 'hidden') {
-                $('#' + dpId).fadeOut(duration, function () {
-                    $('#' + dpId).css('visibility', 'hidden');
+            if (dpVisibility != 'hidden') {
+                dp.fadeOut(duration, function () {
+                    dp.css('visibility', 'hidden');
                 });
             }
         } else {
-            if (dp.style.visibility == 'hidden') {
-                dp.style.display = 'none';
-                dp.style.visibility = '';
-                $('#' + dpId).fadeIn(duration, function () { });
+            if (dpVisibility == 'hidden') {
+                dp.css('display', 'none');
+                dp.css('visibility', '');
+                dp.fadeIn(duration, function () { });
             }
         }
     }
@@ -372,7 +432,8 @@ function SetPanelVisibility(dpId, value, easing, duration) {
 var widgetIdToPanelStateChangeFunction = new Object();
 
 function SetPanelState(dpId, stateid, easingOut, directionOut, durationOut, easingIn, directionIn, durationIn) {
-    if ($('#' + stateid).css('visibility') != "hidden" && $('#' + dpId).css('visibility') != "hidden") {
+    var dpWasHidden = $('#' + dpId).css('visibility') == "hidden";
+    if ($('#' + stateid).css('visibility') != "hidden" && !dpWasHidden) {
         return;
     }
 
@@ -391,19 +452,9 @@ function SetPanelState(dpId, stateid, easingOut, directionOut, durationOut, easi
             oldState.css('display', '');
             BringPanelStateToFront(dpId, stateid);
         } else if (easingOut == 'fade') {
-            //for IE
-            var oldTop = Number(oldState.css('top').replace("px", ""));
-            var oldLeft = Number(oldState.css('left').replace("px", ""));
-            var oldWidth = oldState.width();
-            var oldHeight = oldState.height();
-            oldState.css('width', width - oldLeft + "px");
-            oldState.css('height', height - oldTop + "px");
-
             oldState.fadeOut(durationOut, function () {
                 oldState.css('visibility', 'hidden');
                 BringPanelStateToFront(dpId, stateid);
-                oldState.css('width', oldWidth + "px");
-                oldState.css('height', oldHeight + "px");
             });
         } else {
             var oldTop = oldState.css('top');
@@ -429,8 +480,9 @@ function SetPanelState(dpId, stateid, easingOut, directionOut, durationOut, easi
         }
     }
 
-    $('#' + dpId).css('display', '');
-    $('#' + dpId).css('visibility', '');
+    var dp = $('#' + dpId);
+    dp.css('display', '');
+    dp.css('visibility', '');
 
     var newState = $('#' + stateid);
     if (easingIn == 'none') {
@@ -472,6 +524,58 @@ function SetPanelState(dpId, stateid, easingOut, directionOut, durationOut, easi
     if (panelStateChangeFunction) {
         panelStateChangeFunction();
     }
+
+    if (dpWasHidden) {
+        var showFunction = widgetIdToShowFunction[dpId];
+        if (showFunction) {
+            showFunction();
+        }
+    }
+}
+
+function SetPanelStateNext(dpId, loop, easingOut, directionOut, durationOut, easingIn, directionIn, durationIn) {
+    var oldStateId = GetPanelState(dpId);
+    if (oldStateId != '') {
+        var index = Number(oldStateId.substring(2, oldStateId.indexOf('u'))) + 1;
+        if (index >= $('#' + dpId).children().length) {
+            if (loop) index = 0;
+            else return;
+        }
+        var stateid = 'pd' + index + dpId;
+        SetPanelState(dpId, stateid, easingOut, directionOut, durationOut, easingIn, directionIn, durationIn);
+    }
+}
+
+function SetPanelStatePrevious(dpId, loop, easingOut, directionOut, durationOut, easingIn, directionIn, durationIn) {
+    var oldStateId = GetPanelState(dpId);
+    if (oldStateId != '') {
+        var index = Number(oldStateId.substring(2, oldStateId.indexOf('u'))) - 1;
+        if (index < 0) {
+            if (loop) index = $('#' + dpId).children().length - 1;
+            else return;
+        }
+        var stateid = 'pd' + index + dpId;
+        SetPanelState(dpId, stateid, easingOut, directionOut, durationOut, easingIn, directionIn, durationIn);
+    }
+}
+
+function SetPanelStateByValue(dpId, value, easingOut, directionOut, durationOut, easingIn, directionIn, durationIn) {
+    var toMatch = $.trim(value).toLowerCase();
+    var stateId;
+    $('#' + dpId).children('*[data-label]').each(function (index, element) {
+        // the || is to make sure it matches only the first one
+        if (!stateId && element.getAttribute('data-label').toLowerCase() == toMatch) stateId = element.id;
+    });
+    if (stateId) {
+        SetPanelState(dpId, stateId, easingOut, directionOut, durationOut, easingIn, directionIn, durationIn);
+    } else if (isNaN(value)) {
+        return;
+    } else {
+        var index = value - 1;
+        var stateId = 'pd' + index + dpId;
+        if ($('#' + dpId).children('[id="' + stateId + '"]').length > 0)
+            SetPanelState(dpId, stateId, easingOut, directionOut, durationOut, easingIn, directionIn, durationIn);
+    }
 }
 
 function BringPanelStateToFront(dpId, stateid) {
@@ -483,29 +587,45 @@ var widgetIdToMoveFunction = new Object();
 var widgetMoveInfo = new Object();
 
 function MoveWidgetTo(id, x, y, easing, duration) {
-    var target = document.getElementById(id);
-    var deltaX = x - parseInt(target.style.left);
-    var deltaY = y - parseInt(target.style.top);
+    var widget = $('#' + id);
+    var deltaX = x - Number(widget.css('left').replace("px", ""));
+    var deltaY = y - Number(widget.css('top').replace("px", ""));
     MoveWidgetBy(id, deltaX, deltaY, easing, duration);
 }
 
 function MoveWidgetBy(id, x, y, easing, duration, animationCompleteCallback) {
     LogMovedWidgetForDrag(id);
-    if (easing == 'none') {
-        var target = document.getElementById(id);
-        target.style.left = parseInt(target.style.left) + x;
-        target.style.top = parseInt(target.style.top) + y;
-    } else {
-        $('#' + id).animate({
-            left: '+=' + x,
-            top: '+=' + y
-        },
-           duration,
-           easing,
-           animationCompleteCallback
-           );
+
+    var widget = $('#' + id);
+
+    var horzProp = 'left';
+    var vertProp = 'top';
+    var horzX = x;
+    var vertY = y;
+
+    if (widget.css('left') == 'auto') {
+        horzProp = 'right';
+        horzX = -x;
+    } else if (widget.css('left') == '50%') {
+        horzProp = 'margin-left';
     }
 
+    if (widget.css('top') == 'auto') {
+        vertProp = 'bottom';
+        vertY = -y;
+    } else if (widget.css('top') == '50%') {
+        vertProp = 'margin-top';
+    }
+    var cssStyles = {};
+    cssStyles[horzProp] = '+=' + horzX;
+    cssStyles[vertProp] = '+=' + vertY;
+
+    if (easing == 'none') {
+        $('#' + id).animate(cssStyles, 0);
+    } else {
+        $('#' + id).animate(cssStyles, duration, easing, animationCompleteCallback);
+    }
+    
     var moveInfo = new Object();
     moveInfo.x = x;
     moveInfo.y = y;
@@ -517,8 +637,6 @@ function MoveWidgetBy(id, x, y, easing, duration, animationCompleteCallback) {
     if (moveFunction) {
         moveFunction();
     }
-
-    //MovePinnedWidgets(id, x, y, easing, duration);
 }
 
 function MoveWidgetWithThis(id, srcId) {
@@ -537,9 +655,9 @@ function MoveWidgetToLocationBeforeDrag(id, easing, duration) {
 
 function LogMovedWidgetForDrag(id) {
     if (widgetDragInfo.hasStarted) {
-        var widget = document.getElementById(id);
-        var x = parseInt(widget.style.left);
-        var y = parseInt(widget.style.top);
+        var widget = $('#' + id);
+        var y = Number(widget.css('top').replace("px", ""));
+        var x = Number(widget.css('left').replace("px", ""));
         var movedWidgets = widgetDragInfo.movedWidgets;
         if (!movedWidgets[id]) {
             movedWidgets[id] = new Location(x, y);
@@ -552,14 +670,18 @@ function LogMovedWidgetForDrag(id) {
 var widgetIdToStartDragFunction = new Object();
 var widgetIdToDragFunction = new Object();
 var widgetIdToDragDropFunction = new Object();
+var widgetIdToSwipeLeftFunction = new Object();
+var widgetIdToSwipeRightFunction = new Object();
 
 var widgetDragInfo = new Object();
 
 function StartDragWidget(event, id) {
     var x, y;
+    var tg;
     if (bIE) {
         x = window.event.clientX + document.documentElement.scrollLeft + document.body.scrollLeft;
         y = window.event.clientY + document.documentElement.scrollTop + document.body.scrollTop;
+        tg = window.event.srcElement;
     }
     else {
         if (event.changedTouches) {
@@ -570,6 +692,7 @@ function StartDragWidget(event, id) {
             y = event.pageY;
             event.preventDefault();
         }
+        tg = event.target;
     }
     widgetDragInfo.hasStarted = false;
     widgetDragInfo.widgetId = id;
@@ -580,6 +703,8 @@ function StartDragWidget(event, id) {
     widgetDragInfo.currentX = x;
     widgetDragInfo.currentY = y;
     widgetDragInfo.movedWidgets = new Object();
+    widgetDragInfo.startTime = (new Date()).getTime();
+    widgetDragInfo.targetWidget = tg;
 
     if (bIE) {
         document.attachEvent("onmousemove", DragWidget);
@@ -604,7 +729,12 @@ function DragWidget(event) {
         if (event.changedTouches) {
             x = event.changedTouches[0].pageX;
             y = event.changedTouches[0].pageY;
-            event.preventDefault();
+            //allow scroll (defaults) if only swipe events have cases and delta x is less than 5px and not blocking scrolling
+            var deltaX = x - widgetDragInfo.currentX;
+            var target = document.getElementById(widgetDragInfo.widgetId);
+            if (widgetIdToDragFunction[widgetDragInfo.widgetId] || (deltaX * deltaX) > 25 || ($axure.pageData.options.preventScroll && GetScrollable(target) == document.body)) {
+                event.preventDefault();
+            }
         } else {
             x = event.pageX;
             y = event.pageY;
@@ -616,7 +746,8 @@ function DragWidget(event) {
     widgetDragInfo.lastY = widgetDragInfo.currentY;
     widgetDragInfo.currentX = x;
     widgetDragInfo.currentY = y;
-
+    widgetDragInfo.currentTime = (new Date()).getTime();
+    
     SuppressBubble(event);
 
     if (!widgetDragInfo.hasStarted) {
@@ -638,30 +769,89 @@ function DragWidget(event) {
     }
 }
 
+function SuppressClickAfterDrag(event) {
+    if (bIE) { window.event.srcElement.detachEvent("onclick", SuppressClickAfterDrag);
+    } else { document.removeEventListener("click", SuppressClickAfterDrag, true); }
+    SuppressBubble(event);
+}
+
 function StopDragWidget(event) {
+
+    var tg;
     if (bIE) {
         document.detachEvent("onmousemove", DragWidget);
         document.detachEvent("onmouseup", StopDragWidget);
+        tg = window.event.srcElement;
     }
     else {
         document.removeEventListener("mousemove", DragWidget, true);
         document.removeEventListener("mouseup", StopDragWidget, true);
         document.removeEventListener("touchmove", DragWidget, true);
         document.removeEventListener("touchend", StopDragWidget, true);
+        tg = event.target;
     }
 
     if (widgetDragInfo.hasStarted) {
+        widgetDragInfo.currentTime = (new Date()).getTime();
         var dragDropFunction = widgetIdToDragDropFunction[widgetDragInfo.widgetId];
         if (dragDropFunction) {
             dragDropFunction();
         }
 
+        if (GetGlobalVariableValue('TotalDragX') < -30 && GetGlobalVariableValue('DragTime') < 1000) {
+            var swipeLeftFunction = widgetIdToSwipeLeftFunction[widgetDragInfo.widgetId];
+            if (swipeLeftFunction) {
+                swipeLeftFunction();
+            }
+        }
+
+        if (GetGlobalVariableValue('TotalDragX') > 30 && GetGlobalVariableValue('DragTime') < 1000) {
+            var swipeRightFunction = widgetIdToSwipeRightFunction[widgetDragInfo.widgetId];
+            if (swipeRightFunction) {
+                swipeRightFunction();
+            }
+        }
+
         document.body.style.cursor = widgetDragInfo.oldBodyCursor;
         var widget = document.getElementById(widgetDragInfo.widgetId);
-        widget.style.cursor = widgetDragInfo.oldCursor;
+        widget.style.cursor=widgetDragInfo.oldCursor;
+
+        if (widgetDragInfo.targetWidget == tg && !event.changedTouches) {
+            // suppress the click after the drag on desktop browsers
+            if (bIE && widgetDragInfo.targetWidget) { widgetDragInfo.targetWidget.attachEvent("onclick", SuppressClickAfterDrag); }
+            else { document.addEventListener("click", SuppressClickAfterDrag, true); }
+        }
     }
+        
     widgetDragInfo.hasStarted = false;
-    widgetDragInfo.movedWidgets = new Object();
+    widgetDragInfo.movedWidgets=new Object();
+
+    return false;
+}
+
+function GetDragX() {
+    if (widgetDragInfo.hasStarted) return widgetDragInfo.xDelta;
+    return 0;
+}
+
+function GetDragY() {
+    if (widgetDragInfo.hasStarted) return widgetDragInfo.yDelta;
+    return 0;
+}
+
+function GetTotalDragX() {
+    if (widgetDragInfo.hasStarted) return widgetDragInfo.currentX - widgetDragInfo.cursorStartX;
+    return 0;
+}
+
+function GetTotalDragY() {
+    if (widgetDragInfo.hasStarted) return widgetDragInfo.currentY - widgetDragInfo.cursorStartY;
+    return 0;
+}
+
+function GetDragTime() {
+    if (widgetDragInfo.hasStarted) return widgetDragInfo.currentTime - widgetDragInfo.startTime;
+    return 600000;
 }
 
 function GetDragCursorRectangles() {
@@ -772,34 +962,38 @@ function SetSelectedOption(id, value) {
 }
 
 function SetGlobalVariableValue(id, value) {
-    if (value.length > 200) {
-        value = value.substring(0, 200);
-    }
-    eval(id + ' = value');
-    try {
-        eval('if (top.opener) { top.opener.' + id + ' = value }');
-    } catch (e) { }
+    $axure.globalVariableProvider.setVariableValue(id, value);
 }
 
 function SetWidgetFormText(id, value) {
-    var value = PopulateVariables(value.toString());
     document.getElementById(id).value = value;
 }
 
 function SetFocusedWidgetText(value) {
     if (lastFocusedControl) {
-        var value = PopulateVariables(value.toString());
         lastFocusedControl.focus();
-        lastFocusedControl.value = value;        
+        lastFocusedControl.value = value;
     }
 }
 
+function GetRtfElementHeight(rtfElement) {
+    if (rtfElement.innerHTML == '') rtfElement.innerHTML = '&nbsp;';
+    return rtfElement.offsetHeight;
+}
+
 function SetWidgetRichText(id, value) {
-    var value = PopulateVariables(value);
+    //use the .visibility property instead of jquery's effective visibility
+    var rtfVisibility = document.getElementById(id).style.visibility;
+    if (rtfVisibility == 'hidden') $('#' + id).css('visibility', '');
+
     var rtfElement = document.getElementById(id + '_rtf');
-    var oldHeight = rtfElement.offsetHeight;
+    var oldHeight = GetRtfElementHeight(rtfElement);
+
+    //Replace any newlines with line breaks
+    value = value.replace(/\n/g, '<br/>');
+    
     rtfElement.innerHTML = value;
-    var newHeight = rtfElement.offsetHeight;
+    var newHeight = GetRtfElementHeight(rtfElement);
 
     var oldTop = Number($('#' + id).css('top').replace("px", ""));
     var vAlign = gv_vAlignTable[id];
@@ -826,20 +1020,42 @@ function GetSelectedOption(id) {
 }
 
 function GetNum(str) {
-    if (!str) return "";
+    //Setting a GlobalVariable to some blank text then setting a widget to the value of that variable would result in 0 not ""
+    //I have fixed this another way so commenting this should be fine now
+    //if (!str) return "";
     return isNaN(str) ? str : Number(str);
 }
 
 function GetGlobalVariableValue(id) {
-    return eval(id);
+    return $axure.globalVariableProvider.getVariableValue(id);
 }
 
 function GetGlobalVariableLength(id) {
     return GetGlobalVariableValue(id).length;
 }
 
-function GetWidgetFormText(id) {
-    return document.getElementById(id).value;
+function GetWidgetText(id) {
+    var idQuery = $('#' + id);
+    if (idQuery.is('div')) {
+        var $rtfObj = idQuery.find('div[id$="_rtf"]');
+        if ($rtfObj.length == 0) return;
+
+        var textOut = '';
+        $rtfObj.children('p').each(function (index) {
+            if (index != 0) textOut += '\n';
+
+            //Replace line breaks (set in SetWidgetRichText) with newlines and nbsp's with regular spaces.
+            var htmlContent = $(this).html().replace(/<br\/*>/ig, '\n').replace(/&nbsp;/ig, ' ');
+            textOut += $(htmlContent).text();
+        });
+
+        return textOut;
+    } else if (idQuery.is('input') &&
+        (idQuery.attr('type') == 'checkbox' || idQuery.attr('type') == 'radio')) {
+        return idQuery.parent().find('label').find('div[id$="_rtf"]').text();
+    } else {
+        return idQuery.val();
+    }
 }
 
 function GetFocusedWidgetText(id) {
@@ -919,43 +1135,136 @@ function IsValueNotOneOf(val, values) {
 
 // ******************  Rollover Functions ****************** //
 
+var gv_hoveredObject = '';
+
+function HookHover(id, bringFront) {
+//    return;
+//    
+//    $('.' + id + '_container').hover(
+//		function (e) { // mouseenter
+//		    if (id == gv_hoveredObject) return;
+//		    gv_hoveredObject = id;
+//		    SetWidgetHover(id, bringFront);
+//		},
+//		function () { // mouseleave
+//		    if (id == gv_hoveredObject) gv_hoveredObject = '';
+//		    SetWidgetNotHover(id, bringFront);
+//		}
+//	);
+}
+
+function HookClick(id, bringFront) {
+//    
+//    $('.' + id + '_container')
+//		.mousedown(function () {
+//		    SetWidgetMouseDown(id, bringFront);
+//		})
+//		.mouseup(function () {
+//		    SetWidgetNotMouseDown(id, bringFront);
+//		})
+//	;
+}
+
+
 function SetWidgetOriginal(id, bringFront) {
-    var textid = 'u' + (parseInt(id.substring(1)) + 1);
-    var json = '';
-    ApplyImageAndTextJson(id, textid, json, bringFront, true);
+    ApplyImageAndTextJson(id, 'normal', bringFront, true);
 }
 
 function SetWidgetHover(id, bringFront) {
-    if (IsWidgetSelected(id)) { return; }
-
-    var textid = 'u' + (parseInt(id.substring(1)) + 1);
-    var json = '';
-    if (window['Json' + id + '_hover']) {
-        json = window['Json' + id + '_hover'];
-    }
-    ApplyImageAndTextJson(id, textid, json, bringFront, false);
+    if (IsWidgetSelected(id) || IsWidgetDisabled(id)) { return; }
+    
+    ApplyImageAndTextJson(id, 'mouseOver', bringFront, false);
 }
 
 function SetWidgetNotHover(id, bringFront) {
-    if (IsWidgetSelected(id)) { return; }
+    if (IsWidgetSelected(id) || IsWidgetDisabled(id)) { return; }
 
     SetWidgetOriginal(id, bringFront);
 }
 
-function SetWidgetMouseDown(id, bringFront) {
-    if (IsWidgetSelected(id)) { return; }
+function GetWidgetCurrentState(id) {
+    if (IsWidgetDisabled(id)) return "disabled";
+    if (IsWidgetSelected(id)) return "selected";
+    if ($axure.eventManager.mouseOverObjectId == id ||
+        $axure.eventManager.mouseOverLinkId) return "mouseOver";
+    if ($axure.eventManager.mouseDownObjectId == id ||
+        $axure.eventManager.mouseDownLinkId) return "mouseDown";
 
-    var textid = 'u' + (parseInt(id.substring(1)) + 1);
-    var json = '';
-    if (window['Json' + id + '_down']) {
-        json = window['Json' + id + '_down'];
-    }
-    ApplyImageAndTextJson(id, textid, json, bringFront, false);
+    return "normal";
+}
+
+function SetLinkStyle(id, parentId, styleName) {
+    var style = GetStyleOverridesForState(id, parentId, styleName);
+    if ($.isEmptyObject(style)) return;
+
+    var textId = GetTextIdFromLink(id);
+
+    if (!gv_OriginalTextCache[textId]) { CacheOriginalText(textId); }
+    var parentObjectCache = gv_OriginalTextCache[textId].styleCache;
+
+    TextTransformWithVerticalAlignment(textId, function () {
+        var cssProps = GetCssStyleProperties(style);
+        $('#' + id).find('*').andSelf().each(function (index, element) {
+            element.setAttribute('style', parentObjectCache[element.id]);
+            ApplyCssProps(element, cssProps);
+        });
+    });
+}
+
+function ResetLinkStyle(id) {
+    var textId = GetTextIdFromLink(id);
+    var parentObjectCache = gv_OriginalTextCache[textId].styleCache;
+
+    TextTransformWithVerticalAlignment(textId, function () {
+        $('#' + id).find('*').andSelf().each(function (index, element) {
+            element.style.cssText = parentObjectCache[element.id];
+        });
+    });
+    if ($axure.eventManager.mouseDownObjectId) {
+        SetWidgetMouseDown($axure.eventManager.mouseDownObjectId);
+    } else if ($axure.eventManager.mouseOverObjectId) {
+        SetWidgetHover($axure.eventManager.mouseOverObjectId);
+    }    
+}
+
+function SetLinkHover(id) {
+    var parentId = $axure.eventManager.mouseOverObjectId;
+    SetLinkStyle(id, parentId, "mouseOver");
+}
+
+function SetLinkNotHover(id) {
+    ResetLinkStyle(id);
+}
+
+function SetLinkMouseDown(id) {
+    var parentId = $axure.eventManager.mouseOverObjectId;
+    SetLinkStyle(id, parentId, "mouseDown");
+}
+
+function SetLinkNotMouseDown(id) {
+    ResetLinkStyle(id);
+    
+    var style = GetStyleOverridesForState(id, $axure.eventManager.mouseOverObjectId, "mouseOver");
+    if(!$.isEmptyObject(style)) {
+        SetLinkHover(id);
+    } // we dont do anything here bocause the widget not mouse down has taken over here
+}
+
+function SetWidgetMouseDown(id, bringFront) {
+    if (IsWidgetSelected(id) || IsWidgetDisabled(id)) { return; }
+    var widgetObject = $axure.pageData.scriptIdToObject[id];
+    
+    if (!(widgetObject && widgetObject.style && widgetObject.style.stateStyles &&
+        widgetObject.style.stateStyles.mouseDown)) return;
+    
+    ApplyImageAndTextJson(id, 'mouseDown', bringFront, false);
 }
 
 function SetWidgetNotMouseDown(id, bringFront) {
-    if (IsWidgetSelected(id)) { return; }
-    if (window['Json' + id + '_hover']) {
+    if (IsWidgetSelected(id) || IsWidgetDisabled(id)) { return; }
+    var widgetObject = $axure.pageData.scriptIdToObject[id];
+    var hasMouseOver = widgetObject && widgetObject.style && widgetObject.style.stateStyles && widgetObject.style.stateStyles.mouseOver;
+    if(hasMouseOver) {
         SetWidgetHover(id, bringFront);
     } else {
         SetWidgetOriginal(id, bringFront);
@@ -967,24 +1276,29 @@ var gv_SelectedWidgets = new Object();
 function SetWidgetSelected(id) {
     var group = $('#' + id).attr('selectiongroup');
     if (group) {
-        $("[selectiongroup='" + group + "'][visibility!='hidden']").each(function (i,obj) {
+        $("[selectiongroup='" + group + "'][visibility!='hidden']").each(function (i, obj) {
             SetWidgetNotSelected($(obj).attr('id'));
         });
     }
 
-    var textid = 'u' + (parseInt(id.substring(1)) + 1);
-    var json = '';
-    if (window['Json' + id + '_selected']) {
-        json = window['Json' + id + '_selected'];
+    var widgetObject = $axure.pageData.scriptIdToObject[id];
+    if (widgetObject) {
+        while (widgetObject.isContained) widgetObject = widgetObject.parent;
+        var hasSelected = widgetObject && widgetObject.style && widgetObject.style.stateStyles && widgetObject.style.stateStyles.selected;
+        if (hasSelected) ApplyImageAndTextJson(id, 'selected', false, false);
     }
-    ApplyImageAndTextJson(id, textid, json, false, false);
-
+    
     gv_SelectedWidgets[id] = 'true';
 }
 
 function SetWidgetNotSelected(id) {
-    SetWidgetOriginal(id, false);
-
+    var widgetObject = $axure.pageData.scriptIdToObject[id];
+    if (widgetObject) {
+        while (widgetObject.isContained) widgetObject = widgetObject.parent;
+        var hasSelected = widgetObject && widgetObject.style && widgetObject.style.stateStyles && widgetObject.style.stateStyles.selected;
+        if (hasSelected) SetWidgetOriginal(id, false);
+    }
+    
     gv_SelectedWidgets[id] = 'false';
 }
 
@@ -993,48 +1307,112 @@ function IsWidgetSelected(id) {
     return false;
 }
 
-function DisableImageWidget(id) {
-    document.getElementById(id).style.visibility = 'hidden';
+var gv_DisabledWidgets = new Object();
 
-    var textid = 'u' + (parseInt(id.substring(1)) + 1);
-    var json = '';
-    if (window['Json' + id + '_disabled']) {
-        json = window['Json' + id + '_disabled'];
-    }
-    ApplyImageAndTextJson(id, textid, json, false, false);
+function DisableImageWidget(id) {
+    gv_DisabledWidgets[id] = true;
+
+    ApplyImageAndTextJson(id, 'disabled', false, false);
+    $('#' + id).find('a').css('cursor', 'default');    
 }
 
 function EnableImageWidget(id) {
-    document.getElementById(id).style.visibility = '';
+    //document.getElementById(id).style.visibility = '';
+    gv_DisabledWidgets[id] = false;
 
     SetWidgetOriginal(id, false);
+    $('#' + id).find('a').css('cursor', 'pointer');
 }
 
-function ApplyImageAndTextJson(id, textid, json, bringToFront, isOriginal) {
+function IsWidgetDisabled(id) {
+    return Boolean(gv_DisabledWidgets[id]);
+}
 
+function GetTextIdFromShape(id) {
+    return $.grep(
+        $('#' + id).children().map(function (i, obj) { return obj.id; }), // all the child ids
+        function (item) { return item.indexOf(id) < 0; })[0]; // that are not similar to the parent
+}
+
+function GetTextIdFromLink(id) {
+    var rtfElementId = $('#' + id).parentsUntil('[id^="u"][id$="_rtf"]').last().parent().attr('id');
+    return rtfElementId ? rtfElementId.replace('_rtf', '') : '';
+}
+
+function GetShapeIdFromText(textId) {
+    return $('#' + textId).parent().attr('id');
+}
+
+function ApplyImageAndTextJson(id, event, bringToFront, isOriginal) {
     var obj = document.getElementById(id);
     if (obj && obj.style.visibility == 'hidden' && isOriginal) { return; }
 
+    var textid = GetTextIdFromShape(id);
+    
     ResetImagesAndTextJson(id, textid);
 
-    if (json != '') {
-        ApplyImageStyle(id, json);
-        ApplyTextStyle(textid, json); 
+    if (event != '') {
+        var e = $('#' + id + '_img').data('events');
+        if (e && e[event]) {
+            $('#' + id + '_img').trigger(event);
+        }
+        var style = GetStyleOverridesForState(id, null, event);
+        ApplyImageStyle(id, event, style);
+        if(!$.isEmptyObject(style)) ApplyTextStyle(textid, style);
     }
 
     if (bringToFront) { BringToFront(id + '_container'); BringToFront(id); BringToFront(id + 'ann'); }
 }
 
-function ApplyImageStyle(id, json) {
-    CacheOriginalImgSrc(id)
+function GetStyleOverridesForState(id, parentId, state) {
+    var stateStyles = { };
 
-    if (json['imgclass']) {
-        $('#' + id + '_img').removeClass().empty();
-        $('#' + id + '_img').addClass(json['imgclass']);
-    } else if (json['imgsrc']) {
-        $('#' + id + '_img').removeClass().empty();
-        var src = json['imgsrc'];
-        $('#' + id + '_img').html("<IMG src='" + src + "' class='raw_image'>");
+    if(parentId) {
+        var parent = $axure.pageData.scriptIdToObject[parentId];
+        $.extend(stateStyles, parent && parent.getStateStyleOverrides(state));
+    }
+
+    var diagramObject = $axure.pageData.scriptIdToObject[id];
+    var isHyperlink = $('#' + id).is('a');
+    if(isHyperlink) {
+        if(state == 'mouseOver') {
+            $.extend(stateStyles, $axure.pageData.stylesheet.defaultStyles.hyperlinkMouseOver);
+            $.extend(stateStyles, diagramObject && GetFullStateStyle(diagramObject.style, 'mouseOver'));
+        } else if(state == 'mouseDown') {
+            $.extend(stateStyles, $axure.pageData.stylesheet.defaultStyles.hyperlinkMouseOver);
+            $.extend(stateStyles, diagramObject && GetFullStateStyle(diagramObject.style, 'mouseOver'));
+            $.extend(stateStyles, $axure.pageData.stylesheet.defaultStyles.hyperlinkMouseDown);
+            $.extend(stateStyles, diagramObject && GetFullStateStyle(diagramObject.style, 'mouseDown'));
+        } else $.extend(stateStyles, diagramObject && diagramObject.getStateStyleOverrides(state));
+    } else $.extend(stateStyles, diagramObject && diagramObject.getStateStyleOverrides(state));
+    return stateStyles;
+}
+
+function GetFullStateStyle(style, state) {
+    var stateStyle = style && style.stateStyles && style.stateStyles[state];
+    if(stateStyle) {
+        // acount for the custom style property
+        var customStyle = stateStyle.baseStyle && $axure.pageData.stylesheet.stylesById[stateStyle.baseStyle];
+        return $.extend(customStyle || {}, stateStyle);
+    }
+    return { };
+}
+
+function ApplyImageStyle(id, event, style) {
+    if (!(style && event)) return;
+    CacheOriginalImgSrc(id);
+
+    var diagramObject = $axure.pageData.scriptIdToObject[id];
+    var img = $('#' + id + '_img');
+    if (diagramObject.type != 'imageBox' || (style.image && style.image.cssStyle)) {
+        var styleName = style.image ? style.image.cssStyle : (id + "_" + event);
+        img.removeClass().empty().addClass(styleName);
+    } else if (style.image && style.image.url) {
+        //If this is a basic link (only for axure.com), then set the image border to none
+        //Resolves issue of blue borders around basic link images in Firefox 3.x
+        var basicLinkNoBorder = (img.parents('a.basiclink').length > 0) ? " style='border:none;' " : "";
+        
+        img.removeClass().html("<IMG src='" + style.image.url + "'" + basicLinkNoBorder + " class='raw_image'>");
     }
 }
 
@@ -1049,20 +1427,57 @@ function CacheOriginalImgSrc(id) {
 function ResetImagesAndTextJson(id, textid) {
     CacheOriginalImgSrc(id);
 
-    $('#' + id + '_img').removeClass().empty();
-    if (gv_OriginalImgSrc[id + '_img'] && gv_OriginalImgSrc[id + '_img'] != 'none') {
-        $('#' + id + '_img').html("<IMG src='" + gv_OriginalImgSrc[id + '_img'] + "' class='raw_image'>");
+    var img = $('#' + id + '_img'), e = img.data('events');
+    if (e && e['_normal']) {
+        img.trigger('_normal');
     } else {
-        $('#' + id + '_img').addClass(id + '_original');
+        img.removeClass().empty();
+        if (gv_OriginalImgSrc[id + '_img'] && gv_OriginalImgSrc[id + '_img'] != 'none') {
+            //If this is a basic link (only for axure.com), then set the image border to none
+            //Resolves issue of blue borders around basic link images in Firefox 3.x
+            var basicLinkNoBorder = (img.parents('a.basiclink').length > 0) ? " style='border:none;' " : "";
+
+            img.html("<IMG src='" + gv_OriginalImgSrc[id + '_img'] + "'" + basicLinkNoBorder + " class='raw_image'>");
+        } else {
+            img.addClass(id + '_normal');
+        }
     }
 
     var cacheObject = gv_OriginalTextCache[textid];
     if (cacheObject) {
-        var rtfElement = document.getElementById(textid + '_rtf');
+        var styleCache = cacheObject.styleCache;
+        $('#' + textid + "_rtf").find('*').each(function (index, element) {
+            element.style.cssText = styleCache[element.id];
+        });
         var container = document.getElementById(textid);
-        rtfElement.innerHTML = cacheObject.innerHTML;
         container.style.top = cacheObject.top;
+        
     }
+}
+
+// Preserves the alingment for the element textid after executing transformFn
+function TextTransformWithVerticalAlignment(textId, transformFn) {
+    if (!gv_OriginalTextCache[textId]) { CacheOriginalText(textId); }
+
+    var rtfElement = document.getElementById(textId + '_rtf');
+    if (!rtfElement) return;
+
+    var oldHeight = GetRtfElementHeight(rtfElement);
+
+    transformFn();
+
+    // now handle vertical alignment
+    var newHeight = GetRtfElementHeight(rtfElement);
+    var oldTop = Number($('#' + textId).css('top').replace("px", ""));
+    var vAlign = gv_vAlignTable[textId];
+
+    if (vAlign == "center") {
+        var newTop = oldTop - (newHeight - oldHeight) / 2;
+        $('#' + textId).css('top', newTop + 'px');
+    } else if (vAlign == "bottom") {
+        var newTop = oldTop - newHeight + oldHeight;
+        $('#' + textId).css('top', newTop + 'px');
+    } // do nothing if the alignment is top
 }
 
 //-------------------------------------------------------------------------
@@ -1074,83 +1489,96 @@ function ResetImagesAndTextJson(id, textid) {
 //                         { 'fontWeight' : 'bold',
 //                           'fontStyle' : 'italic' }
 //-------------------------------------------------------------------------
-function ApplyTextStyle(id, styleProperties) {
+function ApplyTextStyle(id, style) {
+    TextTransformWithVerticalAlignment(id, function () {
+        var styleProperties = GetCssStyleProperties(style);
+        $('#' + id + "_rtf").find('*').each(function (index, element) {
+            ApplyCssProps(element, styleProperties);
+        });
+    });
+}
 
-    if (!gv_OriginalTextCache[id]) { CacheOriginalText(id); }
-
-    var rtfElement = document.getElementById(id + '_rtf');
-    if (!rtfElement) return;
-
-    var oldHeight = rtfElement.offsetHeight;
-
-    for (var prop in styleProperties) {
-        if (prop != "imgclass") {
-            ApplyTextProperty(rtfElement, prop, styleProperties[prop]);
-        }
-    }
-
-    // now handle vertical alignment
-    var newHeight = rtfElement.offsetHeight;
-    var container = document.getElementById(id);
-    var oldTop = Number($('#' + id).css('top').replace("px", ""));
-    var vAlign = gv_vAlignTable[id];
-
-    if (vAlign == "center") {
-        var newTop = oldTop - (newHeight - oldHeight) / 2;
-        $('#' + id).css('top', newTop + 'px');
-    } else if (vAlign == "bottom") {
-        var newTop = oldTop - newHeight + oldHeight;
-        $('#' + id).css('top',newTop + 'px');
-    } // do nothing if the alignment is top      
-
-
-    //--------------------------------------------------------------------------
-    // ApplyStyleRecursive
-    //
-    // Applies a style recursively to all span and div tags including elementNode
-    // and all of its children.
-    //
-    //     element : the element to apply the style to
-    //     styleName : the name of the style property to set (eg. 'font-weight')     
-    //     styleValue : the value of the style to set (eg. 'bold')
-    //--------------------------------------------------------------------------
-    function ApplyStyleRecursive(element, styleName, styleValue) {
-        var nodeName = element.nodeName.toLowerCase();
-
-        if (nodeName == 'div' || nodeName == 'span' || nodeName == 'p') {
-            element.style[styleName] = styleValue;
-        }
-
-        for (var i = 0; i < element.childNodes.length; i++) {
-            ApplyStyleRecursive(element.childNodes[i], styleName, styleValue);
-        }
-    }
-
-    //---------------------------------------------------------------------------
-    // ApplyTextProperty
-    //
-    // Applies a text property to rtfElement.
-    //
-    //     rtfElement : the the root text element of the rtf object (this is the
-    //                  element named <id>_rtf
-    //     prop : the style property to set.
-    //     value : the style value to set.
-    //---------------------------------------------------------------------------
-    function ApplyTextProperty(rtfElement, prop, value) {
-        var oldHtml = rtfElement.innerHTML;
-        if (prop == 'fontWeight') {
-            rtfElement.innerHTML = oldHtml.replace(/< *b *\/?>/gi, "");
-        } else if (prop == 'fontStyle') {
-            rtfElement.innerHTML = oldHtml.replace(/< *i *\/?>/gi, "");
-        } else if (prop == 'textDecoration') {
-            rtfElement.innerHTML = oldHtml.replace(/< *u *\/?>/gi, "");
-        }
-
-        for (var i = 0; i < rtfElement.childNodes.length; i++) {
-            ApplyStyleRecursive(rtfElement.childNodes[i], prop, value);
-        }
+function ApplyCssProps(element, styleProperties) {
+    var nodeName = element.nodeName.toLowerCase();
+    if(nodeName == 'p') {
+        var parProps = styleProperties.parProps;
+        for(var prop in parProps) element.style[prop] = parProps[prop];
+    } else if(nodeName != 'a') {
+        var runProps = styleProperties.runProps;
+        for(prop in runProps) element.style[prop] = runProps[prop];
     }
 }
+
+function GetCssStyleProperties(style) {
+    var toApply = {};
+    toApply.runProps = {};
+    toApply.parProps = {};
+
+    if(style.italic !== undefined) toApply.runProps.fontStyle = style.italic ? 'italic' : 'normal';
+    if(style.bold !== undefined) toApply.runProps.fontWeight = style.bold ? 'bold' : 'normal';
+    if(style.underline !== undefined) toApply.runProps.textDecoration = style.underline ? 'underline' : 'none';
+    if(style.fontName) toApply.runProps.fontFamily = style.fontName;
+    if(style.fontSize) toApply.runProps.fontSize = style.fontSize;
+    if(style.foreGroundFill) {
+        var colorString = '00000' + style.foreGroundFill.color.toString(16);
+        toApply.runProps.color = '#' + colorString.substring(colorString.length - 6);
+    }
+
+    if(style.horizontalAlignment) toApply.parProps.textAlign = style.horizontalAlignment;
+    if(style.lineSpacing) toApply.parProps.lineHeight = style.lineSpacing;
+
+    return toApply;
+}
+
+//    //--------------------------------------------------------------------------
+//    // ApplyStyleRecursive
+//    //
+//    // Applies a style recursively to all span and div tags including elementNode
+//    // and all of its children.
+//    //
+//    //     element : the element to apply the style to
+//    //     styleName : the name of the style property to set (eg. 'font-weight')     
+//    //     styleValue : the value of the style to set (eg. 'bold')
+//    //--------------------------------------------------------------------------
+//    function ApplyStyleRecursive(element, styleName, styleValue) {
+//        var nodeName = element.nodeName.toLowerCase();
+
+//        if (nodeName == 'div' || nodeName == 'span' || nodeName == 'p') {
+//            element.style[styleName] = styleValue;
+//        }
+
+//        for (var i = 0; i < element.childNodes.length; i++) {
+//            ApplyStyleRecursive(element.childNodes[i], styleName, styleValue);
+//        }
+//    }
+
+//    //---------------------------------------------------------------------------
+//    // ApplyTextProperty
+//    //
+//    // Applies a text property to rtfElement.
+//    //
+//    //     rtfElement : the the root text element of the rtf object (this is the
+//    //                  element named <id>_rtf
+//    //     prop : the style property to set.
+//    //     value : the style value to set.
+//    //---------------------------------------------------------------------------
+//    function ApplyTextProperty(rtfElement, prop, value) {
+//        /*
+//        var oldHtml = rtfElement.innerHTML;
+//        if (prop == 'fontWeight') {
+//            rtfElement.innerHTML = oldHtml.replace(/< *b *\/?>/gi, "");
+//        } else if (prop == 'fontStyle') {
+//            rtfElement.innerHTML = oldHtml.replace(/< *i *\/?>/gi, "");
+//        } else if (prop == 'textDecoration') {
+//            rtfElement.innerHTML = oldHtml.replace(/< *u *\/?>/gi, "");
+//        }
+//        */
+
+//        for (var i = 0; i < rtfElement.childNodes.length; i++) {
+//            ApplyStyleRecursive(rtfElement.childNodes[i], prop, value);
+//        }
+//    }
+//}
 
 //---------------------------------------------------------------------------
 // GetAndCacheOriginalText
@@ -1158,13 +1586,23 @@ function ApplyTextStyle(id, styleProperties) {
 // Gets the html for the pre-rollover state and returns the Html representing
 // the Rich text.
 //---------------------------------------------------------------------------
+var CACHE_COUNTER = 0;
 function CacheOriginalText(id) {
-    var rtfElement = document.getElementById(id + '_rtf');
-    if (!rtfElement) return;
+    var rtfQuery = $('#' + id + "_rtf");
+    if (rtfQuery.length > 0) {
 
-    var cacheObject = new Object();
-    cacheObject.innerHTML = rtfElement.innerHTML;
-    cacheObject.top = $('#' + id).css('top');
-
-    gv_OriginalTextCache[id] = cacheObject;
+        var styleCache = {};
+        rtfQuery.find('*').each(function (index, element) {
+            var elementId = element.id;
+            if (!elementId) element.id = elementId = 'cache' + CACHE_COUNTER++;
+            styleCache[elementId] = element.style.cssText;
+        });
+        
+        var cacheObject = {
+            top: $('#' + id).css('top'),
+            styleCache:styleCache
+        };
+        
+        gv_OriginalTextCache[id] = cacheObject;        
+    }
 }

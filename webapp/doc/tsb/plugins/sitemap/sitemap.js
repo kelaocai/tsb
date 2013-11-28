@@ -15,9 +15,9 @@
         $('.sitemapPlusMinusLink').toggle(collapse_click, expand_click);
         $('.sitemapPageLink').click(node_click);
 
-        $('#linkscontainer').hide();
-        $('#togglelinks').click(links_click);
-        $('.sitemapLinkField').click(function () { this.select() })
+        $('#sitemapLinksAndOptionsContainer').hide();
+        $('#sitemapToggleLinks').click(links_click);
+        $('.sitemapLinkField').click(function () { this.select() });
 
         //        $('#sitemapHost').parent().resize(function () {
         //            $('#sitemapHost').height($(this).height());
@@ -30,18 +30,18 @@
             var nodeUrl = decodedPageLoc.substr(decodedPageLoc.lastIndexOf('/') ? decodedPageLoc.lastIndexOf('/') + 1 : 0);
 
             $('.sitemapPageLink').removeClass('sitemapHighlight');
-            $('.sitemapPageLink[nodeUrl=' + nodeUrl + ']').addClass('sitemapHighlight');
+            $('.sitemapPageLink[nodeUrl="' + nodeUrl + '"]').addClass('sitemapHighlight');
 
 
-            $('#linkspagename').html($('.sitemapHighlight > .sitemapPageName').html());
+            $('#sitemapLinksPageName').html('Links to ' + $('.sitemapHighlight > .sitemapPageName').html());
 
-            var playerLoc = $(location).attr('href').split("#")[0];
+            var playerLoc = $(location).attr('href').split("#")[0].split("?")[0];
             var qString = "?Page=" + nodeUrl.substr(0, nodeUrl.lastIndexOf('.'));
-            $('#linkwithplayer').val(playerLoc + qString);
-            $('#linkwithoutplayer').val(pageLoc);
+            $('#sitemapLinkWithPlayer').val(playerLoc + qString);
+            $('#sitemapLinkWithoutPlayer').val(pageLoc);
 
-            $('#closeplayer').unbind('click');
-            $('#closeplayer').click(function () { window.location.href = pageLoc; });
+            $('#sitemapClosePlayer').unbind('click');
+            $('#sitemapClosePlayer').click(function () { window.location.href = pageLoc; });
 
             return false;
         });
@@ -62,24 +62,28 @@
     }
 
     function node_click(event) {
-        $axure.page.navigate(this.getAttribute('nodeUrl'));
+        var preserveVars = !$('#sitemapVariableOption').is(':checked');
+        $axure.page.navigate(this.getAttribute('nodeUrl'), preserveVars);
     }
 
     function links_click(event) {
-        $('#linkscontainer').toggle();
-        if ($('#linkscontainer').is(":visible")) {
-            $('#togglelinks').html('Hide Links');
+        $('#sitemapLinksAndOptionsContainer').toggle();
+        if ($('#sitemapLinksAndOptionsContainer').is(":visible")) {
+            $('#sitemapToggleLinks').html('Hide Links and Options');
         } else {
-            $('#togglelinks').html('Show Links');
+            $('#sitemapToggleLinks').html('Show Links and Options');
         }
     }
 
     function generateSitemap() {
         var treeUl = "<div id='sitemapTreeContainer'>";
-        treeUl += "<div class='sitemapToolbar'><a id='togglelinks' class='sitemapToolbarButton'>Show Links</a><div id='linkscontainer'>";
-        treeUl += "<span id='linkspagename'>Page Name</span>";
-        treeUl += "<div class='sitemapLinkContainer'><span class='sitemapLinkLabel'>Link with sitemap</span><input id='linkwithplayer' type='text' class='sitemapLinkField'/></div>";
-        treeUl += "<div class='sitemapLinkContainer'><span class='sitemapLinkLabel'>Link without sitemap - </span><a id='closeplayer'>link</a><input id='linkwithoutplayer' type='text' class='sitemapLinkField'/></div></div></div>";
+        treeUl += "<div class='sitemapToolbar'><a id='sitemapToggleLinks' class='sitemapToolbarButton'>Show Links and Options</a><div id='sitemapLinksAndOptionsContainer'>";
+        treeUl += "<div id='sitemapLinksContainer'><span id='sitemapLinksPageName'>Page Name</span>";
+        treeUl += "<div class='sitemapLinkContainer'><span class='sitemapLinkLabel'>with sitemap</span><input id='sitemapLinkWithPlayer' type='text' class='sitemapLinkField'/></div>";
+        treeUl += "<div class='sitemapLinkContainer'><span class='sitemapLinkLabel'>without sitemap - </span><a id='sitemapClosePlayer'>link</a><input id='sitemapLinkWithoutPlayer' type='text' class='sitemapLinkField'/></div></div>";
+        treeUl += "<div id='sitemapOptionsContainer'><span id='sitemapOptionsHeader'>Variable Options</span>";
+        treeUl += "<div class='sitemapOptionContainer'><input id='sitemapVariableOption' type='checkbox' value='checkbox' /><label id='sitemapVariableOptionLabel' for='sitemapVariableOption'><span class='optionLabel'>Sitemap links clear variables</span></label></div></div>";
+        treeUl += "</div></div>";
         treeUl += "<ul class='sitemapTree'>";
         var rootNodes = sitemap.rootNodes;
         for (var i = 0; i < rootNodes.length; i++) {

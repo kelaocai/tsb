@@ -1,9 +1,7 @@
 ﻿// use this to isolate the scope
 (function () {
 
-    if (!configuration.showPageNotes) { return; }
-
-    var SHOW_HIDE_ANIMATION_DURATION = 0;
+    if (!window.configuration.showPageNotes) { return; }
 
     $(document).ready(function () {
         $axure.player.createPluginHost({
@@ -14,10 +12,6 @@
 
         generatePageNotes();
 
-        //        $('#pageNotesHost').parent().resize(function () {
-        //            $('#pageNotesHost').height($(this).height());
-        //        });
-
         // bind to the page load
         $axure.page.bind('load.page_notes', function () {
 
@@ -27,17 +21,15 @@
             //populate the notes
             var notes = $axure.page.notes;
             if (notes) {
-                var pageName = notes["pageName"];
+                var pageName = $axure.page.pageName;
                 $('#pageNameHeader').html(pageName);
-                var showNames = notes["showNotesNames"] == "True";
+                var showNames = window.configuration.showPageNoteNames;
 
                 for (var noteName in notes) {
-                    if (noteName != "pageName" && noteName != "showNotesNames") {
-                        if (showNames) {
-                            $('#pageNotesContent').append("<div class='pageNoteName'>" + noteName + "</div>");
-                        }
-                        $('#pageNotesContent').append("<div class='pageNote'>" + notes[noteName] + "</div>");
+                    if (showNames) {
+                        $('#pageNotesContent').append("<div class='pageNoteName'>" + noteName + "</div>");
                     }
+                    $('#pageNotesContent').append("<div class='pageNote'>" + notes[noteName] + "</div>");
                 }
             }
 
@@ -48,13 +40,13 @@
     });
 
     function generatePageNotes() {
-        var pageNotesUI = "<div id='pageNotesScrollContainer'>";
-        pageNotesUI += "<div id='pageNotesContainer'>";
-        pageNotesUI += "<div id='pageNameHeader'></div>";
-        pageNotesUI += "<span id='pageNotesContent'></span>";
-        pageNotesUI += "</div></div>";
+        var pageNotesUi = "<div id='pageNotesScrollContainer'>";
+        pageNotesUi += "<div id='pageNotesContainer'>";
+        pageNotesUi += "<div id='pageNameHeader'></div>";
+        pageNotesUi += "<span id='pageNotesContent'></span>";
+        pageNotesUi += "</div></div>";
 
-        $('#pageNotesHost').html(pageNotesUI);
+        $('#pageNotesHost').html(pageNotesUi);
     }
 
 })();   

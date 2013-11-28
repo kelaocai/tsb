@@ -13,17 +13,23 @@ div.intcases
 	font-family: arial; 
 	font-size: 12px;
     text-align:left; 
-	border:1px solid #666666; 
-	background:#DDDDDD none repeat scroll 0% 0%; 
+	border:1px solid #AAA; 
+	background:#FFF none repeat scroll 0% 0%; 
 	z-index:9999; 
 	visibility:hidden; 
-	position:absolute; 
-	padding:5px;
+	position:absolute;
+    padding: 0px;
+    border-radius: 3px;
 }
 
 div.intcaselink
 {
 	cursor: pointer;
+    padding: 3px 8px 3px 8px;
+    margin: 5px;
+	background:#EEE none repeat scroll 0% 0%; 
+	border:1px solid #AAA;
+    border-radius: 3px;
 }
 
 div.annnoteimage

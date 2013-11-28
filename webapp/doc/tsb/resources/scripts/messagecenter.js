@@ -4,16 +4,23 @@
 
 // sniff chrome
 var CHROME_5_LOCAL = false;
+var CHROME = false;
+var WEBKIT = false;
 (function () {
-    var regex = /Chrome\/([0-9]+).([0-9]+)/g
-    var match = regex.exec(navigator.userAgent);
-    CHROME_5_LOCAL = match &&
-                Number(match[1]) >= 5 &&
+    var chromeRegex = /Chrome\/([0-9]+).([0-9]+)/g ;
+    var chromeMatch = chromeRegex.exec(navigator.userAgent);
+    CHROME = Boolean(chromeMatch);
+    CHROME_5_LOCAL = chromeMatch &&
+                Number(chromeMatch[1]) >= 5 &&
                 location.href.indexOf('file://') >= 0;
+
+    var webkitRegex = /WebKit\//g ;
+    WEBKIT = Boolean(webkitRegex.exec(navigator.userAgent));
 })();
 
 
 (function() {
+    var _topMessageCenter;
     var _messageCenter = {};
     var _listeners = [];
     var _stateListeners = [];
@@ -27,8 +34,18 @@ var CHROME_5_LOCAL = false;
     var _childrenMessageCenters = [];
 
     // create $axure if it hasn't been created
-    if (typeof $axure == 'undefined') $axure = function() {};
+    if (!window.$axure) window.$axure = function() {};
     $axure.messageCenter = _messageCenter;
+
+    // isolate scope, and initialize _topMessageCenter.
+    (function() {
+        if (!CHROME_5_LOCAL) {
+            var topAxureWindow = window;
+            while (topAxureWindow.parent && topAxureWindow.parent !== topAxureWindow
+                && topAxureWindow.parent.$axure) topAxureWindow = topAxureWindow.parent;
+            _topMessageCenter = topAxureWindow.$axure.messageCenter;
+        }
+    })();
 
     $(document).ready(function() {
         if (CHROME_5_LOCAL) {
@@ -43,9 +60,8 @@ var CHROME_5_LOCAL = false;
                 _handleRequest(request);
             });
         } else {
-            var topMessageCenter = top.$axure.messageCenter;
-            if (topMessageCenter != _messageCenter) {
-                topMessageCenter.addChildMessageCenter(_messageCenter);
+            if (_topMessageCenter != _messageCenter) {
+                _topMessageCenter.addChildMessageCenter(_messageCenter);
                 console.log('adding from ' + window.location.toString());
             }
         }
@@ -82,7 +98,7 @@ var CHROME_5_LOCAL = false;
 
     // -----------------------------------------------------------------------------------------
     // This method allows for dispatching messages in the non-chromelocal scenario.
-    // Each child calls this on top.$axure.messageCenter
+    // Each child calls this on _topMessageCenter
     // -----------------------------------------------------------------------------------------
     _messageCenter.addChildMessageCenter = function(messageCenter) {
         _childrenMessageCenters[_childrenMessageCenters.length] = messageCenter;
@@ -90,7 +106,7 @@ var CHROME_5_LOCAL = false;
 
     // -----------------------------------------------------------------------------------------
     // This method allows for dispatching messages in the non-chromelocal scenario.
-    // Each child calls this on top.$axure.messageCenter
+    // Each child calls this on _topMessageCenter
     // -----------------------------------------------------------------------------------------
     _messageCenter.dispatchMessage = function(message, data) {
         _handleRequest({
@@ -108,15 +124,18 @@ var CHROME_5_LOCAL = false;
         _messageCenter.dispatchMessage(message, data);
 
         $('iframe').each(function(index, frame) {
-            if (frame.contentWindow.$axure && frame.contentWindow.$axure.messageCenter) {
-                frame.contentWindow.$axure.messageCenter.dispatchMessageRecursively(message, data);
-            }
+            //try,catch to handle permissions error in FF when loading pages from another domain
+            try {
+                if (frame.contentWindow.$axure && frame.contentWindow.$axure.messageCenter) {
+                    frame.contentWindow.$axure.messageCenter.dispatchMessageRecursively(message, data);
+                }
+            }catch(e) {}
         });
     };
 
     _messageCenter.postMessage = function (message, data) {
         if (!CHROME_5_LOCAL) {
-            top.$axure.messageCenter.dispatchMessageRecursively(message, data);
+            _topMessageCenter.dispatchMessageRecursively(message, data);
         } else {
             var request = {
                 message : message,

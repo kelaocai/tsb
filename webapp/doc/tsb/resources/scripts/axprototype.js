@@ -2,34 +2,47 @@
 if (typeof console == 'undefined') console = {
     log: function () { }
 };
+if (window._axUtils) $axure.utils = _axUtils;
 
 function setUpController() {
 
     $axure.utils = _axUtils;
-
-    $(document).ready(function () {
-//        if (!CHROME_5_LOCAL) {
-//            $('#mainFrame').bind('load', function () {
-//                $axure.page.triggerEvent('load');
-//            });
-//        } else {
-//            $('#axureEventDiv').bind('routedEventFired', function () {
-//                var request = JSON.parse($(this).text());
-//                if (request.message == 'pageLoad') {
-//                    $axure.page.data = request.data;
-//                    $axure.page.triggerEvent('load');
-//                }
-//            });
-//        }
-    });
 
     var _page = {};
     $axure.page = _page;
 
     _axUtils.makeBindable(_page, ['load']);
 
-    var _player = function () { }
+    var _player = function() {
+    };
     $axure.player = _player;
+
+    //-----------------------------------------
+    //Global Var array, getLinkUrl function and setGlobalVar listener are
+    //for use in setting global vars in page url string when clicking a 
+    //page in the sitemap
+    //-----------------------------------------
+    var _globalVars = {};
+
+    var _getLinkUrl = function(baseUrl) {
+        toAdd = '';
+        var globalVariableName;
+        for (globalVarName in _globalVars) {
+            var val = _globalVars[globalVarName];
+            if (val != null && val.length > 0) {
+                if (toAdd.length > 0) toAdd += '&';
+                toAdd += globalVarName + '=' + encodeURIComponent(val);
+            }
+        }
+        return toAdd.length > 0 ? baseUrl + '#' + toAdd + "&CSUM=1" : baseUrl;
+    };
+    $axure.getLinkUrlWithVars = _getLinkUrl;
+
+    $axure.messageCenter.addMessageListener(function(message, data) {
+        if (message == 'setGlobalVar'){
+            _globalVars[data.globalVarName] = data.globalVarValue;
+        }
+    });
 
     $axure.messageCenter.addStateListener('page.data', function (key, value) {
         for (var subKey in value) {
@@ -43,17 +56,34 @@ function setUpController() {
     // this method should test if it is actually a prototype page being loaded and properly set
     // up all the controller for the page if it is
     // ---------------------------------------------
-    _page.navigate = function (url) {
+    _page.navigate = function (url, includeVariables) {
         var mainFrame = document.getElementById("mainFrame");
         //var mainFrame = window.parent.mainFrame;
         // if this is a relative url...
+        var urlToLoad;
         if (url.indexOf(':') < 0 || url[0] == '/') {
             var winHref = window.location.href;
             var page = winHref.substring(0, winHref.lastIndexOf('/') + 1) + url;
-            mainFrame.contentWindow.location.href = page;
+            urlToLoad = page;
         } else {
-            mainFrame.contentWindow.location.href = url;
+            urlToLoad = url;
         }
+        if (!includeVariables) {
+            mainFrame.contentWindow.location.href = urlToLoad;
+            return;
+        }
+        var urlWithVars = $axure.getLinkUrlWithVars(urlToLoad);
+        var currentData = $axure.messageCenter.getState('page.data');
+        var currentUrl = currentData && currentData.location;
+
+        // this is so we can make sure the current frame reloads if the variables have changed
+        // by default, if the location is the same but the hash code is different, the browser will not
+        // trigger a reload
+        mainFrame.contentWindow.location.href =
+            currentUrl && urlToLoad.toLowerCase() != currentUrl.toLowerCase()
+                ? urlWithVars
+                : 'resources/reload.html#' + encodeURI(urlWithVars);
+
     };
 
     var pluginIds = [];
@@ -136,7 +166,3 @@ function setUpPageStateManager() {
 
     mgr.panelToStateIds = {};
 }
-
-//setUpController();
-//setUpDocumentStateManager();
-//setUpPageStateManager();
