@@ -146,47 +146,8 @@ class answer_class extends AWS_MODEL
 	
 		return $data;
 	}	
-
-	public function get_vote_agree_by_answer_ids($answer_ids)
-	{
-		if (!is_array($answer_ids))
-		{
-			return false;
-		}
-		
-		array_walk_recursive($answer_ids, 'intval_string');
-		
-		if ($users = $this->fetch_all('answer_vote', "answer_id IN(" . implode(',', $answer_ids) . ") AND vote_value = 1"))
-		{				
-			foreach ($users as $key => $val)
-			{
-				$data[$val['answer_id']][] = $val;				
-			}
-		}
-		
-		return $data;
-	}
 	
-	public function get_vote_against_by_answer_ids($answer_ids)
-	{
-		if (!is_array($answer_ids))
-		{
-			return false;
-		}
-		
-		array_walk_recursive($answer_ids, 'intval_string');
-		
-		if ($users = $this->fetch_all('answer_vote', "answer_id IN(" . implode(',',$answer_ids) . ") AND vote_value = -1"))
-		{
-			foreach ($users as $key => $val)
-			{
-				$data[$val['answer_id']][] = $val;				
-			}
-		}
 	
-		return $data;
-	}
-
 	/**
 	 *
 	 * 根据回复问题ID，得到反对的用户
@@ -218,6 +179,46 @@ class answer_class extends AWS_MODEL
 		
 		return $data;
 	}	
+	
+	public function get_vote_agree_by_answer_ids($answer_ids)
+	{
+		if (!is_array($answer_ids))
+		{
+			return false;
+		}
+		
+		array_walk_recursive($answer_ids, 'intval_string');
+		
+		if ($votes = $this->fetch_all('answer_vote', 'answer_id IN(' . implode(',', $answer_ids) . ') AND vote_value = 1'))
+		{				
+			foreach ($votes as $key => $val)
+			{
+				$data[$val['answer_id']][] = $val;				
+			}
+		}
+		
+		return $data;
+	}
+	
+	public function get_vote_against_by_answer_ids($answer_ids)
+	{
+		if (!is_array($answer_ids))
+		{
+			return false;
+		}
+		
+		array_walk_recursive($answer_ids, 'intval_string');
+		
+		if ($votes = $this->fetch_all('answer_vote', 'answer_id IN(' . implode(',', $answer_ids) . ') AND vote_value = -1'))
+		{
+			foreach ($votes as $key => $val)
+			{
+				$data[$val['answer_id']][] = $val;				
+			}
+		}
+	
+		return $data;
+	}
 	
 	/**
 	 *
@@ -257,18 +258,13 @@ class answer_class extends AWS_MODEL
 	 * 
 	 * 保存问题回复内容
 	 */
-	public function save_answer($question_id, $answer_content, $uid, $anonymous = 0, $ip_address = null)
+	public function save_answer($question_id, $answer_content, $uid, $anonymous = 0)
 	{
 		if (!$question_info = $this->model('question')->get_question_info_by_id($question_id))
 		{
 			return false;
 		}
-		
-		if (!$ip_address)
-		{
-			$ip_address = fetch_ip();
-		}
-		
+				
 		if (!$answer_id = $this->insert('answer', array(
 			'question_id' => $question_info['question_id'], 
 			'answer_content' => htmlspecialchars($answer_content), 
@@ -276,7 +272,7 @@ class answer_class extends AWS_MODEL
 			'uid' => intval($uid),
 			'category_id' => $question_info['category_id'],
 			'anonymous' => intval($anonymous),
-			'ip' => ip2long($ip_address)
+			'ip' => ip2long(fetch_ip())
 		)))
 		{
 			return false;
@@ -285,20 +281,17 @@ class answer_class extends AWS_MODEL
 		// 更新问题最后时间
 		$this->shutdown_update('question', array(
 			'update_time' => time(),
-		), "question_id = " . intval($question_id));
+		), 'question_id = ' . intval($question_id));
 		
-		// 更新问题回复数量,及时间
-		if ($answer_id)
-		{
-			// 更新问题回复计数
-			$this->model('question')->update_answer_count($question_id);
-			$this->model('question')->update_answer_users_count($question_id);
+
+		// 更新问题回复计数
+		$this->model('question')->update_answer_count($question_id);
+		$this->model('question')->update_answer_users_count($question_id);
 			
-			// 更新用户回复计数
-			$this->shutdown_update('users', array(
-				'answer_count' => $this->count('answer', 'uid = ' . intval($uid))
-			), 'uid = ' . intval($uid));
-		}
+		// 更新用户回复计数
+		$this->shutdown_update('users', array(
+			'answer_count' => $this->count('answer', 'uid = ' . intval($uid))
+		), 'uid = ' . intval($uid));
 		
 		return $answer_id;
 	}
@@ -358,11 +351,7 @@ class answer_class extends AWS_MODEL
 	 */
 	public function change_answer_vote($answer_id, $vote_value = 1, $uid = 0,$reputation_factor=0)
 	{
-		$answer_id = intval($answer_id);
-		
-		$uid = (intval($uid) == 0) ? USER::get_client_uid() : $uid;
-		
-		if ($answer_id == 0)
+		if (!$answer_id)
 		{
 			return false;
 		}
@@ -381,20 +370,16 @@ class answer_class extends AWS_MODEL
 		$question_id = $answer_info['question_id'];
 		$answer_uid = $answer_info['uid'];
 		
-		$vote_info = $this->get_answer_vote_status($answer_id, $uid);
-		
-		if (empty($vote_info)) //添加记录
+		if (!$vote_info = $this->get_answer_vote_status($answer_id, $uid)) //添加记录
 		{
-			$data = array(
-				"answer_id" => $answer_id, 
-				"answer_uid" => $answer_uid, 
-				"vote_uid" => $uid, 
-				"add_time" => time(), 
-				"vote_value" => $vote_value,
-				"reputation_factor"=>$reputation_factor
-			);
-			
-			$this->insert('answer_vote', $data);
+			$this->insert('answer_vote', array(
+				'answer_id' => $answer_id, 
+				'answer_uid' => $answer_uid, 
+				'vote_uid' => $uid, 
+				'add_time' => time(), 
+				'vote_value' => $vote_value,
+				'reputation_factor' => $reputation_factor
+			));
 			
 			if ($vote_value == 1)
 			{
@@ -447,16 +432,10 @@ class answer_class extends AWS_MODEL
 		
 		$this->update_question_vote_count($question_id);
 		
-		//更新回复作者的被赞同数
-		$this->model('account')->update_users_fields(array('agree_count' => $this->user_agree_count($answer_uid)), $answer_uid);
+		// 更新回复作者的被赞同数
+		$this->model('account')->sum_user_agree_count($answer_uid);
 		
 		return true;
-	}
-	
-	
-	public function user_agree_count($uid)
-	{
-		return $this->count('answer_vote', 'vote_value = 1 AND answer_uid = ' . intval($uid));
 	}
 
 	/**
@@ -724,7 +703,6 @@ class answer_class extends AWS_MODEL
 		if ($answer_info['uid'] != $uid)
 		{
 			$this->model('notify')->send($uid, $answer_info['uid'], notify_class::TYPE_ANSWER_COMMENT_AT_ME, notify_class::CATEGORY_QUESTION, $answer_info['question_id'], array(
-				'comment_type' => 2, 
 				'from_uid' => $uid, 
 				'question_id' => $answer_info['question_id'], 
 				'item_id' => $answer_info['answer_id'], 
@@ -739,7 +717,6 @@ class answer_class extends AWS_MODEL
 				if ($user_id != $uid)
 				{
 					$this->model('notify')->send($uid, $user_id, notify_class::TYPE_ANSWER_COMMENT_AT_ME, notify_class::CATEGORY_QUESTION, $answer_info['question_id'], array(
-						'comment_type' => 2, 
 						'from_uid' => $uid, 
 						'question_id' => $answer_info['question_id'], 
 						'item_id' => $answer_info['answer_id'], 

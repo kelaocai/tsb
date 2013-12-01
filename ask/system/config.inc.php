@@ -16,11 +16,11 @@
 define('G_COOKIE_DOMAIN','');
 
 // 定义 Cookies 前缀
-define('G_COOKIE_PREFIX','svf_');
+define('G_COOKIE_PREFIX','fnj_');
 
 // 定义应用加密 KEY
-define('G_SECUKEY','bgqqifkdjild');
-define('G_COOKIE_HASH_KEY', 'qiakcxgjyntpbuo');
+define('G_SECUKEY','hinfjzdrrhtg');
+define('G_COOKIE_HASH_KEY', 'gbufwponkscalca');
 
 define('G_INDEX_SCRIPT', '?/');
 
@@ -34,3 +34,6 @@ define('G_SESSION_SAVE', 'db');
 
 // Session 文件存储路径
 define('G_SESSION_SAVE_PATH', '');
+
+// Lucene 支持
+define('G_LUCENE_SUPPORT', FALSE);

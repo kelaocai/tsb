@@ -64,8 +64,6 @@ class AWS_CONTROLLER
 		TPL::import_css(array(
 			'css/common.css',
 			'css/link.css',
-			'css/btn-sprite.css',
-			'css/icon-sprite.css',
 			'js/plug_module/style.css', 
 		));
 		
@@ -74,10 +72,18 @@ class AWS_CONTROLLER
 			TPL::import_js(get_setting('base_url') . '/language/' . SYSTEM_LANG . '.js');
 		}
 		
+		if (HTTP::is_browser('ie', 8))
+		{
+			TPL::import_js('js/jquery.js');
+			TPL::import_js('js/respond.js');
+		}
+		else
+		{
+			TPL::import_js('js/jquery.2.js');
+		}
+		
 		TPL::import_js(array(
-			'http://cdn.bootcss.com/jquery/2.0.3/jquery.min.js',
-			//'js/jquery.form.js',
-			'http://cdn.bootcss.com/jquery.form/3.32/jquery.form.min.js',
+			'js/jquery.form.js',
 			'js/plug_module/plug-in_module.js',
 			'js/functions.js',
 			'js/aw_template.js',
@@ -120,7 +126,7 @@ class AWS_CONTROLLER
 		return FALSE;
 	}
 
-	public function model($model)
+	public function model($model = null)
 	{
 		return AWS_APP::model($model);
 	}
@@ -211,6 +217,8 @@ class AWS_CONTROLLER
 
 class AWS_ADMIN_CONTROLLER extends AWS_CONTROLLER
 {
+	var $per_page = 20;
+	
 	public function __construct()
 	{
 		parent::__construct(false);
@@ -251,8 +259,16 @@ class AWS_ADMIN_CONTROLLER extends AWS_CONTROLLER
 			TPL::import_js(get_setting('base_url') . '/language/' . SYSTEM_LANG . '.js');
 		}
 		
+		if (HTTP::is_browser('ie', 8))
+		{
+			TPL::import_js('js/jquery.js');
+		}
+		else
+		{
+			TPL::import_js('js/jquery.2.js');
+		}
+		
 		TPL::import_js(array(
-			'js/jquery.js',
 			'js/jquery.form.js',
 			'js/common.js',
 			'js/functions.js',

@@ -123,6 +123,11 @@ class crond_class extends AWS_MODEL
 		$this->model('answer')->calc_best_answer();
 		$this->model('question')->auto_lock_question();
 		$this->model('active')->clean_expire();
+		
+		if (defined('G_LUCENE_SUPPORT') AND G_LUCENE_SUPPORT)
+		{
+			$this->model('search_lucene')->optimize();
+		}
 	}
 	
 	// 每周执行
@@ -134,6 +139,7 @@ class crond_class extends AWS_MODEL
 		if (!get_setting('db_engine') OR get_setting('db_engine') == 'MyISAM')
 		{
 			$this->query('OPTIMIZE TABLE `' . get_table('sessions') . '`');
+			$this->query('REPAIR TABLE `' . get_table('sessions') . '`');
 		}
 	}
 }

@@ -36,6 +36,14 @@ class publish_class extends AWS_MODEL
 			case 'answer':
 				$this->publish_answer($approval_item['data']['question_id'], $approval_item['data']['answer_content'], $approval_item['uid'], $approval_item['data']['anonymous'], $approval_item['data']['attach_access_key'], $approval_item['data']['auto_focus']);
 			break;
+			
+			case 'article':
+				$this->publish_article($approval_item['data']['title'], $approval_item['data']['message'], $approval_item['uid'], $approval_item['data']['topics'], $approval_item['data']['attach_access_key'], $approval_item['data']['permission_create_topic']);
+			break;
+			
+			case 'article_comment':
+				$this->publish_article_comment($approval_item['data']['article_id'], $approval_item['data']['message'], $approval_item['uid'], $approval_item['data']['at_uid']);
+			break;
 		}
 		
 		$this->delete('approval', 'id = ' . intval($id));
@@ -164,6 +172,17 @@ class publish_class extends AWS_MODEL
 			$this->model('wecenter')->send_wechat_message($fake_id, "您的问题 [" . $question_info['question_content'] . "] 收到了 " . $answer_user['user_name'] . " 的回答:\n\n" . strip_tags($answer_content) . "\n\n\n<a href=\"" . get_js_url('/question/' . $question_id) . "\">点击查看问题详情</a>");
 		}
 		
+		if (defined('G_LUCENE_SUPPORT') AND G_LUCENE_SUPPORT)
+		{
+			$this->model('search_lucene')->push_index('question', $question_info['question_content'], $question_info['question_id'], array(
+				'best_answer' => $question_info['best_answer'],
+				'answer_count' => $question_info['answer_count'],
+				'comment_count' => $question_info['comment_count'],
+				'focus_count' => $question_info['focus_count'],
+				'agree_count' => $question_info['agree_count']
+			));
+		}
+		
 		return $answer_id;
 	}
 	
@@ -196,9 +215,9 @@ class publish_class extends AWS_MODEL
 			{
 				foreach ($topics as $key => $topic_title)
 				{
-					$topic_id = $this->model('topic')->save_topic($question_id, $topic_title, $uid, 0, null, $create_topic);
+					$topic_id = $this->model('topic')->save_topic($question_id, $topic_title, $uid, null, $create_topic);
 					
-					$this->model('question')->save_link($topic_id, $question_id);
+					$this->model('topic')->save_topic_relation($uid, $topic_id, $question_id, 'question');
 				}
 			}
 			
@@ -231,9 +250,111 @@ class publish_class extends AWS_MODEL
 			ACTION_LOG::save_action($uid, $question_id, ACTION_LOG::CATEGORY_QUESTION, ACTION_LOG::ADD_QUESTION, htmlspecialchars($question_content), htmlspecialchars($question_detail), 0, intval($anonymous));
 			
 			$this->model('integral')->process($uid, 'NEW_QUESTION', get_setting('integral_system_config_new_question'), '发起问题 #' . $question_id, $question_id);
+			
+			if (defined('G_LUCENE_SUPPORT') AND G_LUCENE_SUPPORT)
+			{
+				$this->model('search_lucene')->push_index('question', $question_content, $question_id, array(
+					'best_answer' => 0,
+					'answer_count' => 0,
+					'comment_count' => 0,
+					'focus_count' => 1,
+					'agree_count' => 0
+				));
+			}
 		}
 		
 		return $question_id;
+	}
+	
+	public function publish_article($title, $message, $uid, $topics = null, $attach_access_key = null, $create_topic = true)
+	{
+		if ($article_id = $this->insert('article', array(
+			'uid' => intval($uid),
+			'title' => htmlspecialchars($title),
+			'message' => htmlspecialchars($message),
+			'add_time' => time()
+		)))
+		{
+			set_human_valid('question_valid_hour');
+			
+			if (is_array($topics))
+			{
+				foreach ($topics as $key => $topic_title)
+				{
+					$topic_id = $this->model('topic')->save_topic(null, $topic_title, $uid, null, $create_topic);
+					
+					$this->model('topic')->save_topic_relation($uid, $topic_id, $article_id, 'article');
+				}
+			}
+			
+			if ($attach_access_key)
+			{
+				$this->model('publish')->update_attach('article', $article_id, $attach_access_key);
+			}
+			
+			// 记录日志
+			ACTION_LOG::save_action($uid, $article_id, ACTION_LOG::CATEGORY_QUESTION, ACTION_LOG::ADD_ARTICLE, htmlspecialchars($title), htmlspecialchars($message), 0);
+			
+			if (defined('G_LUCENE_SUPPORT') AND G_LUCENE_SUPPORT)
+			{
+				$this->model('search_lucene')->push_index('article', $title, $article_id, array(
+					'comments' => 0,
+					'views' => 0
+				));
+			}
+		}
+		
+		return $article_id;
+	}
+	
+	public function publish_article_comment($article_id, $message, $uid, $at_uid = null)
+	{
+		if (!$article_info = $this->model('article')->get_article_info_by_id($article_id))
+		{
+			return false;
+		}
+		
+		$comment_id = $this->insert('article_comments', array(
+			'uid' => intval($uid),
+			'article_id' => intval($article_id),
+			'message' => htmlspecialchars($message),
+			'add_time' => time(),
+			'at_uid' => intval($at_uid)
+		));
+		
+		$this->update('article', array(
+			'comments' => $this->count('article_comments', 'article_id = ' . intval($article_id))
+		), 'id = ' . intval($article_id));
+		
+		if ($at_uid AND $at_uid != $uid)
+		{
+			$this->model('notify')->send($uid, $at_uid, notify_class::TYPE_ARTICLE_COMMENT_AT_ME, notify_class::CATEGORY_ARTICLE, $article_info['id'], array(
+				'from_uid' => $uid, 
+				'article_id' => $article_info['id'], 
+				'item_id' => $comment_id
+			));
+		}
+		
+		set_human_valid('answer_valid_hour');
+		
+		if ($article_info['uid'] != $uid)
+		{
+			$this->model('notify')->send($uid, $article_info['uid'], notify_class::TYPE_ARTICLE_NEW_COMMENT, notify_class::CATEGORY_ARTICLE, $article_info['id'], array(
+				'from_uid' => $uid, 
+				'article_id' => $article_info['id'], 
+				'item_id' => $comment_id
+			));
+		}
+		
+		if (defined('G_LUCENE_SUPPORT') AND G_LUCENE_SUPPORT)
+		{
+			$this->model('search_lucene')->push_index('article', $article_info['title'], $article_info['id'], array(
+				'comments' => $article_info['comments'],
+				'views' => $article_info['views']
+			));
+		}
+				
+		return $comment_id;
 	}
 	
 	public function update_attach($item_type, $item_id, $attach_access_key)
@@ -247,7 +368,20 @@ class publish_class extends AWS_MODEL
 			'item_id' => intval($item_id)
 		), "item_type = '" . $this->quote($item_type) . "' AND item_id = 0 AND access_key = '" . $this->quote($attach_access_key) . "'"))
 		{
-			return $this->shutdown_update($item_type, array('has_attach' => 1), $item_type . '_id = ' . intval($item_id));
+			switch ($item_type)
+			{
+				default:
+					$update_key = $item_type . '_id';
+				break;
+				
+				case 'article':
+					$update_key = 'id';
+				break;
+			}
+			
+			return $this->shutdown_update($item_type, array(
+				'has_attach' => 1
+			), $update_key . ' = ' . intval($item_id));
 		}
 	}
 

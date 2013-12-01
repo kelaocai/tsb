@@ -43,7 +43,7 @@ class main extends AWS_CONTROLLER
 		
 		if ($_GET['notification_id'])
 		{
-			$this->model('notify')->read_notification($_GET['notification_id'], $this->user_id, $_GET['ori']);
+			$this->model('notify')->read_notification($_GET['notification_id'], $this->user_id);
 		}
 		
 		if (is_mobile() AND HTTP::get_cookie('_ignore_ua_check') != 'TRUE')
@@ -70,10 +70,15 @@ class main extends AWS_CONTROLLER
 			$_GET['sort'] = 'ASC';
 		}
 		
-		if (!$question_info['question_content_fulltext'])
+		if (get_setting('unfold_question_comments') == 'Y')
 		{
-			$this->model('search_index')->push_index('question', $question_info['question_content'], $question_info['question_id']);
+			$_GET['comment_unfold'] = 'all';
 		}
+		
+		/*if (!$question_info['question_content_fulltext'])
+		{
+			$this->model('search_fulltext')->push_index('question', $question_info['question_content'], $question_info['question_id']);
+		}*/
 		
 		$question_info['redirect'] = $this->model('question')->get_redirect($question_info['question_id']);
 		
@@ -132,7 +137,7 @@ class main extends AWS_CONTROLLER
 			$question_info['category_info'] = $this->model('system')->get_category_info($question_info['category_id']);
 		}
 		
-		$question_info['user_info'] = $this->model("account")->get_user_info_by_uid($question_info['published_uid'], true);
+		$question_info['user_info'] = $this->model('account')->get_user_info_by_uid($question_info['published_uid'], true);
 		
 		if ($_GET['column'] != 'log')
 		{
@@ -160,7 +165,7 @@ class main extends AWS_CONTROLLER
 				
 				$answer_list_where[] = 'uid IN(' . implode($follow_uids, ',') . ')';
 				$answer_count_where = 'uid IN(' . implode($follow_uids, ',') . ')';
-				$answer_order_by = "add_time ASC";
+				$answer_order_by = 'add_time ASC';
 			}
 			else if ($_GET['sort_key'] == 'add_time')
 			{
@@ -314,7 +319,7 @@ class main extends AWS_CONTROLLER
 		TPL::assign('question_info', $question_info);
 		TPL::assign('question_focus', $this->model('question')->has_focus_question($question_info['question_id'], $this->user_id));
 		
-		$question_topics = $this->model('question')->get_question_topic_by_question_id($question_info['question_id']);
+		$question_topics = $this->model('topic')->get_topics_by_item_id($question_info['question_id'], 'question');
 		
 		if (sizeof($question_topics) == 0 AND $this->user_id)
 		{
@@ -347,7 +352,10 @@ class main extends AWS_CONTROLLER
 				}
 			}
 			
-			TPL::assign('helpful_users', $this->model('question')->get_helpful_users($question_related_ids, get_setting('question_helpful_users_limit'), $exclude_helpful_uids));
+			if ($question_related_ids)
+			{
+				TPL::assign('helpful_users', $this->model('question')->get_helpful_users($question_related_ids, get_setting('question_helpful_users_limit'), $exclude_helpful_uids));
+			}
 		}
 		
 		$this->crumb($question_info['question_content'], '/question/' . $question_info['question_id']);

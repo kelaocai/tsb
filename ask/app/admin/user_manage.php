@@ -20,8 +20,6 @@ if (!defined('IN_ANWSION'))
 
 class user_manage extends AWS_ADMIN_CONTROLLER
 {
-	var $per_page = 20;
-
 	public function list_action()
 	{		
 		if ($_POST['action'] == 'search')
@@ -248,7 +246,10 @@ class user_manage extends AWS_ADMIN_CONTROLLER
 			'visit_feature',
 			'visit_people',
 			'answer_show',
-			'function_interval'
+			'function_interval',
+			'publish_article',
+			'edit_article',
+			'edit_question_topic'
 		);
 		
 		$group_setting = array();

@@ -31,14 +31,14 @@ class core_cache
 		'servers' => array(
 			array(
 				'host' => '127.0.0.1', 
-				'port' => 41111, 
+				'port' => 11211, 
 				'persistent' => true,
 				'timeout' => 5,
 				'compression' => false,	// 压缩
 				'compatibility' => false	// 兼容旧版 Memcache servers
 			)	
 		)
-		*/
+		*/			
 	);
 	
 	private $groupPrefix = '_group_';
@@ -71,6 +71,8 @@ class core_cache
 		}
 			
 		$this->cache_factory = Zend_Cache::factory($this->frontendName, $this->backendName, $this->frontendOptions, $this->backendOptions);
+		
+		AWS_APP::debug_log('cache', null, 'Backend: ' . $this->backendName);
 		
 		return true;
 	}

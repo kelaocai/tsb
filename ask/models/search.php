@@ -19,34 +19,10 @@ if (!defined('IN_ANWSION'))
 }
 
 class search_class extends AWS_MODEL
-{
-	public function bulid_query($table, $column, $q, $where = null)
-	{
-		if (is_array($q))
-		{
-			$q = implode(' ', $q);
-		}
-		
-		if ($analysis_keyword = $this->model('system')->analysis_keyword($q))
-		{
-			$keyword = implode(' ', $analysis_keyword);
-		}
-		else
-		{
-			$keyword = $q;
-		}
-		
-		if ($where)
-		{
-			$where = ' AND (' . $where . ')';
-		}
-		
-		return "SELECT *, MATCH(" . $column . "_fulltext) AGAINST('" . $this->quote($this->model('search_index')->encode_search_code($keyword)) . "' IN BOOLEAN MODE) AS score FROM " . $this->get_table($table) . " WHERE MATCH(" . $column . "_fulltext) AGAINST('" . $this->quote($this->model('search_index')->encode_search_code($keyword)) . "' IN BOOLEAN MODE) " . $where . " ORDER BY score DESC, agree_count DESC";
-	}
-	
+{	
 	public function get_all_result($q, $limit = 20)
 	{
-		$result = array_merge((array)$this->search_users($q, $limit), (array)$this->search_topics($q, $limit), (array)$this->search_questions($q, null, $limit));
+		$result = array_merge((array)$this->search_users($q, $limit), (array)$this->search_topics($q, $limit), (array)$this->search_questions($q, null, $limit), (array)$this->search_articles($q, null, $limit));
 		
 		return $result;
 	}
@@ -91,33 +67,28 @@ class search_class extends AWS_MODEL
 		return $result;
 	}
 	
-	public function search_questions($q, $topic_ids = '', $limit = 20)
+	public function search_questions($q, $topic_ids = null, $limit = 20)
 	{
-		if ($topic_ids)
+		if ($topic_ids OR !defined('G_LUCENE_SUPPORT') OR !G_LUCENE_SUPPORT)
 		{
-			$topic_ids = explode(',', $topic_ids);
-			
-			array_walk_recursive($topic_ids, 'intval_string');
-			
-			$where = "question_id IN(SELECT question_id FROM " . $this->get_table('topic_question') . " WHERE topic_id IN (" . implode(',', $topic_ids) . "))";
+			return $this->model('search_fulltext')->search_questions($q, $topic_ids, $limit);
 		}
 		
-		return $this->query_all($this->bulid_query('question', 'question_content', $q, $where), $limit);
+		return $this->model('search_lucene')->search($q, $limit, 'question');
+	}
+	
+	public function search_articles($q, $topic_ids = null, $limit = 20)
+	{
+		if ($topic_ids OR !defined('G_LUCENE_SUPPORT') OR !G_LUCENE_SUPPORT)
+		{
+			return $this->model('search_fulltext')->search_articles($q, $topic_ids, $limit);
+		}
+		
+		return $this->model('search_lucene')->search($q, $limit, 'article');
 	}
 	
 	public function search($q, $search_type, $limit = 20, $topic_ids = null)
 	{		
-		if (! in_array($search_type, array(
-			'all', 
-			'user', 
-			'topic', 
-			'topic_add', 
-			'question'
-		)))
-		{
-			$search_type = 'all';
-		}
-		
 		$q = (array)explode(' ', str_replace('  ', ' ', trim($q)));
 		
 		foreach ($q AS $key => $val)
@@ -130,27 +101,29 @@ class search_class extends AWS_MODEL
 		
 		if (sizeof($q) == 0)
 		{
-			return array();
+			return false;
 		}
-		
-		$data = array();
 		
 		switch ($search_type)
 		{
-			case 'all' :
+			default :
 				$result_list = $this->get_all_result($q, $limit);
 				break;
 			
-			case 'user' :
+			case 'users' :
 				$result_list = $this->search_users($q, $limit);
 				break;
 			
-			case 'topic' :
+			case 'topics' :
 				$result_list = $this->search_topics($q, $limit);
 				break;
 			
-			case 'question' :
+			case 'questions' :
 				$result_list = $this->search_questions($q, $topic_ids, $limit);
+				break;
+				
+			case 'articles' :
+				$result_list = $this->search_articles($q, $topic_ids, $limit);
 				break;
 		}
 		
@@ -174,15 +147,15 @@ class search_class extends AWS_MODEL
 	{
 		if (isset($result_info['last_login']))
 		{
-			$result_type = 3;
+			$result_type = 'users';
 			
-			$sno = $result_info['uid'];
+			$search_id = $result_info['uid'];
 				
 			$user_info = $this->model('account')->get_user_info_by_uid($result_info['uid'], true);
 				
 			$name = $user_info['user_name'];
 			
-			$url = 'people/' . $user_info['url_token'];
+			$url = get_js_url('/people/' . $user_info['url_token']);
 			
 			$detail = array(
 				'avatar_file' => get_avatar_url($user_info['uid'], 'mid'),	// 头像
@@ -194,11 +167,11 @@ class search_class extends AWS_MODEL
 		}
 		else if ($result_info['topic_id'])
 		{
-			$result_type = 2;
+			$result_type = 'topics';
 			
-			$sno = $result_info['topic_id'];
+			$search_id = $result_info['topic_id'];
 			
-			$url = 'topic/' . $result_info['url_token'];
+			$url = get_js_url('/topic/' . $result_info['url_token']);
 			
 			$name = $result_info['topic_title'];
 			
@@ -212,11 +185,11 @@ class search_class extends AWS_MODEL
 		}
 		else if ($result_info['question_id'])
 		{
-			$result_type = 1;
+			$result_type = 'questions';
 			
-			$sno = $result_info['question_id'];
+			$search_id = $result_info['question_id'];
 			
-			$url = 'question/' . $result_info['question_id'];
+			$url = get_js_url('/question/' . $result_info['question_id']);
 			
 			$name = $result_info['question_content'];
 			
@@ -228,14 +201,29 @@ class search_class extends AWS_MODEL
 				'agree_count' => $result_info['agree_count']
 			);
 		}
+		else if ($result_info['id'])
+		{
+			$result_type = 'articles';
+			
+			$search_id = $result_info['id'];
+			
+			$url = get_js_url('/article/' . $result_info['id']);
+			
+			$name = $result_info['title'];
+			
+			$detail = array(
+				'comments' => $result_info['comments'],
+				'views' => $result_info['views']
+			);
+		}
 		
-		if ($name)
+		if ($result_type)
 		{
 			return array(
 				'uid' => $result_info['uid'], 
 				'type' => $result_type, 
 				'url' => $url, 
-				'sno' => $sno, 
+				'search_id' => $search_id, 
 				'name' => $name, 
 				'detail' => $detail
 			);

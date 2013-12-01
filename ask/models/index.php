@@ -27,10 +27,12 @@ class index_class extends AWS_MODEL
 		// 我关注的话题		
 		if ($user_focus_topics_ids = $this->model('topic')->get_focus_topic_ids_by_uid($uid))
 		{			
-			if ($user_focus_topics_questions_ids = $this->model('topic')->get_question_ids_by_topics_ids($user_focus_topics_ids, 1000))
+			/*if ($user_focus_topics_questions_ids = $this->model('topic')->get_item_ids_by_topics_ids($user_focus_topics_ids, 'question', 1000))
 			{
 				$user_focus_topics_by_questions_ids = $this->model('question')->get_focus_questions_topic($user_focus_topics_questions_ids, $user_focus_topics_ids);
-			}
+			}*/
+			
+			$user_focus_topics_article_ids = $this->model('topic')->get_item_ids_by_topics_ids($user_focus_topics_ids, 'article', 1000);
 		}
 		
 		// 我关注的人
@@ -42,46 +44,41 @@ class index_class extends AWS_MODEL
 		// 我关注的人添加问题, 回复问题, 赞成回答, 增加话题
 		// 我关注的人关注了问题
 		// 关注的话题的回复添加了赞同
-		if ($user_focus_questions_ids)
+		/*if ($user_focus_questions_ids)
 		{
 			// 回复问题, 添加话题
-			/*$where_in[] = "(associate_id IN (" . implode(',', $user_focus_questions_ids) . ")
-			AND associate_action IN (" . ACTION_LOG::ANSWER_QUESTION . ',' . ACTION_LOG::ADD_TOPIC . ") AND uid <> " . $uid . ")";*/
+			//$where_in[] = "(associate_id IN (" . implode(',', $user_focus_questions_ids) . ") AND associate_action IN (" . ACTION_LOG::ANSWER_QUESTION . ',' . ACTION_LOG::ADD_TOPIC . ") AND uid <> " . $uid . ")";
 			
 			// 回复问题
-			$where_in[] = "(associate_id IN (" . implode(',', $user_focus_questions_ids) . ")
-			AND associate_action = " . ACTION_LOG::ANSWER_QUESTION . " AND uid <> " . $uid . ")";
-			
-			// 添加问题
-			$where_in[] = "(associate_id IN (" . implode(',', $user_focus_questions_ids) . ")
-			AND associate_action = " . ACTION_LOG::ADD_QUESTION . " AND uid = " . $uid . ")";
-		}
+			//$where_in[] = "(associate_id IN (" . implode(',', $user_focus_questions_ids) . ") AND associate_action = " . ACTION_LOG::ANSWER_QUESTION . " AND uid <> " . $uid . ")";
+		}*/
 		
-		if ($user_focus_topics_questions_ids)
+		/*if ($user_focus_topics_questions_ids)
 		{
 			// 回复问题
-			$where_in[] = "(associate_id IN (" . implode(',', $user_focus_topics_questions_ids) . ")
-			AND associate_action = " . ACTION_LOG::ANSWER_QUESTION . " AND uid <> " . $uid . ")";
+			//$where_in[] = "(associate_id IN (" . implode(',', $user_focus_topics_questions_ids) . ") AND associate_action = " . ACTION_LOG::ANSWER_QUESTION . " AND uid <> " . $uid . ")";
 			
 			// 添加话题
-			/*if ($user_focus_topics_ids)
+			if ($user_focus_topics_ids)
 			{
-				$where_in[] = "(associate_id IN (" . implode(',', $user_focus_topics_questions_ids) . ")
-				AND associate_attached IN (" . implode(',', $user_focus_topics_ids) . ")
-				AND associate_action = " . ACTION_LOG::ADD_TOPIC . " AND uid <> " . $uid . ")";
+				//$where_in[] = "(associate_id IN (" . implode(',', $user_focus_topics_questions_ids) . ") AND associate_attached IN (" . implode(',', $user_focus_topics_ids) . ") AND associate_action = " . ACTION_LOG::ADD_TOPIC . " AND uid <> " . $uid . ")";
 			}
 			else
 			{
-				$where_in[] = "(associate_id IN (" . implode(',', $user_focus_topics_questions_ids) . ")
-				AND associate_action = " . ACTION_LOG::ADD_TOPIC . " AND uid <> " . $uid . ")";
-			}*/
+				//$where_in[] = "(associate_id IN (" . implode(',', $user_focus_topics_questions_ids) . ") AND associate_action = " . ACTION_LOG::ADD_TOPIC . " AND uid <> " . $uid . ")";
+			}
 			
 			// 关注的话题的回复添加了赞同
-			/*if (sizeof($user_focus_topics_questions_ids) > 0)
+			if (sizeof($user_focus_topics_questions_ids) > 0)
 			{
-				$where_in[] = "(associate_id IN (" . implode(',', $user_focus_topics_questions_ids) . ")
-				AND associate_action = " . ACTION_LOG::ADD_AGREE . " AND uid <> " . $uid . ")";
-			}*/
+				//$where_in[] = "(associate_id IN (" . implode(',', $user_focus_topics_questions_ids) . ") AND associate_action = " . ACTION_LOG::ADD_AGREE . " AND uid <> " . $uid . ")";
+			}
+		}*/
+		
+		if ($user_focus_topics_article_ids)
+		{
+			// 发表文章
+			$where_in[] = "(associate_id IN (" . implode(',', $user_focus_topics_article_ids) . ") AND associate_action = " . ACTION_LOG::ADD_ARTICLE . " AND uid <> " . $uid . ")";
 		}
 		
 		if ($user_follow_uids)
@@ -90,27 +87,25 @@ class index_class extends AWS_MODEL
 			/*$where_in[] = "(uid IN (" . implode(',', $user_follow_uids) . ")
 			AND associate_action IN(" . ACTION_LOG::ADD_QUESTION . ',' . ACTION_LOG::ANSWER_QUESTION . ',' . ACTION_LOG::ADD_AGREE . ',' . ACTION_LOG::ADD_TOPIC ."))";*/
 			
-			// 添加问题, 回复问题, 添加话题
-			$where_in[] = "(uid IN (" . implode(',', $user_follow_uids) . ")
-			AND associate_action IN(" . ACTION_LOG::ADD_QUESTION . ',' . ACTION_LOG::ANSWER_QUESTION . ',' . ACTION_LOG::ADD_TOPIC . "))";
+			// 添加问题, 回复问题, 添加话题, 添加文章
+			$where_in[] = "(uid IN (" . implode(',', $user_follow_uids) . ") AND associate_action IN(" . ACTION_LOG::ADD_QUESTION . ',' . ACTION_LOG::ANSWER_QUESTION . ',' . ACTION_LOG::ADD_TOPIC . ',' . ACTION_LOG::ADD_ARTICLE . '))';
 			
 			// 增加赞同
-			$where_in[] = "(uid IN (" . implode(',', $user_follow_uids) . ")
-			AND associate_action IN(" . ACTION_LOG::ADD_AGREE .") AND uid <> " . $uid . ")";
+			$where_in[] = "(uid IN (" . implode(',', $user_follow_uids) . ") AND associate_action IN(" . ACTION_LOG::ADD_AGREE .") AND uid <> " . $uid . ")";
 			
 			// 添加问题关注
 			if ($user_focus_questions_ids)
 			{
-				$where_in[] = "(uid IN (" . implode(',', $user_follow_uids) . ")
-				AND associate_action = " . ACTION_LOG::ADD_REQUESTION_FOCUS . "
-				AND associate_id NOT IN (" . implode(',', $user_focus_questions_ids) . "))";
+				$where_in[] = "(uid IN (" . implode(',', $user_follow_uids) . ") AND associate_action = " . ACTION_LOG::ADD_REQUESTION_FOCUS . " AND associate_id NOT IN (" . implode(',', $user_focus_questions_ids) . "))";
 			}
 			else
 			{
-				$where_in[] = "(uid IN (" . implode(',', $user_follow_uids) . ")
-				AND associate_action = " . ACTION_LOG::ADD_REQUESTION_FOCUS . ")";
+				$where_in[] = "(uid IN (" . implode(',', $user_follow_uids) . ") AND associate_action = " . ACTION_LOG::ADD_REQUESTION_FOCUS . ")";
 			}
 		}
+		
+		// 添加问题, 添加文章
+		$where_in[] = "(associate_action IN (" . ACTION_LOG::ADD_QUESTION . ", " . ACTION_LOG::ADD_ARTICLE . ") AND uid = " . $uid . ")";
 		
 		if ($questions_uninterested_ids = $this->model('question')->get_question_uninterested($uid))
 		{
@@ -137,14 +132,21 @@ class index_class extends AWS_MODEL
 		
 		foreach ($action_list as $key => $val)
 		{
-			$action_list_question_ids[] = $val['associate_id'];
-			
-			if (in_array($val['associate_action'], array(
-				ACTION_LOG::ANSWER_QUESTION, 
-				ACTION_LOG::ADD_AGREE
-			)) AND $val['associate_attached'])
+			if ($val['associate_action'] == ACTION_LOG::ADD_ARTICLE)
 			{
-				$action_list_answer_ids[] = $val['associate_attached'];
+				$action_list_article_ids[] = $val['associate_id'];
+			}
+			else
+			{
+				$action_list_question_ids[] = $val['associate_id'];
+				
+				if (in_array($val['associate_action'], array(
+					ACTION_LOG::ANSWER_QUESTION, 
+					ACTION_LOG::ADD_AGREE
+				)) AND $val['associate_attached'])
+				{
+					$action_list_answer_ids[] = $val['associate_attached'];
+				}
 			}
 			
 			if (in_array($val['associate_action'], array(
@@ -182,87 +184,98 @@ class index_class extends AWS_MODEL
 			$user_info_lists = $this->model('account')->get_user_info_by_uids($action_list_uids, true);
 		}
 		
+		if ($action_list_article_ids)
+		{
+			$article_infos = $this->model('article')->get_article_info_by_ids($action_list_article_ids);
+		}
+		
 		// 重组信息		
 		foreach ($action_list as $key => $val)
 		{
 			$action_list[$key]['user_info'] = $user_info_lists[$val['uid']];
 			
-			if (in_array($val['associate_action'], array(
-				ACTION_LOG::ADD_TOPIC
-			)))
+			switch ($val['associate_action'])
 			{
-				$topic_info = $topic_infos[$val['associate_attached']];
-			}
-			else
-			{
-				unset($topic_info);
-			}
-			
-			if (isset($user_focus_topics_by_questions_ids[$val['associate_id']]) AND ! $topic_info)
-			{
-				$topic_info = $user_focus_topics_by_questions_ids[$val['associate_id']];
-			}
-			
-			$question_info = $question_infos[$val['associate_id']];
-			
-			// 是否关注
-			if ($user_focus_questions_ids)
-			{
-				if (in_array($question_info['question_id'], $user_focus_questions_ids))
-				{
-					$question_info['has_focus'] = TRUE;
-				}
-			}
-			
-			$question_info['last_action_str'] = ACTION_LOG::format_action_str($val['associate_action'], $val['uid'], $user_info_lists[$val['uid']]['user_name'], $question_info, $topic_info);
-			
-			// 对于回复问题的
-			if ($answer_infos[$val['associate_attached']] && (in_array($val['associate_action'], array(
-				ACTION_LOG::ANSWER_QUESTION, 
-				ACTION_LOG::ADD_AGREE
-			))))
-			{
-				$question_info['answer_info'] = $answer_infos[$val['associate_attached']];
-				
-				if (! isset($user_info_lists[$question_info['answer_info']['uid']]))
-				{
-					$user_info_lists[$question_info['answer_info']['uid']] = $this->model('account')->get_user_info_by_uid($question_info['answer_info']['uid'], true);
-				}
-				
-				$question_info['answer_info']['uid'] = $user_info_lists[$question_info['answer_info']['uid']]['uid'];
-				$question_info['answer_info']['user_name'] = $user_info_lists[$question_info['answer_info']['uid']]['user_name'];
-				$question_info['answer_info']['url_token'] = $user_info_lists[$question_info['answer_info']['uid']]['url_token'];
-				$question_info['answer_info']['signature'] = $user_info_lists[$question_info['answer_info']['uid']]['signature'];
-			}
-			
-			// 处理回复
-			if ($question_info['answer_info']['answer_id'])
-			{
-				if ($question_info['answer_info']['anonymous'])
-				{
-					unset($action_list[$key]);
+				case ACTION_LOG::ADD_ARTICLE:
+					$article_info = $article_infos[$val['associate_id']];
 					
-					continue;
-				}
+					$action_list[$key]['title'] = $article_info['title'];
+					$action_list[$key]['link'] = get_js_url('/article/' . $article_info['id']);
+					
+					$action_list[$key]['article_info'] = $article_info;
+				break;
 				
-				$answer_all_ids[] = $question_info['answer_info']['answer_id'];
-				
-				if ($question_info['answer_info']['has_attach'])
-				{
-					$question_info['answer_info']['attachs'] = $answer_attachs[$question_info['answer_info']['answer_id']];
-				}
+				default:
+					$question_info = $question_infos[$val['associate_id']];
+					
+					$action_list[$key]['title'] = $question_info['question_content'];
+					$action_list[$key]['link'] = get_js_url('/question/' . $question_info['question_id']);
+					
+					if ($val['associate_action'] == ACTION_LOG::ADD_TOPIC)
+					{
+						$topic_info = $topic_infos[$val['associate_attached']];
+					}
+					else
+					{
+						unset($topic_info);
+					}
+					
+					if (isset($user_focus_topics_by_questions_ids[$val['associate_id']]) AND ! $topic_info)
+					{
+						$topic_info = $user_focus_topics_by_questions_ids[$val['associate_id']];
+					}
+					
+					// 是否关注
+					if ($user_focus_questions_ids)
+					{
+						if (in_array($question_info['question_id'], $user_focus_questions_ids))
+						{
+							$question_info['has_focus'] = TRUE;
+						}
+					}
+					
+					// 对于回复问题的
+					if ($answer_infos[$val['associate_attached']] && (in_array($val['associate_action'], array(
+						ACTION_LOG::ANSWER_QUESTION, 
+						ACTION_LOG::ADD_AGREE
+					))))
+					{
+						$action_list[$key]['answer_info'] = $answer_infos[$val['associate_attached']];
+						
+						if (! isset($user_info_lists[$action_list[$key]['answer_info']['uid']]))
+						{
+							$user_info_lists[$action_list[$key]['answer_info']['uid']] = $this->model('account')->get_user_info_by_uid($action_list[$key]['answer_info']['uid'], true);
+						}
+						
+						$action_list[$key]['answer_info']['uid'] = $user_info_lists[$action_list[$key]['answer_info']['uid']]['uid'];
+						$action_list[$key]['answer_info']['user_name'] = $user_info_lists[$action_list[$key]['answer_info']['uid']]['user_name'];
+						$action_list[$key]['answer_info']['url_token'] = $user_info_lists[$action_list[$key]['answer_info']['uid']]['url_token'];
+						$action_list[$key]['answer_info']['signature'] = $user_info_lists[$action_list[$key]['answer_info']['uid']]['signature'];
+					}
+					
+					// 处理回复
+					if ($action_list[$key]['answer_info']['answer_id'])
+					{
+						if ($action_list[$key]['answer_info']['anonymous'])
+						{
+							unset($action_list[$key]);
+							
+							continue;
+						}
+						
+						$answer_all_ids[] = $action_list[$key]['answer_info']['answer_id'];
+						
+						if ($action_list[$key]['answer_info']['has_attach'])
+						{
+							$action_list[$key]['answer_info']['attachs'] = $answer_attachs[$action_list[$key]['answer_info']['answer_id']];
+						}
+					}
+					
+					$action_list[$key]['question_info'] = $question_info;
+				break;
 			}
 			
-			foreach ($question_info as $qkey => $qval)
-			{
-				if ($qkey == 'add_time')
-				{
-					continue;
-				}
-				
-				$action_list[$key][$qkey] = $qval;
-			}
-		
+			$action_list[$key]['last_action_str'] = ACTION_LOG::format_action_data($val['associate_action'], $val['uid'], $user_info_lists[$val['uid']]['user_name'], $question_info, $topic_info);
 		}
 		
 		if ($answer_all_ids)

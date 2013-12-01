@@ -10,7 +10,7 @@
 * 
 * @license http://www.gnu.org/copyleft/lesser.html LGPL
 * 
-* @version $Id: Savant3.php 6011 2013-07-08 09:55:07Z chendelong $
+* @version $Id$
 * 
 */
 

@@ -53,9 +53,9 @@ class main extends AWS_CONTROLLER
 			HTTP::set_cookie('_ignore_ua_check', 'TRUE', (time() + 3600 * 24 * 7));
 		}
 	}
-
+	
 	public function index_action()
-	{	
+	{		
 		if (! $this->user_id)
 		{
 			$this->explore_action();
@@ -91,7 +91,7 @@ class main extends AWS_CONTROLLER
 	}
 
 	public function explore_action()
-	{
+	{		
 		if ($this->user_id)
 		{
 			$this->crumb(AWS_APP::lang()->_t('发现'), '/home/explore/');
@@ -216,7 +216,7 @@ class main extends AWS_CONTROLLER
 	
 	public function browser_not_support_action()
 	{
-		if (!HTTP::is_browser('ie', 8) AND !HTTP::is_browser('ie', 7) AND !HTTP::is_browser('ie', 6))
+		if (!HTTP::is_browser('ie', 7) AND !HTTP::is_browser('ie', 6))
 		{
 			HTTP::redirect('/');
 		}

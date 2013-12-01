@@ -57,7 +57,11 @@ $(document).ready(function () {
 			});
 		}
 		
-		if (COMMENT_UNFOLD == 1 || COMMENT_UNFOLD == 'all')
+		if (COMMENT_UNFOLD == 'all')
+		{
+			$('.aw-add-comment').click();
+		}
+		else if (COMMENT_UNFOLD == 'question')
 		{
 			$('.aw-question-detail-meta .aw-add-comment').click();
 		}
@@ -66,7 +70,7 @@ $(document).ready(function () {
 		$.each(ITEM_IDS, function (i, answer_id) {
 			if ($('#answer_list_' + answer_id).attr('id'))
 			{
-				if (COMMENT_UNFOLD == 2 || COMMENT_UNFOLD == 'all')
+				if (COMMENT_UNFOLD == 'answer')
 				{
 					$('#answer_list_' + answer_id).find('.aw-add-comment').click();
 				}
@@ -91,7 +95,7 @@ $(document).ready(function () {
 	}, 'json');
 
 	/* 站内邀请回复操作 */
-    $('.aw-side-bar-invite-replay .aw-side-bar-mod-body p a').click(function ()
+    $('.aw-side-bar-invite-replay .aw-mod-body > a').click(function ()
     {
         if ($('.aw-side-bar-invite-box .aw-item').eq($(this).index()).is(':hidden'))
         {
@@ -104,10 +108,14 @@ $(document).ready(function () {
         }
     });
 
-    /* 回复内容超链接新窗口打开 */
-    $('.markitup-box a').attr('target','_blank');
+    //邀请用户下拉绑定
+    bind_dropdown_list($('.aw-side-bar-invite-replay #invite-input'), 'invite');
 
+    //回复内容超链接新窗口打开
+    $('.markitup-box a').attr('target','_blank');
+	
     at_user_lists('#advanced_editor');
+
 
 });
 
@@ -149,6 +157,6 @@ function one_click_add_topic(click_element, topic_title, question_id)
 }
 
 //邀请请回答问题点击事件
-$(document).on('click', '.aw-side-bar-invite-box .aw-user-dropdown-list a', function () {
+$(document).on('click', '.aw-side-bar-invite-box .aw-dropdown-list a', function () {
     invite_user($(this),$(this).text(),$(this).find('.img').attr('src'));
 });

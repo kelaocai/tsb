@@ -50,13 +50,9 @@ function aasort($source_array, $order_field, $sort_type)
  */
 function fetch_ip()
 {
-	if ($_SERVER['HTTP_X_FORWARDED_FOR'] and valid_ip($_SERVER['HTTP_X_FORWARDED_FOR']) and valid_internal_ip($_SERVER['REMOTE_ADDR']))
+	if ($_SERVER['HTTP_X_FORWARDED_FOR'] and valid_internal_ip($_SERVER['REMOTE_ADDR']))
 	{
 		$ip_address = $_SERVER['HTTP_X_FORWARDED_FOR'];
-	}
-	else if ($_SERVER['REMOTE_ADDR'])
-	{
-		$ip_address = $_SERVER['REMOTE_ADDR'];
 	}
 	
 	if ($ip_address)
@@ -66,6 +62,11 @@ function fetch_ip()
 			$x = explode(',', $ip_address);
 			$ip_address = end($x);
 		}
+	}
+	
+	if (!valid_ip($ip_address) AND $_SERVER['REMOTE_ADDR'])
+	{
+		$ip_address = $_SERVER['REMOTE_ADDR'];
 	}
 	
 	if (!valid_ip($ip_address))
@@ -245,7 +246,7 @@ function get_avatar_url($uid, $size = 'min')
 	
 	if (!$uid)
 	{
-		return G_STATIC_URL . '/common/avatar-' . $size . '-img.jpg';
+		return G_STATIC_URL . '/common/avatar-' . $size . '-img.png';
 	}
 	
 	foreach (AWS_APP::config()->get('image')->avatar_thumbnail as $key => $val)
@@ -266,7 +267,7 @@ function get_avatar_url($uid, $size = 'min')
 	}
 	else
 	{
-		return G_STATIC_URL . '/common/avatar-' . $size . '-img.jpg';
+		return G_STATIC_URL . '/common/avatar-' . $size . '-img.png';
 	}
 }
 
@@ -796,7 +797,7 @@ function parse_attachs_callback($matches)
 
 /**
  * 获取主题图片指定尺寸的完整url地址
- * @param  string $size     三种图片尺寸 max(100px)|mid(50px)|min(32px)
+ * @param  string $size
  * @param  string $pic_file 某一尺寸的图片文件名
  * @return string           取出主题图片或主题默认图片的完整url地址
  */
@@ -806,15 +807,13 @@ function get_topic_pic_url($size = null, $pic_file = null)
 	{
 		return get_setting('upload_url') . '/topic/' . $sized_file;
 	}
-	else
+	
+	if (! $size)
 	{
-		if (! $size)
-		{
-			return G_STATIC_URL . '/common/topic-max-img.jpg';
-		}
-		
-		return G_STATIC_URL . '/common/topic-' . $size . '-img.jpg';
+		return G_STATIC_URL . '/common/topic-max-img.png';
 	}
+	
+	return G_STATIC_URL . '/common/topic-' . $size . '-img.png';
 }
 
 /**
