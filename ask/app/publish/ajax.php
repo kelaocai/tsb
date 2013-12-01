@@ -25,8 +25,6 @@ class ajax extends AWS_CONTROLLER
 	public function get_access_rule()
 	{
 		$rule_action['rule_type'] = 'white'; //黑名单,黑名单中的检查  'white'白名单,白名单以外的检查
-		$rule_action['guest'] = array();
-		$rule_action['user'] = array();
 		$rule_action['actions'] = array();
 		
 		return $rule_action;
@@ -62,6 +60,10 @@ class ajax extends AWS_CONTROLLER
 		{
 			case 'question':
 				$item_type = 'questions';
+			break;
+			
+			case 'article':
+				$item_type = 'article';
 			break;
 			
 			default:
@@ -157,6 +159,39 @@ class ajax extends AWS_CONTROLLER
 		echo htmlspecialchars(json_encode($output), ENT_NOQUOTES);
 	}
 	
+	public function article_attach_edit_list_action()
+	{
+		if (! $article_info = $this->model('article')->get_article_info_by_id($_POST['article_id']))
+		{
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang()->_t('无法获取附件列表')));
+		}
+		
+		if ($article_info['uid'] != $this->user_id AND !$this->user_info['permission']['is_administortar'] AND !$this->user_info['permission']['is_moderator'])
+		{
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang()->_t('你没有权限编辑这个附件列表')));
+		}
+		
+		if ($article_attach = $this->model('publish')->get_attach('article', $_POST['article_id']))
+		{
+			foreach ($article_attach as $attach_id => $val)
+			{
+				$article_attach[$attach_id]['class_name'] = $this->model('publish')->get_file_class($val['file_name']);
+				
+				$article_attach[$attach_id]['delete_link'] = get_js_url('/publish/ajax/remove_attach/attach_id-' . base64_encode(H::encode_hash(array(
+					'attach_id' => $attach_id, 
+					'access_key' => $val['access_key']
+				))));
+				
+				$article_attach[$attach_id]['attach_id'] = $attach_id;
+				$article_attach[$attach_id]['attach_tag'] = 'attach';
+			}
+		}
+		
+		H::ajax_json_output(AWS_APP::RSM(array(
+			'attachs' => $article_attach
+		), 1, null));
+	}
+	
 	public function question_attach_edit_list_action()
 	{
 		if (! $question_info = $this->model('question')->get_question_info_by_id($_POST['question_id']))
@@ -232,10 +267,8 @@ class ajax extends AWS_CONTROLLER
 	}
 
 	function modify_question_action()
-	{		
-		$question_info = $this->model('question')->get_question_info_by_id($_POST['question_id']);
-		
-		if (empty($question_info))
+	{
+		if (!$question_info = $this->model('question')->get_question_info_by_id($_POST['question_id']))
 		{
 			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang()->_t('问题不存在')));
 		}
@@ -253,26 +286,22 @@ class ajax extends AWS_CONTROLLER
 			}
 		}
 		
-		$question_content = $_POST['question_content'];
-		$question_detail = $_POST['question_detail'];
-		$modify_reason = $_POST['modify_reason'];
-		
 		if (!$_POST['category_id'] AND get_setting('category_enable') == 'Y')
 		{
 			H::ajax_json_output(AWS_APP::RSM(null, - 1, AWS_APP::lang()->_t('请选择分类')));
 		}
 
-		if (cjk_strlen($question_content) < 5)
+		if (cjk_strlen($_POST['question_content']) < 5)
 		{
 			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang()->_t('问题标题字数不得少于 5 个字')));
 		}
 
-		if (get_setting('question_title_limit') > 0 && cjk_strlen($question_content) > get_setting('question_title_limit'))
+		if (get_setting('question_title_limit') > 0 && cjk_strlen($_POST['question_content']) > get_setting('question_title_limit'))
 		{
 			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang()->_t('问题标题字数不得大于') . ' ' . get_setting('question_title_limit') . ' ' . AWS_APP::lang()->_t('字节')));
 		}
 		
-		if (!$this->user_info['permission']['publish_url'] && FORMAT::outside_url_exists($question_detail))
+		if (!$this->user_info['permission']['publish_url'] && FORMAT::outside_url_exists($_POST['question_detail']))
 		{
 			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang()->_t('你所在的用户组不允许发布站外链接')));
 		}
@@ -316,7 +345,7 @@ class ajax extends AWS_CONTROLLER
 			$IS_MODIFY_VERIFIED = FALSE;
 		}
 		
-		$this->model('question')->update_question($question_info['question_id'], $question_content, $question_detail, $this->user_id, $IS_MODIFY_VERIFIED, $modify_reason);
+		$this->model('question')->update_question($question_info['question_id'], $_POST['question_content'], $_POST['question_detail'], $this->user_id, $IS_MODIFY_VERIFIED, $_POST['modify_reason'], $question_info['anonymous']);
 		
 		if ($_POST['category_id'])
 		{
@@ -347,7 +376,7 @@ class ajax extends AWS_CONTROLLER
 		
 		if ($_POST['attach_access_key'] AND $IS_MODIFY_VERIFIED)
 		{
-			if($this->model('publish')->update_attach('question', $question_info['question_id'], $_POST['attach_access_key']))
+			if ($this->model('publish')->update_attach('question', $question_info['question_id'], $_POST['attach_access_key']))
 			{
 				ACTION_LOG::save_action($this->user_id, $question_info['question_id'], ACTION_LOG::CATEGORY_QUESTION, ACTION_LOG::MOD_QUESTION_ATTACH);
 			}
@@ -371,10 +400,7 @@ class ajax extends AWS_CONTROLLER
 			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang()->_t('你的剩余积分已经不足以进行此操作')));
 		}
 		
-		$question_content = $_POST['question_content'];
-		$question_detail = $_POST['question_detail'];
-		
-		if (empty($question_content))
+		if (empty($_POST['question_content']))
 		{
 			H::ajax_json_output(AWS_APP::RSM(null, - 1, AWS_APP::lang()->_t('请输入问题标题')));
 		}
@@ -389,17 +415,17 @@ class ajax extends AWS_CONTROLLER
 			H::ajax_json_output(AWS_APP::RSM(null, -1, AWS_APP::lang()->_t('请选择问题分类')));
 		}
 
-		if (cjk_strlen($question_content) < 5)
+		if (cjk_strlen($_POST['question_content']) < 5)
 		{
 			H::ajax_json_output(AWS_APP::RSM(null, -1, AWS_APP::lang()->_t('问题标题字数不得少于 5 个字')));
 		}
 
-		if (get_setting('question_title_limit') > 0 && cjk_strlen($question_content) > get_setting('question_title_limit'))
+		if (get_setting('question_title_limit') > 0 && cjk_strlen($_POST['question_content']) > get_setting('question_title_limit'))
 		{
 			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang()->_t('问题标题字数不得大于 %s 字节', get_setting('question_title_limit'))));
 		}
 		
-		if (!$this->user_info['permission']['publish_url'] && FORMAT::outside_url_exists($question_detail))
+		if (!$this->user_info['permission']['publish_url'] && FORMAT::outside_url_exists($_POST['question_detail']))
 		{
 			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang()->_t('你所在的用户组不允许发布站外链接')));
 		}
@@ -419,6 +445,11 @@ class ajax extends AWS_CONTROLLER
 			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang()->_t('单个问题话题数量最多为 %s 个, 请调整话题数量', get_setting('question_topics_limit'))));
 		}
 		
+		if (get_setting('new_question_force_add_topic') == 'Y' AND !$_POST['topics'])
+		{
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang()->_t('请为问题添加话题')));
+		}
+		
 		// !注: 来路检测后面不能再放报错提示
 		if (!valid_post_hash($_POST['post_hash']))
 		{
@@ -430,8 +461,8 @@ class ajax extends AWS_CONTROLLER
 		if ($this->publish_approval_valid())
 		{			
 			$this->model('publish')->publish_approval('question', array(
-				'question_content' => $question_content,
-				'question_detail' => $question_detail,
+				'question_content' => $_POST['question_content'],
+				'question_detail' => $_POST['question_detail'],
 				'category_id' => $_POST['category_id'],
 				'topics' => $_POST['topics'],
 				'anonymous' => $_POST['anonymous'],
@@ -446,7 +477,7 @@ class ajax extends AWS_CONTROLLER
 		}
 		else
 		{
-			$question_id = $this->model('publish')->publish_question($question_content, $question_detail, $_POST['category_id'], $this->user_id, $_POST['topics'], $_POST['anonymous'], $_POST['attach_access_key'], $_POST['ask_user_id'], $this->user_info['permission']['create_topic']);
+			$question_id = $this->model('publish')->publish_question($_POST['question_content'], $_POST['question_detail'], $_POST['category_id'], $this->user_id, $_POST['topics'], $_POST['anonymous'], $_POST['attach_access_key'], $_POST['ask_user_id'], $this->user_info['permission']['create_topic']);
 			
 			if ($_POST['_is_mobile'])
 			{
@@ -461,5 +492,157 @@ class ajax extends AWS_CONTROLLER
 				'url' => $url
 			), 1, null));
 		}
+	}
+	
+	public function publish_article_action()
+	{
+		if (!$this->user_info['permission']['publish_article'])
+		{
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang()->_t('你没有权限发布文章')));
+		}
+		
+		if (empty($_POST['title']))
+		{
+			H::ajax_json_output(AWS_APP::RSM(null, - 1, AWS_APP::lang()->_t('请输入文章标题')));
+		}
+		
+		if (get_setting('question_title_limit') > 0 && cjk_strlen($_POST['title']) > get_setting('question_title_limit'))
+		{
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang()->_t('文章标题字数不得大于 %s 字节', get_setting('question_title_limit'))));
+		}
+		
+		if (!$this->user_info['permission']['publish_url'] && FORMAT::outside_url_exists($_POST['message']))
+		{
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang()->_t('你所在的用户组不允许发布站外链接')));
+		}
+		
+		if (human_valid('question_valid_hour') AND !AWS_APP::captcha()->is_validate($_POST['seccode_verify']))
+		{			
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang()->_t('请填写正确的验证码')));
+		}
+		
+		if ($_POST['topics'] AND get_setting('question_topics_limit') AND sizeof($_POST['topics']) > get_setting('question_topics_limit'))
+		{
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang()->_t('单个文章话题数量最多为 %s 个, 请调整话题数量', get_setting('question_topics_limit'))));
+		}
+		
+		if (get_setting('new_question_force_add_topic') == 'Y' AND !$_POST['topics'])
+		{
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang()->_t('请为文章添加话题')));
+		}
+		
+		// !注: 来路检测后面不能再放报错提示
+		if (!valid_post_hash($_POST['post_hash']))
+		{
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang()->_t('表单来路不正确或内容已提交, 请刷新页面重试')));
+		}
+		
+		$this->model('draft')->delete_draft(1, 'article', $this->user_id);
+		
+		if ($this->publish_approval_valid())
+		{			
+			$this->model('publish')->publish_approval('article', array(
+				'title' => $_POST['title'],
+				'message' => $_POST['message'],
+				'topics' => $_POST['topics'],
+				'permission_create_topic' => $this->user_info['permission']['create_topic']
+			), $this->user_id, $_POST['attach_access_key']);
+				
+			H::ajax_json_output(AWS_APP::RSM(array(
+				'url' => get_js_url('/publish/wait_approval/')
+			), 1, null));
+		}
+		else
+		{
+			$article_id = $this->model('publish')->publish_article($_POST['title'], $_POST['message'], $this->user_id, $_POST['topics'], $_POST['attach_access_key'], $this->user_info['permission']['create_topic']);
+		
+			if ($_POST['_is_mobile'])
+			{
+				$url = get_js_url('/m/article/' . $article_id);
+			}
+			else
+			{
+				$url = get_js_url('/article/' . $article_id);
+			}
+				
+			H::ajax_json_output(AWS_APP::RSM(array(
+				'url' => $url
+			), 1, null));
+		}
+	}
+	
+	function modify_article_action()
+	{
+		if (!$article_info = $this->model('article')->get_article_info_by_id($_POST['article_id']))
+		{
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang()->_t('文章不存在')));
+		}
+		
+		if ($article_info['lock'] && !($this->user_info['permission']['is_administortar'] OR $this->user_info['permission']['is_moderator']))
+		{
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang()->_t('文章已锁定, 不能编辑')));
+		}
+		
+		if (!$this->user_info['permission']['is_administortar'] AND !$this->user_info['permission']['is_moderator'] AND !$this->user_info['permission']['edit_article'])
+		{			
+			if ($article_info['uid'] != $this->user_id)
+			{
+				H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang()->_t('你没有权限编辑这个文章')));
+			}
+		}
+
+		if (get_setting('question_title_limit') > 0 && cjk_strlen($_POST['title']) > get_setting('question_title_limit'))
+		{
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang()->_t('文章标题字数不得大于') . ' ' . get_setting('question_title_limit') . ' ' . AWS_APP::lang()->_t('字节')));
+		}
+		
+		if (!$this->user_info['permission']['publish_url'] && FORMAT::outside_url_exists($_POST['message']))
+		{
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang()->_t('你所在的用户组不允许发布站外链接')));
+		}
+		
+		if (human_valid('question_valid_hour') AND !AWS_APP::captcha()->is_validate($_POST['seccode_verify']))
+		{
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang()->_t('请填写正确的验证码')));
+		}
+		
+		// !注: 来路检测后面不能再放报错提示
+		if (!valid_post_hash($_POST['post_hash']))
+		{
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang()->_t('表单来路不正确或内容已提交, 请刷新页面重试')));
+		}
+		
+		$this->model('draft')->delete_draft(1, 'article', $this->user_id);
+		
+		if ($_POST['do_delete'] AND !$this->user_info['permission']['is_administortar'] AND !$this->user_info['permission']['is_moderator'])
+		{				
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang()->_t('对不起, 你没有删除文章的权限')));
+		}
+		
+		if ($_POST['do_delete'])
+		{
+			if ($this->user_id != $article_info['uid'])
+			{
+				$this->model('account')->send_delete_message($article_info['uid'], $article_info['title'], $article_info['message']);
+			}
+				
+			$this->model('article')->remove_article($article_info['id']);
+			
+			H::ajax_json_output(AWS_APP::RSM(array(
+				'url' => get_js_url('/home/explore/')
+			), 1, null));
+		}
+		
+		$this->model('article')->update_article($article_info['id'], $_POST['title'], $_POST['message'], $_POST['topics'], $this->user_info['permission']['create_topic']);
+		
+		if ($_POST['attach_access_key'])
+		{
+			$this->model('publish')->update_attach('article', $article_info['id'], $_POST['attach_access_key']);
+		}
+		
+		H::ajax_json_output(AWS_APP::RSM(array(
+			'url' => get_js_url('/article/' . $article_info['id'])
+		), 1, null));
+	
 	}
 }

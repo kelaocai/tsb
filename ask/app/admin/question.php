@@ -19,8 +19,6 @@ if (! defined('IN_ANWSION'))
 
 class question extends AWS_ADMIN_CONTROLLER
 {
-	var $per_page = 20;
-	
 	public function setup()
 	{
 		TPL::assign('menu_list', $this->model('admin')->fetch_menu_list(301));
@@ -29,12 +27,7 @@ class question extends AWS_ADMIN_CONTROLLER
 	public function question_list_action()
 	{
 		if ($this->is_post())
-		{
-			if ($_POST['user_name'] && (! $user_info = $this->model('account')->get_user_info_by_username($_POST['user_name'])))
-			{
-				H::ajax_json_output(AWS_APP::RSM(null, -1, AWS_APP::lang()->_t('用户不存在')));
-			}
-			
+		{			
 			foreach ($_POST as $key => $val)
 			{
 				if ($key == 'start_date' OR $key == 'end_date')
@@ -55,7 +48,7 @@ class question extends AWS_ADMIN_CONTROLLER
 			), 1, null));
 		}
 		
-		if ($question_list = $this->model('question')->search_questions_list($_GET['page'], $this->per_page, $_GET['keyword'], $_GET['category_id'], base64_decode($_GET['start_date']), base64_decode($_GET['end_date']), $_GET['answer_count_min'], $_GET['answer_count_max'], rawurldecode($_GET['user_name']), $_GET['best_answer']))
+		if ($question_list = $this->model('question')->search_questions_list($_GET['page'], $this->per_page, $_GET['keyword'], $_GET['category_id'], base64_decode($_GET['start_date']), base64_decode($_GET['end_date']), $_GET['answer_count_min'], $_GET['answer_count_max'], $_GET['user_name'], $_GET['best_answer']))
 		{
 			foreach ($question_list AS $key => $val)
 			{
@@ -101,7 +94,8 @@ class question extends AWS_ADMIN_CONTROLLER
 		TPL::assign('category_list', $this->model('system')->build_category_html('question', 0, 0, null, true));
 		TPL::assign('keyword', $_GET['keyword']);
 		TPL::assign('list', $question_list);
-		TPL::output("admin/question/question_list");
+		
+		TPL::output('admin/question/question_list');
 	}
 
 	public function question_batch_action()
@@ -113,7 +107,10 @@ class question extends AWS_ADMIN_CONTROLLER
 			H::ajax_json_output(AWS_APP::RSM(null, -1, AWS_APP::lang()->_t('请选择问题进行操作')));
 		}
 		
-		$this->model('question')->remove_question_by_ids($_POST['question_ids']);
+		foreach ($_POST['question_ids'] AS $key => $question_ids)
+		{
+			$this->model('question')->remove_question($question_ids);
+		}
 		
 		H::ajax_json_output(AWS_APP::RSM(null, 1, null));
 	}
@@ -199,106 +196,6 @@ class question extends AWS_ADMIN_CONTROLLER
 		$this->model('question')->update_report($_GET['report_id'], array(
 			'status' => 1
 		));
-		
-		H::ajax_json_output(AWS_APP::RSM(null, 1, null));
-	}
-	
-	public function approval_list_action()
-	{
-		if (!$_GET['type'])
-		{
-			$_GET['type'] = 'question';
-		}
-		
-		switch ($_GET['type'])
-		{
-			case 'question':
-				TPL::assign('answer_count', $this->model('publish')->count('approval', "type = 'answer'"));
-			break;
-			
-			case 'answer':
-				TPL::assign('question_count', $this->model('publish')->count('approval', "type = 'question'"));
-			break;
-		}
-		
-		if ($approval_list = $this->model('publish')->get_approval_list($_GET['type'], $_GET['page'], $this->per_page))
-		{
-			$found_rows = $this->model('publish')->found_rows();
-			
-			TPL::assign('pagination', AWS_APP::pagination()->initialize(array(
-				'base_url' => get_setting('base_url') . '/?/admin/question/approval_list/type-' . $_GET['type'], 
-				'total_rows' => $found_rows, 
-				'per_page' => $this->per_page
-			))->create_links());
-			
-			foreach ($approval_list AS $key => $val)
-			{
-				if (!$approval_uids[$val['uid']])
-				{
-					$approval_uids[$val['uid']] = $val['uid'];
-				}
-			}
-			
-			TPL::assign('users_info', $this->model('account')->get_user_info_by_uids($approval_uids));
-		}
-		
-		TPL::assign($_GET['type'] . '_count', intval($found_rows));
-		
-		$this->crumb(AWS_APP::lang()->_t('内容审核'), 'admin/question/approval_list/');
-		
-		TPL::assign('approval_list', $approval_list);
-		TPL::assign('menu_list', $this->model('admin')->fetch_menu_list(300));
-		
-		TPL::output('admin/question/approval_list');
-	}
-	
-	public function approval_preview_action()
-	{
-		if (!$approval_item = $this->model('publish')->get_approval_item($_GET['id']))
-		{
-			die;
-		}
-		
-		switch ($approval_item['type'])
-		{
-			case 'question':
-				$approval_item['content'] = nl2br(FORMAT::parse_markdown(htmlspecialchars($approval_item['data']['question_detail'])));
-			break;
-			
-			case 'answer':
-				$approval_item['content'] = nl2br(FORMAT::parse_markdown(htmlspecialchars($approval_item['data']['answer_content'])));
-			break;
-		}
-		
-		if ($approval_item['data']['attach_access_key'])
-		{
-			$approval_item['attachs'] = $this->model('publish')->get_attach_by_access_key($approval_item['type'], $approval_item['data']['attach_access_key']);
-		}
-		
-		TPL::assign('approval_item', $approval_item);
-		
-		TPL::output('admin/question/approval_preview');
-	}
-	
-	public function approval_batch_action()
-	{
-		if (!is_array($_POST['approval_ids']))
-		{
-			H::ajax_json_output(AWS_APP::RSM(null, -1, AWS_APP::lang()->_t('请选择条目进行操作')));
-		}
-		
-		switch ($_POST['batch_type'])
-		{
-			case 'approval':
-			case 'decline':
-				$func = $_POST['batch_type'] . '_publish';
-				
-				foreach ($_POST['approval_ids'] AS $approval_id)
-				{
-					$this->model('publish')->$func($approval_id);
-				}
-			break;
-		}
 		
 		H::ajax_json_output(AWS_APP::RSM(null, 1, null));
 	}

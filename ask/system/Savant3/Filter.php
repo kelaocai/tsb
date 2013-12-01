@@ -10,7 +10,7 @@
 * 
 * @license http://www.gnu.org/copyleft/lesser.html LGPL
 * 
-* @version $Id: Filter.php 4525 2012-12-12 02:31:51Z thou $
+* @version $Id$
 *
 */
 

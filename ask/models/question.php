@@ -120,7 +120,7 @@ class question_class extends AWS_MODEL
 		
 		$user_list = $this->model('account')->get_user_info_by_uids($uids, TRUE);
 		
-		$question_topics = $this->get_question_topic_by_question_ids($question_ids);
+		$question_topics = $this->model('topic')->get_topics_by_item_ids($question_ids, 'question');
 		//$question_attachs = $this->model('publish')->get_attachs('question', $has_attach_question_ids, 'min');
 			
 		foreach ($question_info_list AS $key => $question_info)
@@ -185,7 +185,7 @@ class question_class extends AWS_MODEL
 				$topic_ids[] = $topic_id;
 			}
 			
-			if ($question_ids = $this->model('topic')->get_question_ids_by_topics_ids($topic_ids, 10))
+			if ($question_ids = $this->model('topic')->get_item_ids_by_topics_ids($topic_ids, 'question', 10))
 			{				
 				$question_all = $this->fetch_page('question', "add_time > " . $add_time . " AND question_id IN(" . implode(',', $question_ids) . ')', 'popular_value DESC', $page, $per_page);
 			}
@@ -216,7 +216,9 @@ class question_class extends AWS_MODEL
 		
 		if ($keyword)
 		{
-			$where[] = "(MATCH(question_content_fulltext) AGAINST('" . $this->quote($this->model('search_index')->encode_search_code($this->model('system')->analysis_keyword($keyword))) . "' IN BOOLEAN MODE))";
+			$analysis_keyword = $this->model('system')->analysis_keyword($keyword);
+				
+			$where[] = "(MATCH(question_content_fulltext) AGAINST('" . $this->quote($this->model('search_fulltext')->encode_search_code($analysis_keyword)) . " " . implode(' ', $analysis_keyword) . "' IN BOOLEAN MODE))";
 		}
 		
 		if ($category_id)
@@ -382,7 +384,7 @@ class question_class extends AWS_MODEL
 				'question_count' => $this->count('question', 'published_uid = ' . intval($published_uid))
 			), 'uid = ' . intval($published_uid));
 			
-			$this->model('search_index')->push_index('question', $question_content, $question_id);
+			$this->model('search_fulltext')->push_index('question', $question_content, $question_id);
 		}
 		
 		return $question_id;
@@ -401,15 +403,9 @@ class question_class extends AWS_MODEL
 	}
 
 	/**
-	 * 
 	 * 修改问题内容
-	 * @param array $data 修改问题内容
-	 * @param int $question_id 问题ID
-	 * @param int $modfiy_type 0 标题 1 描述
-	 * 
-	 * @return boolean true|false
 	 */
-	public function update_question($question_id, $question_content, $question_detail, $uid, $verified = true, $modify_reason = '')
+	public function update_question($question_id, $question_content, $question_detail, $uid, $verified = true, $modify_reason = null, $anonymous = null)
 	{		
 		if (!$quesion_info = $this->get_question_info_by_id($question_id) OR !$uid)
 		{
@@ -422,16 +418,28 @@ class question_class extends AWS_MODEL
 		if ($verified)
 		{
 			//$data['update_time'] = time();
+			
 			$data['question_detail'] = $question_detail;
 		
-			if (! empty($question_content))
+			if ($question_content)
 			{
 				$data['question_content'] = $question_content;
 			}
 			
-			$this->model('search_index')->push_index('question', $question_content, $question_id);
+			$this->model('search_fulltext')->push_index('question', $question_content, $question_id);
 		
 			$this->update('question', $data, 'question_id = ' . $question_id);
+			
+			if (defined('G_LUCENE_SUPPORT') AND G_LUCENE_SUPPORT)
+			{
+				$this->model('search_lucene')->push_index('question', $question_content, $question_info['question_id'], array(
+					'best_answer' => $question_info['best_answer'],
+					'answer_count' => $question_info['answer_count'],
+					'comment_count' => $question_info['comment_count'],
+					'focus_count' => $question_info['focus_count'],
+					'agree_count' => $question_info['agree_count']
+				));
+			}
 		}
 		
 		$addon_data = array(
@@ -440,7 +448,7 @@ class question_class extends AWS_MODEL
 		
 		if ($quesion_info['question_detail'] != $question_detail)
 		{
-			$log_id = ACTION_LOG::save_action($uid, $question_id, ACTION_LOG::CATEGORY_QUESTION, ACTION_LOG::MOD_QUESTION_DESCRI, htmlspecialchars($question_detail), $quesion_info['question_detail'], 0, 0, $addon_data);
+			$log_id = ACTION_LOG::save_action($uid, $question_id, ACTION_LOG::CATEGORY_QUESTION, ACTION_LOG::MOD_QUESTION_DESCRI, htmlspecialchars($question_detail), $quesion_info['question_detail'], null, $anonymous, $addon_data);
 			
 			if (!$verified)
 			{
@@ -480,9 +488,9 @@ class question_class extends AWS_MODEL
 			$this->update(array(
 				'question_content' => $action_log['associate_content'],
 				'update_time' => time()
-			), 'question_id = ' . intval());
+			), 'question_id = ' . intval($question_id));
 			
-			$this->model('search_index')->push_index('question', $action_log['associate_content'], $question_id);
+			$this->model('search_fulltext')->push_index('question', $action_log['associate_content'], $question_id);
 			
 			$this->clean_unverified_modify($question_id, 'content');
 			
@@ -600,7 +608,7 @@ class question_class extends AWS_MODEL
 			return false;
 		}
 		
-		$this->model('answer')->remove_answers_by_question_id($question_id); //删除关联的回复内容
+		$this->model('answer')->remove_answers_by_question_id($question_id); // 删除关联的回复内容
 		
 		// 删除评论
 		$this->delete('question_comments', 'question_id = ' . intval($question_id));
@@ -609,7 +617,7 @@ class question_class extends AWS_MODEL
 		
 		$this->delete('question_thanks', 'question_id = ' . intval($question_id));
 		
-		$this->delete('topic_question', 'question_id = ' . intval($question_id));	// 删除话题关联
+		$this->delete('topic_relation', "`type` = 'question' AND item_id = " . intval($question_id));		// 删除话题关联
 		
 		$this->delete('question_invite', 'question_id = ' . intval($question_id));	// 删除邀请记录
 		
@@ -641,24 +649,6 @@ class question_class extends AWS_MODEL
 		$this->delete('weixin_fake_id', "`type` = 'question' AND `item_id` = " . intval($question_id));
 		
 		return $this->delete('question', 'question_id = ' . intval($question_id));	// 删除问题
-	}
-
-	public function remove_question_by_ids($question_ids)
-	{
-		if (!is_array($question_ids))
-		{
-			return false;
-		}
-		
-		if ($question_ids = array_unique($question_ids))
-		{
-			foreach ($question_ids as $key => $val)
-			{
-				$this->remove_question($val);
-			}
-		}
-		
-		return true;
 	}
 	
 	public function add_focus_question($question_id, $uid, $anonymous = 0, $save_action = true)
@@ -875,14 +865,13 @@ class question_class extends AWS_MODEL
 						if (! isset($question_lnk[$val['question_id']]))
 						{
 							$question_lnk[$val['question_id']] = $val['question_content'];
+							
 							$question_info[$val['question_id']] = $val;
 						}
 					}
 				}
 			}
 		}
-		
-		$question_lnk_list = array();
 		
 		if ($question_lnk)
 		{
@@ -1242,7 +1231,6 @@ class question_class extends AWS_MODEL
 		if ($question_info['published_uid'] != $uid)
 		{
 			$this->model('notify')->send($uid, $question_info['published_uid'], notify_class::TYPE_QUESTION_COMMENT, notify_class::CATEGORY_QUESTION, $question_info['question_id'], array(
-				'comment_type' => 1, 
 				'from_uid' => $uid, 
 				'question_id' => $question_info['question_id'], 
 				'comment_id' => $comment_id
@@ -1259,7 +1247,6 @@ class question_class extends AWS_MODEL
 				}
 					
 				$this->model('notify')->send($uid, $user_id, notify_class::TYPE_COMMENT_AT_ME, notify_class::CATEGORY_QUESTION, $question_info['question_id'], array(
-					'comment_type' => 1, 
 					'from_uid' => $uid, 
 					'question_id' => $question_info['question_id'], 
 					'comment_id' => $comment_id
@@ -1485,7 +1472,7 @@ class question_class extends AWS_MODEL
 	
 	public function get_helpful_users($related_question_ids, $limit, $exclude_uids = null)
 	{
-		if (!is_array($related_question_ids))
+		if (!is_array($related_question_ids) OR sizeof($related_question_ids) == 0)
 		{
 			return false;
 		}
@@ -1499,7 +1486,7 @@ class question_class extends AWS_MODEL
 		
 		array_walk_recursive($exclude_uids, 'intval_string');
 		
-		if ($related_answers = $this->fetch_all('answer', "question_id IN(" . implode($related_question_ids, ',') . ") AND agree_count > 0 AND uid NOT IN (" . implode(',', $exclude_uids) . ")", 'agree_count DESC', 3))
+		if ($related_answers = $this->fetch_all('answer', "question_id IN(" . implode(',', $related_question_ids) . ") AND agree_count > 0 AND uid NOT IN (" . implode(',', $exclude_uids) . ")", 'agree_count DESC', 3))
 		{
 			foreach ($related_answers AS $key => $val)
 			{
@@ -1606,7 +1593,7 @@ class question_class extends AWS_MODEL
 		
 		$found_rows_cache_key = 'question_list_by_topic_ids_found_rows_' . implode('_', $topic_ids) . '_' . md5($answer_count . $category_id . $is_recommend . $per_page);
 			
-		$where[] = 'topic_question.topic_id IN(' . implode(',', $topic_ids) . ')';
+		$where[] = 'topic_relation.topic_id IN(' . implode(',', $topic_ids) . ')';
 			
 		if ($answer_count !== null)
 		{
@@ -1625,7 +1612,7 @@ class question_class extends AWS_MODEL
 		
 		if (!$found_rows = AWS_APP::cache()->get($found_rows_cache_key))
 		{
-			$_found_rows = $this->query_row('SELECT COUNT(DISTINCT question.question_id) AS count FROM ' . $this->get_table('question') . ' AS question LEFT JOIN ' . $this->get_table('topic_question') . ' AS topic_question ON question.question_id = topic_question.question_id WHERE ' . implode(' AND ', $where));
+			$_found_rows = $this->query_row('SELECT COUNT(DISTINCT question.question_id) AS count FROM ' . $this->get_table('question') . ' AS question LEFT JOIN ' . $this->get_table('topic_relation') . " AS topic_relation ON question.question_id = topic_relation.item_id AND topic_relation.type = 'question' WHERE " . implode(' AND ', $where));
 			
 			$found_rows = $_found_rows['count'];
 			
@@ -1636,7 +1623,7 @@ class question_class extends AWS_MODEL
 		
 		if (!$result = AWS_APP::cache()->get($result_cache_key))
 		{
-			$result = $this->query_all('SELECT question.* FROM ' . $this->get_table('question') . ' AS question LEFT JOIN ' . $this->get_table('topic_question') . ' AS topic_question ON question.question_id = topic_question.question_id WHERE ' . implode(' AND ', $where) . ' GROUP BY question.question_id ORDER BY question.' . $order_by, calc_page_limit($page, $per_page));
+			$result = $this->query_all('SELECT question.* FROM ' . $this->get_table('question') . ' AS question LEFT JOIN ' . $this->get_table('topic_relation') . " AS topic_relation ON question.question_id = topic_relation.item_id AND topic_relation.type = 'question' WHERE " . implode(' AND ', $where) . ' GROUP BY question.question_id ORDER BY question.' . $order_by, calc_page_limit($page, $per_page));
 			
 			AWS_APP::cache()->set($result_cache_key, $result, get_setting('cache_level_high'));
 		}
@@ -1644,68 +1631,6 @@ class question_class extends AWS_MODEL
 		return $result;
 	}
 	
-	/**
-	 * 
-	 * 根据问题ID,得到相关联的话题标题信息
-	 * @param int $question_id
-	 * @param string $limit
-	 * 
-	 * @return array
-	 */
-	public function get_question_topic_by_question_id($question_id)
-	{
-		$result = $this->get_question_topic_by_question_ids(array(
-			$question_id
-		));
-		
-		return $result[$question_id];
-	}
-	
-	public function get_question_topic_by_question_ids($question_ids)
-	{		
-		if (!is_array($question_ids) OR sizeof($question_ids) == 0)
-		{
-			return false;
-		}
-		
-		array_walk_recursive($question_ids, 'intval_string');
-		
-		if (!$question_topic = $this->fetch_all('topic_question', "question_id IN (" . implode(',', $question_ids) . ")"))
-		{
-			foreach ($question_ids AS $question_id)
-			{
-				if (!$result[$question_id])
-				{
-					$result[$question_id] = array();	
-				}
-			}
-			
-			return $result;	
-		}
-		
-		foreach ($question_topic AS $key => $val)
-		{
-			$topic_ids[] = $val['topic_id'];
-		}
-		
-		$topics_info = $this->model('topic')->get_topics_by_ids($topic_ids);
-		
-		foreach ($question_topic AS $key => $val)
-		{
-			$result[$val['question_id']][] = $topics_info[$val['topic_id']];
-		}
-		
-		foreach ($question_ids AS $question_id)
-		{
-			if (!$result[$question_id])
-			{
-				$result[$question_id] = array();	
-			}
-		}
-		
-		return $result;
-	}
-
 	/**
 	 *
 	 * 根据问题ID,得到相关联的话题标题信息
@@ -1721,7 +1646,7 @@ class question_class extends AWS_MODEL
 			return false;
 		}
 		
-		if (!$topic_ids_query = $this->query_all("SELECT DISTINCT topic_id FROM " . $this->get_table('topic_question') . " WHERE question_id IN(" . implode(',', $question_ids) . ")"))
+		if (!$topic_ids_query = $this->query_all("SELECT DISTINCT topic_id FROM " . $this->get_table('topic_relation') . " WHERE item_id IN(" . implode(',', $question_ids) . ") AND `type` = 'question'"))
 		{
 			return false;	
 		}
@@ -1754,7 +1679,7 @@ class question_class extends AWS_MODEL
 		
 		$topics = $this->model('topic')->get_topics_by_ids($topic_ids);
 		
-		if ($topic_question = $this->fetch_all('topic_question', 'question_id IN(' . implode(',', $question_ids) . ') AND topic_id IN (' . implode(',', $topic_ids) . ')'))
+		if ($topic_question = $this->fetch_all('topic_relation', 'item_id IN(' . implode(',', $question_ids) . ') AND topic_id IN(' . implode(',', $topic_ids) . ") AND `type` = 'question'"))
 		{
 			foreach ($topic_question AS $key => $val)
 			{			
@@ -1769,89 +1694,10 @@ class question_class extends AWS_MODEL
 		return $topics_by_questions_ids;
 	}
 	
-	/**
-	 * 
-	 * 生成问题与话题相关联
-	 * @param int $data $topic_id //话题id
-	 * @param int $question_id    //问题ID
-	 * @param int $add_time       //添加时间
-	 * 
-	 * @return boolean true|false
-	 */
-	public function save_link($topic_id, $question_id, $add_time = '')
-	{
-		$topic_id = intval($topic_id);
-		$question_id = intval($question_id);
-		
-		if (!$topic_id OR !$question_id)
-		{
-			return false;
-		}
-		
-		if ($flag = $this->has_link_by_question_topic($topic_id, $question_id))
-		{
-			return $flag;
-		}
-		
-		$data = array(
-			'topic_id' => $topic_id, 
-			'question_id' => $question_id, 
-			'add_time' => (intval($add_time) == 0) ? time() : $add_time, 
-			'uid' => USER::get_client_uid()
-		);
-		
-		$insert_id = $this->insert('topic_question', $data);
-		
-		$this->model('topic')->update_discuss_count($topic_id);
-		
-		return $insert_id;
-	}
-
-	/**
-	 * 
-	 * 删除话题与问题想关联
-	 * @param int $topic_question_id
-	 * 
-	 * @return boolean true|false
-	 */
-	public function delete_link($topic_question_id)
-	{
-		return $this->delete('topic_question', 'topic_question_id = ' . intval($topic_question_id));
-	}
-
-	/**
-	 * 
-	 * 判断是否话题与问题已经相关联
-	 * @param int $topic_id
-	 * @param int $question_id
-	 * 
-	 * @return int topic_question_id
-	 */
-	public function has_link_by_question_topic($topic_id, $question_id)
-	{
-		$where = "topic_id = " . intval($topic_id);
-		
-		if ($question_id)
-		{
-			$where .= " AND question_id = " . $question_id;
-		}
-		
-		$result = $this->fetch_row('topic_question', $where);
-		
-		if ($result['topic_question_id'])
-		{
-			return $result['topic_question_id'];
-		}
-		else
-		{
-			return 0;
-		}
-	}
-	
-	public function lock_question($question_id, $lock = true)
+	public function lock_question($question_id, $lock_status = true)
 	{
 		return $this->update('question', array(
-			'lock' => $lock
+			'lock' => intval($lock_status)
 		), 'question_id = ' . intval($question_id));
 	}
 	
@@ -1921,7 +1767,7 @@ class question_class extends AWS_MODEL
 	{
 		$question_keywords = $this->model('system')->analysis_keyword($question_content);
 			
-		if ($question_related_list = $this->model('question')->get_related_question_list(null, $question_content, 3))
+		if ($question_related_list = $this->get_related_question_list(null, $question_content, 3))
 		{
 			foreach ($question_related_list AS $key => $val)
 			{
@@ -1950,7 +1796,7 @@ class question_class extends AWS_MODEL
 				}
 			}
 				
-			if ($related_topics = $this->model('question')->get_question_topic_by_question_ids($question_related_ids))
+			if ($related_topics = $this->model('topic')->get_topics_by_item_ids($question_related_ids, 'question'))
 			{
 				foreach ($related_topics AS $related_topic)
 				{

@@ -330,7 +330,7 @@ class weixin_class extends AWS_MODEL
 							
 							foreach ($user_actions AS $key => $val)
 							{
-								$response_message .= "\n" . '• ' . strip_tags($val['last_action_str']) . ', <a href="' . get_js_url('/question/' . $val['question_id']) . '">' . $val['question_content'] . '</a> (' . date_friendly($val['add_time']) . ')' . "\n";
+								$response_message .= "\n" . '• ' . strip_tags($val['last_action_str']) . ', <a href="' . get_js_url('/question/' . $val['question_info']['question_id']) . '">' . $val['question_info']['question_content'] . '</a> (' . date_friendly($val['add_time']) . ')' . "\n";
 							}
 						}
 					}
@@ -360,10 +360,6 @@ class weixin_class extends AWS_MODEL
 			case '帮助':
 			case 'HELP':
 				$response_message = AWS_APP::config()->get('weixin')->help_message;
-			break;
-			
-			case 'COMING_SOON':
-				$response_message = '功能开发中, 敬请期待...';
 			break;
 			
 			case AWS_APP::config()->get('weixin')->command_hot:
@@ -585,22 +581,22 @@ class weixin_class extends AWS_MODEL
 						
 						foreach ($user_actions AS $key => $val)
 						{
-							$response_message .= "\n" . '• <a href="' . get_js_url('/m/question/' . $val['question_id']) . '">' . $val['question_content'] . '</a> (' . $val['answer_count'] . ' 个回答)' . "\n";
+							$response_message .= "\n" . '• <a href="' . get_js_url('/m/question/' . $val['question_info']['question_id']) . '">' . $val['question_info']['question_content'] . '</a> (' . $val['question_info']['answer_count'] . ' 个回答)' . "\n";
 							
-							if ($val['answer_count'] > 0)
+							if ($val['question_info']['answer_count'] > 0)
 							{
 								$response_message .= "--------------------\n";
 									
-								if ($val['best_answer'])
+								if ($val['question_info']['best_answer'])
 								{
-									if ($answer_list = $this->model('answer')->get_answer_by_id($val['best_answer']))
+									if ($answer_list = $this->model('answer')->get_answer_by_id($val['question_info']['best_answer']))
 									{
 										$response_message .= "最新答案: \n\n" . cjk_substr($answer_list['answer_content'], 0, 128, 'UTF-8', '...') . "\n";
 									}	
 								}
 								else
 								{
-									if ($answer_list = $this->model('answer')->get_answer_list_by_question_id($val['question_id'], 1, 'uninterested_count < ' . get_setting('uninterested_fold') . ' AND force_fold = 0', 'add_time DESC'))
+									if ($answer_list = $this->model('answer')->get_answer_list_by_question_id($val['question_info']['question_id'], 1, 'uninterested_count < ' . get_setting('uninterested_fold') . ' AND force_fold = 0', 'add_time DESC'))
 									{
 										$response_message .= "最新答案: \n\n" . cjk_substr($answer_list[0]['answer_content'], 0, 128, 'UTF-8', '...') . "\n";
 									}
@@ -640,6 +636,7 @@ class weixin_class extends AWS_MODEL
 			break;
 			
 			case AWS_APP::config()->get('weixin')->command_bind_info:
+			case 'BIND_INDO':
 				if ($this->user_id)
 				{
 					$response_message = '你的微信帐号绑定社区帐号: ' . $this->user_info['user_name'];

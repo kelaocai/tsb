@@ -8,9 +8,14 @@ h1, h2, h3, h4, h5, h6{font-size:100%;color: #333;}
 a{cursor: pointer;}
 a:hover{text-decoration: none;}
 ul, ol{list-style: none;}
-ul{margin:0;}
+ul{margin:0;padding:0;}
 input, textarea{font-family: "Helvetica Neue",Helvetica,Arial,'Microsoft YaHei',sans-serif !important;}
+input{padding:6px !important;}
+.btn-inverse{background: #444444;color: #fff;}
+.btn-inverse:hover, .label-inverse:hover, .btn-inverse:focus,  .label-inverse:focus{background: #333333;color: #fff;}
 .btn-normal.btn-inverse{padding:4px 40px;box-shadow: none;}
+.alert{padding:8px 35px 8px 14px;}
+.alert-error{background: #F2DEDE;border:1px solid #EED3D7;color: #B94A48;}
 
 .login-box{position:relative;width:450px;margin:10% auto 0;background: #fff;border-radius:4px;box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);}
 .login-box h1{position: absolute;top:-65px;color: #fff;font-size: 22px;font-family: sans-serif; }
@@ -20,11 +25,11 @@ input, textarea{font-family: "Helvetica Neue",Helvetica,Arial,'Microsoft YaHei',
 .login-box .aw-mod-body ul li{margin-top: 30px;}
 .login-box .aw-mod-body ul li:first-child{margin-top:0px;}
 .login-box .aw-mod-body span{display:inline-block;width: 60px;margin-right:10px;text-align: right;}
-.login-box .aw-mod-body input{margin:0;}
+.login-box .aw-mod-body input{display:inline;width:215px;margin:0;}
 .login-box .aw-mod-footer{padding:20px 10px;background: #E7EDF2;border-top:1px solid #d0dce6;border-radius: 0 0 4px 4px;text-align: center;}
 .login-box .vercode{margin-bottom: 0px !important;}
-.login-box .vercode label{float: left;width: 130px;}
-.login-box .vercode img{float:left;width: 120px;height: 30px;}
-.login-box .vercode input{width: 40px;}
+.login-box .vercode label{float: left;width: 150px;}
+.login-box .vercode img{float:left;width: 100px;height: 30px;cursor: pointer;}
+.login-box .vercode input{width: 70px;}
 .login-box .vercode a{display:inline-block;margin-top:5px;font-size: 12px;color: #999;}
 .login-box .error-message{position: relative;}

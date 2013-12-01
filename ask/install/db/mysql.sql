@@ -57,6 +57,61 @@ CREATE TABLE `[#DB_PREFIX#]approval` (
   KEY `time` (`time`)
 ) ENGINE=[#DB_ENGINE#] DEFAULT CHARSET=utf8;
 
+CREATE TABLE `[#DB_PREFIX#]article` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `uid` int(10) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `message` text,
+  `comments` int(10) DEFAULT '0',
+  `views` int(10) DEFAULT '0',
+  `add_time` int(10) DEFAULT NULL,
+  `has_attach` tinyint(1) NOT NULL DEFAULT '0',
+  `lock` int(1) NOT NULL DEFAULT '0',
+  `votes` int(10) DEFAULT '0',
+  `title_fulltext` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `has_attach` (`has_attach`),
+  KEY `uid` (`uid`),
+  KEY `comments` (`comments`),
+  KEY `views` (`views`),
+  KEY `add_time` (`add_time`),
+  KEY `lock` (`lock`),
+  KEY `votes` (`votes`),
+  FULLTEXT KEY `title_fulltext` (`title_fulltext`)
+) ENGINE=MYISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE `[#DB_PREFIX#]article_comments` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `uid` int(10) NOT NULL,
+  `article_id` int(10) NOT NULL,
+  `message` text NOT NULL,
+  `add_time` int(10) NOT NULL,
+  `at_uid` int(10) DEFAULT NULL,
+  `votes` int(10) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `uid` (`uid`),
+  KEY `article_id` (`article_id`),
+  KEY `add_time` (`add_time`),
+  KEY `votes` (`votes`)
+) ENGINE=[#DB_ENGINE#] DEFAULT CHARSET=utf8;
+
+CREATE TABLE `[#DB_PREFIX#]article_vote` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `uid` int(10) NOT NULL,
+  `type` varchar(16) DEFAULT NULL,
+  `item_id` int(10) NOT NULL,
+  `rating` tinyint(1) DEFAULT '0',
+  `time` int(10) NOT NULL,
+  `reputation_factor` int(10) DEFAULT '0',
+  `item_uid` int(10) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `uid` (`uid`),
+  KEY `type` (`type`),
+  KEY `item_id` (`item_id`),
+  KEY `time` (`time`),
+  KEY `item_uid` (`item_uid`)
+) ENGINE=[#DB_ENGINE#] DEFAULT CHARSET=utf8;
+
 CREATE TABLE `[#DB_PREFIX#]attach` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `file_name` varchar(255) DEFAULT NULL COMMENT '附件名称',
@@ -345,7 +400,20 @@ CREATE TABLE `[#DB_PREFIX#]mail_queue` (
   PRIMARY KEY (`id`),
   KEY `is_error` (`is_error`),
   KEY `send_to` (`send_to`)
-) ENGINE=[#DB_ENGINE#] DEFAULT CHARSET=utf8 ;
+) ENGINE=[#DB_ENGINE#] DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `[#DB_PREFIX#]pages` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `url_token` varchar(32) NOT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `keywords` varchar(255) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `contents` text,
+  `enabled` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `url_token` (`url_token`),
+  KEY `enabled` (`enabled`)
+) ENGINE=[#DB_ENGINE#] DEFAULT CHARSET=utf8;
 
 CREATE TABLE `[#DB_PREFIX#]question` (
   `question_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -471,7 +539,6 @@ CREATE TABLE `[#DB_PREFIX#]reputation_topic` (
   `update_time` int(10) DEFAULT NULL COMMENT '更新时间',
   `agree_count` INT(10) DEFAULT '0' COMMENT '赞成',
   `thanks_count` INT(10) DEFAULT '0' COMMENT '感谢',
-  `best_answer_count` INT(10) DEFAULT '0' COMMENT '最佳回复',
   `reputation` INT(10) DEFAULT '0',
   PRIMARY KEY (`auto_id`),
   KEY `topic_count` (`topic_count`),
@@ -561,18 +628,20 @@ CREATE TABLE `[#DB_PREFIX#]topic_merge` (
   KEY `source_id` (`source_id`),
   KEY `target_id` (`target_id`),
   KEY `uid` (`uid`)
-) ENGINE=[#DB_ENGINE#] DEFAULT CHARSET=utf8 ;
+) ENGINE=[#DB_ENGINE#] DEFAULT CHARSET=utf8;
 
-CREATE TABLE `[#DB_PREFIX#]topic_question` (
-  `topic_question_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+CREATE TABLE `[#DB_PREFIX#]topic_relation` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增 ID',
   `topic_id` int(11) DEFAULT '0' COMMENT '话题id',
-  `question_id` int(11) DEFAULT '0' COMMENT '问题ID',
+  `item_id` int(11) DEFAULT '0',
   `add_time` int(10) DEFAULT '0' COMMENT '添加时间',
   `uid` int(11) DEFAULT '0' COMMENT '用户ID',
-  PRIMARY KEY (`topic_question_id`),
-  KEY `topic_id` ( `topic_id` ),
-  KEY `question_id` ( `question_id` ),
-  KEY `uid` ( `uid` )
+  `type` varchar(16) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `topic_id` (`topic_id`),
+  KEY `uid` (`uid`),
+  KEY `type` (`type`),
+  KEY `item_id` (`item_id`)
 ) ENGINE=[#DB_ENGINE#] DEFAULT CHARSET=utf8;
 
 CREATE TABLE `[#DB_PREFIX#]users` (
@@ -895,8 +964,8 @@ CREATE TABLE `[#DB_PREFIX#]verify_apply` (
   `reason` varchar(255) NOT NULL,
   `attach` varchar(255) DEFAULT NULL,
   `time` int(10) NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
-  `data` text CHARACTER SET utf8 COLLATE utf8_unicode_ci,
+  `name` varchar(255) DEFAULT NULL,
+  `data` text,
   `status` tinyint(1) DEFAULT '0',
   `type` varchar(16) DEFAULT '',
   PRIMARY KEY (`id`),
@@ -997,10 +1066,10 @@ INSERT INTO `[#DB_PREFIX#]jobs` (`id`, `job_name`) VALUES
 INSERT INTO `[#DB_PREFIX#]topic` (`topic_title`, `topic_description`) VALUES('默认话题', '默认话题');
 
 INSERT INTO `[#DB_PREFIX#]users_group` (`group_id`, `type`, `custom`, `group_name`, `reputation_lower`, `reputation_higer`, `reputation_factor`, `permission`) VALUES
-(1, 0, 0, '超级管理员', 0, 0, 5, 'a:9:{s:16:"is_administortar";s:1:"1";s:16:"publish_question";s:1:"1";s:13:"edit_question";s:1:"1";s:10:"edit_topic";s:1:"1";s:17:"redirect_question";s:1:"1";s:13:"upload_attach";s:1:"1";s:11:"publish_url";s:1:"1";s:12:"manage_topic";s:1:"1";s:12:"create_topic";s:1:"1";}'),
-(2, 0, 0, '前台管理员', 0, 0, 4, 'a:9:{s:12:"is_moderator";s:1:"1";s:16:"publish_question";s:1:"1";s:13:"edit_question";s:1:"1";s:10:"edit_topic";s:1:"1";s:17:"redirect_question";s:1:"1";s:13:"upload_attach";s:1:"1";s:11:"publish_url";s:1:"1";s:12:"manage_topic";s:1:"1";s:12:"create_topic";s:1:"1";}'),
+(1, 0, 0, '超级管理员', 0, 0, 5, 'a:14:{s:16:"is_administortar";s:1:"1";s:12:"is_moderator";s:1:"1";s:16:"publish_question";s:1:"1";s:16:"publish_approval";s:1:"1";s:21:"publish_approval_time";a:2:{s:5:"start";s:0:"";s:3:"end";s:0:"";}s:13:"edit_question";s:1:"1";s:10:"edit_topic";s:1:"1";s:12:"manage_topic";s:1:"1";s:12:"create_topic";s:1:"1";s:17:"redirect_question";s:1:"1";s:13:"upload_attach";s:1:"1";s:11:"publish_url";s:1:"1";s:15:"publish_article";s:1:"1";s:12:"edit_article";s:1:"1";}'),
+(2, 0, 0, '前台管理员', 0, 0, 4, 'a:13:{s:12:"is_moderator";s:1:"1";s:16:"publish_question";s:1:"1";s:16:"publish_approval";s:1:"1";s:21:"publish_approval_time";a:2:{s:5:"start";s:0:"";s:3:"end";s:0:"";}s:13:"edit_question";s:1:"1";s:10:"edit_topic";s:1:"1";s:12:"manage_topic";s:1:"1";s:12:"create_topic";s:1:"1";s:17:"redirect_question";s:1:"1";s:13:"upload_attach";s:1:"1";s:11:"publish_url";s:1:"1";s:15:"publish_article";s:1:"1";s:12:"edit_article";s:1:"1";}'),
 (3, 0, 0, '未验证会员', 0, 0, 0, 'a:4:{s:16:"publish_question";s:1:"1";s:11:"human_valid";s:1:"1";s:19:"question_valid_hour";s:1:"2";s:17:"answer_valid_hour";s:1:"2";}'),
-(4, 0, 0, '普通会员', 0, 0, 0, 'a:5:{s:16:"publish_question";s:1:"1";s:13:"upload_attach";s:1:"1";s:11:"human_valid";s:1:"1";s:19:"question_valid_hour";s:2:"10";s:17:"answer_valid_hour";s:2:"10";}'),
+(4, 0, 0, '普通会员', 0, 0, 0, 'a:9:{s:16:"publish_question";s:1:"1";s:21:"publish_approval_time";a:2:{s:5:"start";s:0:"";s:3:"end";s:0:"";}s:12:"create_topic";s:1:"1";s:17:"redirect_question";s:1:"1";s:13:"upload_attach";s:1:"1";s:11:"human_valid";s:1:"1";s:19:"question_valid_hour";s:2:"10";s:17:"answer_valid_hour";s:2:"10";s:15:"publish_article";s:1:"1";}'),
 (5, 1, 0, '注册会员', 0, 100, 1, 'a:4:{s:16:"publish_question";s:1:"1";s:11:"human_valid";s:1:"1";s:19:"question_valid_hour";s:1:"5";s:17:"answer_valid_hour";s:1:"5";}'),
 (6, 1, 0, '初级会员', 100, 200, 1, 'a:6:{s:16:"publish_question";s:1:"1";s:13:"upload_attach";s:1:"1";s:11:"publish_url";s:1:"1";s:11:"human_valid";s:1:"1";s:19:"question_valid_hour";s:1:"5";s:17:"answer_valid_hour";s:1:"5";}'),
 (7, 1, 0, '中级会员', 200, 500, 1, 'a:5:{s:16:"publish_question";s:1:"1";s:10:"edit_topic";s:1:"1";s:17:"redirect_question";s:1:"1";s:13:"upload_attach";s:1:"1";s:11:"publish_url";s:1:"1";}'),

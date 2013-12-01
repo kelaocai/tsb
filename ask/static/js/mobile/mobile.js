@@ -64,6 +64,7 @@ $(document).ready(function () {
     });
 	
 	init_comment_box('.aw-add-comment');
+	init_article_comment_box('.aw-article-comment');
 	
 	$('img#captcha').attr('src', G_BASE_URL + '/account/captcha/');
 	
@@ -228,21 +229,25 @@ function dropdown_list(element, type)
 								if (result.length > 0)
 								{
 									ul.html('');
-									// type1 : 问题 , type2 : 话题 best_answer最佳回答, type3 : 用户
+									
 									$.each(result, function(i, e)
 									{
-										switch(parseInt(result[i].type))
+										switch(result[i].type)
 										{
-											case 1 :
-												ul.append('<li><a href="?/m/' + decodeURIComponent(result[i].url) + '">' + result[i].name + '<span class="num">' + result[i].detail.answer_count + ' 个回答</span></a></li>');
+											case 'questions' :
+												ul.append('<li><a href="' + decodeURIComponent(result[i].url) + '">' + result[i].name + '<span class="num">' + result[i].detail.answer_count + ' 个回答</span></a></li>');
+												break;
+												
+											case 'articles' :
+												ul.append('<li><a href="' + decodeURIComponent(result[i].url) + '">' + result[i].name + '<span class="num">' + result[i].detail.comments + ' 个评论</span></a></li>');
 												break;
 
-											case 2 :
-												ul.append('<li><a class="aw-topic-name" href="?/m/' + decodeURIComponent(result[i].url) + '">' + result[i].name  + '</a><span class="num">' + result[i].detail.discuss_count + ' 个问题</span></li>');
+											case 'topics' :
+												ul.append('<li><a class="aw-topic-name" href="' + decodeURIComponent(result[i].url) + '">' + result[i].name  + '</a><span class="num">' + result[i].detail.discuss_count + ' 个问题</span></li>');
 												break;
 
-											case 3 :
-												ul.append('<li><a href="?/m/' + decodeURIComponent(result[i].url) + '"><img src="' + result[i].detail.avatar_file + '"><span>' + result[i].name + '</span></a></li>');
+											case 'users' :
+												ul.append('<li><a href="' + decodeURIComponent(result[i].url) + '"><img src="' + result[i].detail.avatar_file + '"><span>' + result[i].name + '</span></a></li>');
 												break;
 										}
 									});
@@ -256,7 +261,7 @@ function dropdown_list(element, type)
 						break;
 
 						case 'message' :
-							$.get(G_BASE_URL + '/search/ajax/search/?type-user__q-' + encodeURIComponent($(element).val()) + '__limit-10',function(result)
+							$.get(G_BASE_URL + '/search/ajax/search/?type-users__q-' + encodeURIComponent($(element).val()) + '__limit-10',function(result)
 							{
 								if (result.length > 0)
 								{
@@ -280,7 +285,7 @@ function dropdown_list(element, type)
 						break;
 
 						case 'invite' : 
-							$.get(G_BASE_URL + '/search/ajax/search/?type-user__q-' + encodeURIComponent($(element).val()) + '__limit-10',function(result)
+							$.get(G_BASE_URL + '/search/ajax/search/?type-users__q-' + encodeURIComponent($(element).val()) + '__limit-10',function(result)
 							{
 								if (result.length > 0)
 								{
@@ -318,7 +323,7 @@ function dropdown_list(element, type)
 						break;
 
 						case 'redirect' :
-							$.get(G_BASE_URL + '/search/ajax/search/?q=' + encodeURIComponent($(element).val()) + '&type=question&limit-30',function(result)
+							$.get(G_BASE_URL + '/search/ajax/search/?q=' + encodeURIComponent($(element).val()) + '&type=questions&limit-30',function(result)
 							{
 								if (result.length > 0)
 								{
@@ -326,7 +331,7 @@ function dropdown_list(element, type)
 									
 									$.each(result ,function(i, e)
 									{
-										ul.append('<li><a onclick="ajax_request(' + "'" + G_BASE_URL + "/question/ajax/redirect/', 'item_id=" + $(element).attr('data-id') + "&target_id=" + result[i].sno + "'" +')">' + result[i].name +'</a></li>')
+										ul.append('<li><a onclick="ajax_request(' + "'" + G_BASE_URL + "/question/ajax/redirect/', 'item_id=" + $(element).attr('data-id') + "&target_id=" + result[i].search_id + "'" +')">' + result[i].name +'</a></li>')
 									});	
 									
 									$(element).next().show();
@@ -338,7 +343,7 @@ function dropdown_list(element, type)
 						break;
 
 						case 'topic' :
-							$.get(G_BASE_URL + '/search/ajax/search/?type-topic__q-' + encodeURIComponent($(element).val()) + '__limit-10',function(result)
+							$.get(G_BASE_URL + '/search/ajax/search/?type-topics__q-' + encodeURIComponent($(element).val()) + '__limit-10',function(result)
 							{
 								if (result.length > 0)
 								{
@@ -555,7 +560,7 @@ $.loading = function (s) {
     }
     
 	if (s == 'show')
-	{			
+	{
 		if ($('#aw-loading').css('display') == 'block')
 	    {
 		    return false;
@@ -684,7 +689,6 @@ function ajax_post(formEl, processer)	// 表单对象，用 jQuery 获取，回�
 		_post_type:'ajax',
 		_is_mobile:'true'
 	};
-	
 	
 	$.loading('show');
 	
@@ -1029,35 +1033,16 @@ function init_comment_box(selecter)
                     'comment_form_action': comment_form_action
                 }));
 				
-                $(comment_box_id).find('.aw-comment-txt').bind(
-                {
-                    focus: function ()
-                    {
-                        $(this).css('height', parseInt($(this).css('line-height')) * 5);
-
-                        $(comment_box_id).find('.aw-comment-box-btn').show();
-                    },
-
-                    blur: function ()
-                    {
-                        if ($(this).val() == '')
-                        {
-                            $(this).css('height', parseInt($(this).css('line-height')));
-
-                            $(comment_box_id).find('.aw-comment-box-btn').hide();
-                        }
-                    }
-                });
-
                 $(comment_box_id).find('.close-comment-box').click(function ()
                 {
                     $(comment_box_id).fadeOut();
-                    $(comment_box_id).find('.aw-comment-txt').css('height', $(this).css('line-height'));
                 });
+
+                $(comment_box_id).find('.aw-comment-txt').autosize();
             }
             else
             {
-                $(this).parent().parent().append(Hogan.compile(AW_TEMPLATE.commentBoxClose).render(
+                $(this).parent().parent().append(Hogan.compile(AW_MOBILE_TEMPLATE.commentBoxClose).render(
                 {
                     'comment_form_id': comment_box_id.replace('#', ''),
                     'comment_form_action': comment_form_action
@@ -1067,7 +1052,7 @@ function init_comment_box(selecter)
             //判断是否有评论数据
             $.get(comment_data_url, function (result)
             {
-                if (!result)
+                if ($.trim(result) == '')
                 {
                     result = '<p align="center">' + _t('暂无评论') + '</p>';
                 }
@@ -1078,6 +1063,37 @@ function init_comment_box(selecter)
             //var left = $(this).width()/2 + $(this).prev().width();
             /*给三角形定位*/
             //$(comment_box_id).find('.i-comment-triangle').css('left', $(this).width() / 2 + $(this).prev().width() + 15);
+        }
+    });
+}
+
+function init_article_comment_box(selecter)
+{
+	$(document).on('click', selecter, function ()
+    {
+        if ($(this).parents('.aw-item').find('.aw-comment-box').length)
+        {
+            if ($(this).parents('.aw-item').find('.aw-comment-box').css('display') == 'block')
+            {
+               $(this).parents('.aw-item').find('.aw-comment-box').fadeOut();
+            }
+            else
+            {
+                $(this).parents('.aw-item').find('.aw-comment-box').fadeIn();
+            }
+        }
+        else
+        {
+            $(this).parents('.aw-item').append(Hogan.compile(AW_MOBILE_TEMPLATE.articleCommentBox).render(
+            {
+                'at_uid' : $(this).attr('data-id'),
+                'article_id' : $('.aw-anwser-box input[name="article_id"]').val()
+            }));
+            $(this).parents('.aw-item').find('.close-comment-box').click(function ()
+            {
+                $(this).parents('.aw-item').find('.aw-comment-box').fadeOut();
+            });
+            $(this).parents('.aw-item').find('.aw-comment-txt').autosize();
         }
     });
 }
@@ -1154,19 +1170,13 @@ function agreeVote(element, answer_id)
 	$.post(G_BASE_URL + '/question/ajax/answer_vote/', 'answer_id=' + answer_id + '&value=1', function (result) {});
 	
     //判断是否投票过   
-    if ($(element).find('.aw-icon').hasClass('active'))
+    if ($(element).find('i').hasClass('active'))
     {
-    	$(element).parents('.aw-mod-footer').find('a.answer_vote .aw-icon').removeClass('active');
-    	
-        $(element).find('.aw-icon').removeClass('active');
-        
-        $(element).find('em').html(parseInt($(element).find('em').html()) - 1);
+    	return false;
     }
     else
     {
-    	$(element).parents('.aw-mod-footer').find('a.answer_vote .aw-icon').removeClass('active');
-    	
-    	$(element).find('.aw-icon').addClass('active');
+    	$(element).find('i').addClass('active');
     	
     	$(element).find('em').html(parseInt($(element).find('em').html()) + 1);
     }
@@ -1240,4 +1250,36 @@ function answer_user_rate(answer_id, type, element)
             }
         }
     }, 'json');
+}
+
+function comment_vote(element, comment_id, rating)
+{
+	$.loading('show');
+	
+	if ($(element).hasClass('active'))
+	{
+		rating = 0;
+	}
+	
+	$.post(G_BASE_URL + '/article/ajax/article_vote/', 'type=comment&item_id=' + comment_id + '&rating=' + rating, function (result) {
+		$.loading('hide');
+		
+		if (result.errno != 1)
+	    {
+	        alert(result.err);
+	    }
+	    else
+	    {
+			if (rating == 0)
+			{
+				$(element).removeClass('active');
+				$(element).html($(element).html().replace(_t('我已赞'), _t('赞')));
+			}
+			else
+			{
+				$(element).addClass('active');
+				$(element).html($(element).html().replace(_t('赞'), _t('我已赞')));
+			}
+	    }
+	}, 'json');
 }

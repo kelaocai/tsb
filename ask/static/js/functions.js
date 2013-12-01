@@ -267,7 +267,8 @@ function _error_message_form_processer(result)
 
 function shake(element)
 {
-    element.css({'width':element.width(),'margin-left':element.css('margin-left')});
+    element.css('margin-left',element.css('margin-left'));
+    
     for (var i = 1; i <= 3; i++)
     {
         element.animate({ 'left': (30 - 10 * i) }, 20);
@@ -575,7 +576,7 @@ function read_notification(notification_id, el, reload)
             $("#notifications_num").html(String(G_UNREAD_NOTIFICATION - 1));
         }
 
-        var url = G_BASE_URL + '/notifications/ajax/read_notification/notification_id-' + notification_id + '__read_type-1';
+        var url = G_BASE_URL + '/notifications/ajax/read_notification/notification_id-' + notification_id;
     }
     else
     {
@@ -584,7 +585,7 @@ function read_notification(notification_id, el, reload)
             $("#index_notification").fadeOut();
         }
 
-        var url = G_BASE_URL + '/notifications/ajax/read_notification/read_type-0';
+        var url = G_BASE_URL + '/notifications/ajax/read_notification/';
     }
 
     $.get(url, function (respose)
@@ -1001,10 +1002,18 @@ function answer_user_rate(answer_id, type, element)
     }, 'json');
 }
 
-function init_comment_box(selecter)
+function init_comment_box(selector)
 {
-    $(document).on('click', selecter, function ()
+    $(document).on('click', selector, function ()
     {
+        if (typeof COMMENT_UNFOLD != 'undefined')
+        {
+            if (COMMENT_UNFOLD == 'all' && $(this).attr('data-comment-count') == 0)
+            {
+                return false;
+            }
+        }
+
         if (!$(this).attr('data-type') || !$(this).attr('data-id'))
         {
             return true;
@@ -1051,8 +1060,6 @@ function init_comment_box(selecter)
                 {
                     focus: function ()
                     {
-                        $(this).css('height', parseInt($(this).css('line-height')) * 5);
-
                         $(comment_box_id).find('.aw-comment-box-btn').show();
                     },
 
@@ -1060,8 +1067,6 @@ function init_comment_box(selecter)
                     {
                         if ($(this).val() == '')
                         {
-                            $(this).css('height', parseInt($(this).css('line-height')));
-
                             $(comment_box_id).find('.aw-comment-box-btn').hide();
                         }
                     }
@@ -1085,20 +1090,48 @@ function init_comment_box(selecter)
             //判断是否有评论数据
             $.get(comment_data_url, function (result)
             {
-                if (!result)
+                if ($.trim(result) == '')
                 {
                     result = '<div align="center" class="aw-padding10">' + _t('暂无评论') + '</div>';
                 }
-
+				
                 $(comment_box_id).find('.aw-comment-list').html(result);
             });
 
             var left = $(this).width()/2 + $(this).prev().width();
             /*给三角形定位*/
-            $(comment_box_id).find('.i-comment-triangle').css('left', $(this).width() / 2 + $(this).prev().width() + 15);
+            $(comment_box_id).find('.i-dropdown-triangle').css('left', $(this).width() / 2 + $(this).prev().width() + 15);
+            //textarae自动增高
+            $(comment_box_id).find('.aw-comment-txt').autosize();
         }
 
         at_user_lists($(this).parents('.aw-item').find('.aw-comment-txt'));
+    });
+}
+
+function init_article_comment_box(selector)
+{
+    $(document).on('click', selector, function ()
+    {
+        if ($(this).parents('.aw-item-content').find('.aw-article-comment-box').length)
+        {
+            if ($(this).parents('.aw-item-content').find('.aw-article-comment-box').css('display') == 'block')
+            {
+               $(this).parents('.aw-item-content').find('.aw-article-comment-box').fadeOut();
+            }
+            else
+            {
+                $(this).parents('.aw-item-content').find('.aw-article-comment-box').fadeIn();
+            }
+        }
+        else
+        {
+            $(this).parents('.aw-item-content').append(Hogan.compile(AW_TEMPLATE.articleCommentBox).render(
+            {
+                'at_uid' : $(this).attr('data-id'),
+                'article_id' : $('.aw-mod-article-replay-box input[name="article_id"]').val()
+            }));
+        }
     });
 }
 
@@ -1107,20 +1140,20 @@ function insertVoteBar(data)
     // {element:this,agree_count:20,flag:0,user_name:G_USER_NAME,answer_id:1230};
     switch (data.flag)
     {
-    case 1:
-        up_class = 'active';
-        down_class = '';
-        break;
-
-    case -1:
-        up_class = '';
-        down_class = 'active';
-        break;
-
-    case 0:
-        up_class = '';
-        down_class = '';
-        break;
+	    case 1:
+	        up_class = 'active';
+	        down_class = '';
+	        break;
+	
+	    case -1:
+	        up_class = '';
+	        down_class = 'active';
+	        break;
+	
+	    case 0:
+	        up_class = '';
+	        down_class = '';
+	        break;
     }
 
     $(data.element).parent().prepend(Hogan.compile(AW_TEMPLATE.voteBar).render(
@@ -1243,21 +1276,20 @@ function disagreeVote(element, user_name, answer_id)
 }
 
 //插入话题编辑box
-
-function init_topic_edit_box(selecter) //selecter -> .aw-edit-topic
+function init_topic_edit_box(selector) //selector -> .aw-edit-topic
 {
-    $(selecter).click(function ()
+    $(selector).click(function ()
     {
     	$(this).parents('.aw-item').css('z-index',1000);
         var _aw_topic_editor_element = $(this).parents('.aw-topic-editor');
         var data_id = _aw_topic_editor_element.attr('data-id');
         var data_type = _aw_topic_editor_element.attr('data-type');
 
-        if (!_aw_topic_editor_element.find('.aw-topic-name').children().hasClass('i-close-hover'))
+        if (!_aw_topic_editor_element.find('.aw-topic-name').children().children().hasClass('aw-close'))
         {
-            _aw_topic_editor_element.find('.aw-topic-name').children().append('<i class="aw-icon i-close-hover"></i>');
+            _aw_topic_editor_element.find('.aw-topic-name').children().append('<button type="button" class="close aw-close">×</button>');
 
-            $.each(_aw_topic_editor_element.find('.i-close-hover'), function (i, e)
+            $.each(_aw_topic_editor_element.find('.aw-close'), function (i, e)
             {
                 $(e).click(function ()
                 {
@@ -1287,7 +1319,7 @@ function init_topic_edit_box(selecter) //selecter -> .aw-edit-topic
         }
         else
         {
-            _aw_topic_editor_element.find('.i-close-hover').show();
+            _aw_topic_editor_element.find('.aw-close').show();
         }
 
         /*判断插入编辑box*/
@@ -1299,7 +1331,7 @@ function init_topic_edit_box(selecter) //selecter -> .aw-edit-topic
             _aw_topic_editor_element.find('.close-edit').click(function ()
             {
                 _aw_topic_editor_element.find('.aw-edit-topic-box').hide();
-                _aw_topic_editor_element.find('.i-close-hover').hide();
+                _aw_topic_editor_element.find('.aw-close').hide();
                 _aw_topic_editor_element.find('.aw-edit-topic').show();
                 $(this).parents('.aw-item').attr('style','');
             });
@@ -1310,7 +1342,7 @@ function init_topic_edit_box(selecter) //selecter -> .aw-edit-topic
                     switch (data_type)
                     {
                     case 'publish':
-                        _aw_topic_editor_element.prepend('<a href="javascript:;" class="aw-topic-name"><span>' + _aw_topic_editor_element.find('#aw_edit_topic_title').val() + '<i class="aw-icon i-close-hover" onclick="$(this).parents(\'.aw-topic-name\').remove();"></i></span><input type="hidden" value="' + _aw_topic_editor_element.find('#aw_edit_topic_title').val() + '" name="topics[]" /></a>').hide().fadeIn();
+                        _aw_topic_editor_element.prepend('<a href="javascript:;" class="aw-topic-name"><span>' + _aw_topic_editor_element.find('#aw_edit_topic_title').val() + '<button class="close aw-close" type="button" onclick="$(this).parents(\'.aw-topic-name\').remove();">×</button></span><input type="hidden" value="' + _aw_topic_editor_element.find('#aw_edit_topic_title').val() + '" name="topics[]" /></a>').hide().fadeIn();
 
                         _aw_topic_editor_element.find('#aw_edit_topic_title').val('');
                         break;
@@ -1325,7 +1357,7 @@ function init_topic_edit_box(selecter) //selecter -> .aw-edit-topic
                                 return false;
                             }
 
-                            _aw_topic_editor_element.prepend('<a href="' + G_BASE_URL + '/topic/' + result.rsm.topic_id + '" class="aw-topic-name"><span>' + _aw_topic_editor_element.find('#aw_edit_topic_title').val() + '<i class="aw-icon i-close-hover" onclick="$.post(G_BASE_URL + \'/question/ajax/delete_topic/\', \'question_id=' + data_id + '&topic_id=\' + $(this).parents(\'.aw-topic-name\').attr(\'data-id\'));$(this).parents(\'.aw-topic-name\').remove();return false;"></i></span></a>').hide().fadeIn();
+                            _aw_topic_editor_element.prepend('<a href="' + G_BASE_URL + '/topic/' + result.rsm.topic_id + '" class="aw-topic-name"><span>' + _aw_topic_editor_element.find('#aw_edit_topic_title').val() + '<button class="close aw-close" onclick="$.post(G_BASE_URL + \'/question/ajax/delete_topic/\', \'question_id=' + data_id + '&topic_id=\' + $(this).parents(\'.aw-topic-name\').attr(\'data-id\'));$(this).parents(\'.aw-topic-name\').remove();return false;">×</button></span></a>').hide().fadeIn();
 
                             _aw_topic_editor_element.find('#aw_edit_topic_title').val('');
                         }, 'json');
@@ -1341,7 +1373,7 @@ function init_topic_edit_box(selecter) //selecter -> .aw-edit-topic
                                 return false;
                             }
 
-                            _aw_topic_editor_element.prepend('<a href="' + G_BASE_URL + '/favorite/tag-' + encodeURIComponent(_aw_topic_editor_element.find('#aw_edit_topic_title').val()) + '" class="aw-topic-name"><span>' + _aw_topic_editor_element.find('#aw_edit_topic_title').val() + '<i class="aw-icon i-close-hover" onclick="$.post(G_BASE_URL + \'/topic/ajax/remove_related_topic/related_id-\' + $(this).parents(\'.aw-topic-name\').text() + \'&topic_id=' + data_id + '\');$(this).parents(\'.aw-topic-name\').remove();return false;"></i></span></a>').hide().fadeIn();
+                            _aw_topic_editor_element.prepend('<a href="' + G_BASE_URL + '/favorite/tag-' + encodeURIComponent(_aw_topic_editor_element.find('#aw_edit_topic_title').val()) + '" class="aw-topic-name"><span>' + _aw_topic_editor_element.find('#aw_edit_topic_title').val() + '<button class="close aw-close" onclick="$.post(G_BASE_URL + \'/topic/ajax/remove_related_topic/related_id-\' + $(this).parents(\'.aw-topic-name\').text() + \'&topic_id=' + data_id + '\');$(this).parents(\'.aw-topic-name\').remove();return false;">x</button></span></a>').hide().fadeIn();
 
                             _aw_topic_editor_element.find('#aw_edit_topic_title').val('');
                         }, 'json');
@@ -1357,7 +1389,7 @@ function init_topic_edit_box(selecter) //selecter -> .aw-edit-topic
                                 return false;
                             }
 
-                            _aw_topic_editor_element.prepend('<a href="' + G_BASE_URL + '/favorite/tag-' + encodeURIComponent(_aw_topic_editor_element.find('#aw_edit_topic_title').val()) + '" class="aw-topic-name"><span>' + _aw_topic_editor_element.find('#aw_edit_topic_title').val() + '<i class="aw-icon i-close-hover" onclick="$.post(G_BASE_URL + \'/favorite/ajax/remove_favorite_tag/\', \'answer_id=' + data_id + '&topic_id=\' + $(this).parents(\'.aw-topic-name\').text());$(this).parents(\'.aw-topic-name\').remove();return false;"></i></span></a>').hide().fadeIn();
+                            _aw_topic_editor_element.prepend('<a href="' + G_BASE_URL + '/favorite/tag-' + encodeURIComponent(_aw_topic_editor_element.find('#aw_edit_topic_title').val()) + '" class="aw-topic-name"><span>' + _aw_topic_editor_element.find('#aw_edit_topic_title').val() + '<button class="close aw-close" onclick="$.post(G_BASE_URL + \'/favorite/ajax/remove_favorite_tag/\', \'answer_id=' + data_id + '&topic_id=\' + $(this).parents(\'.aw-topic-name\').text());$(this).parents(\'.aw-topic-name\').remove();return false;">x</button></span></a>').hide().fadeIn();
                             
                             _aw_topic_editor_element.find('#aw_edit_topic_title').val('');
                         }, 'json');
@@ -1367,6 +1399,7 @@ function init_topic_edit_box(selecter) //selecter -> .aw-edit-topic
             });
         }
 
+        bind_dropdown_list($(this).parents('.aw-topic-editor').find('#aw_edit_topic_title'),'topic');
         $(this).parent().find('.aw-edit-topic-box').fadeIn();
 
         /*隐藏话题编辑按钮*/
@@ -1374,40 +1407,11 @@ function init_topic_edit_box(selecter) //selecter -> .aw-edit-topic
     });
 }
 
-/*box拖拽*/
-
-function dragBox(selecter)
-{
-    $(selecter).mousedown(function (e)
-    {
-        var dragX = e.clientX - $(this).offset().left,
-            dragY = e.clientY - $(this).offset().top,
-            _this = $(this);
-        $(document).on(
-        {
-            mousemove: function (e)
-            {
-                var left = e.clientX - dragX,
-                    top = e.clientY - dragY;
-                _this.parent().css(
-                {
-                    'left': left,
-                    'top': top
-                });
-            },
-            mouseup: function ()
-            {
-                $(document).unbind('mousemove');
-                $(document).unbind('mouseup');
-            }
-        });
-    });
-}
-
 /*
  **	功能: 用户头像提示box效果
  **
- *   type : user/topic
+ *  @param
+ *  type : user/topic
  *	nTop    : 焦点到浏览器上边距
  *	nRight  : 焦点到浏览器右边距
  *	nBottom : 焦点到浏览器下边距
@@ -1419,7 +1423,7 @@ var cashUserData = [],
     cashTopicData = [],
     cardBoxTimeout;
 
-function show_card_box(selecter, type, time) //selecter -> .aw-user-name/.aw-topic-name
+function show_card_box(selector, type, time) //selector -> .aw-user-name/.aw-topic-name
 {
     if (time)
     {
@@ -1429,7 +1433,7 @@ function show_card_box(selecter, type, time) //selecter -> .aw-user-name/.aw-top
     {
         var time = 300;
     }
-    $(document).on('mouseover', selecter, function ()
+    $(document).on('mouseover', selector, function ()
     {
         clearTimeout(cardBoxTimeout);
         var _this = $(this),
@@ -1438,140 +1442,117 @@ function show_card_box(selecter, type, time) //selecter -> .aw-user-name/.aw-top
             nBottom = $(window).height() - _this.height() - nTop;
         card_box_show = setTimeout(function ()
         {
-            //用户头像box
-            if (type == 'user')
+            //判断用户id or 话题id 是否存在
+            if (_this.attr('data-id'))
             {
-                //判断用户id是否存在
-                if (_this.attr('data-id'))
+                 switch (type)
                 {
-                    //检查是否有缓存
-                    if (cashUserData.length == 0)
-                    {
-                        //发送请求
-                        _getdata('user', '/people/ajax/user_info/uid-');
-
-                    }
-                    else
-                    {
-                        var flag = 0;
-                        //遍历缓存中是否含有此id的数据
-                        _checkcash('user');
-                        if (flag == 0)
+                    case 'user' : 
+                        //检查是否有缓存
+                        if (cashUserData.length == 0)
                         {
+                            //发送请求
                             _getdata('user', '/people/ajax/user_info/uid-');
                         }
-                    }
-                }
-            }
-            //话题box
-            if (type == 'topic')
-            {
-                //存在topic_id
-                if (_this.attr('data-id'))
-                {
-                    //检查是否有缓存
-                    if (cashTopicData.length == 0)
-                    {
-                        _getdata('topic', '/topic/ajax/topic_info/topic_id-');
-                    }
-                    else
-                    {
-                        var flag = 0;
-                        //遍历缓存中是否含有此id的数据
-                        _checkcash('topic');
-                        if (flag == 0)
+                        else
+                        {
+                            var flag = 0;
+                            //遍历缓存中是否含有此id的数据
+                            _checkcash('user');
+                            if (flag == 0)
+                            {
+                                _getdata('user', '/people/ajax/user_info/uid-');
+                            }
+                        }
+                    break;
+
+                    case 'topic' :
+                        //检查是否有缓存
+                        if (cashTopicData.length == 0)
                         {
                             _getdata('topic', '/topic/ajax/topic_info/topic_id-');
                         }
-                    }
+                        else
+                        {
+                            var flag = 0;
+                            //遍历缓存中是否含有此id的数据
+                            _checkcash('topic');
+                            if (flag == 0)
+                            {
+                                _getdata('topic', '/topic/ajax/topic_info/topic_id-');
+                            }
+                        }
+                    break;
                 }
             }
 
             //通用获取数据
-
             function _getdata(type, url)
             {
                 if (type == 'user')
                 {
-                    $.ajax(
+                    $.get(G_BASE_URL + url + _this.attr('data-id'), function(result)
                     {
-                        type: 'GET',
-                        url: G_BASE_URL + url + _this.attr('data-id'),
-                        dataType: 'json',
-                        success: function (result)
-                        {
-                            var focus = result.focus,
-                                focusTxt,
-                                verified = result.verified;
+                        var focus = result.focus,
+                            focusTxt,
+                            verified = result.verified;
                            
-                            if (focus == 1)
-                            {
-                                focus = '';
-                                focusTxt = '取消关注';
-                            }
-                            else
-                            {
-                                focus = 'aw-active';
-                                focusTxt = '关注';
-                            }
-                            
-                            if (verified)
-                            {
-                                verified = 'active';
-                            }
-                            
-                            if (result.verified == 'enterprise')
-                            {
-                                verified_enterprise = 'i-ve';
-                                verified_title = '企业认证';
-                            }else if(result.verified == 'personal')
-                            {
-                                verified_enterprise = 'icon-v';
-                                verified_title = '个人认证';
-                            }else
-                            {
-                                verified_enterprise = verified_title = '';
-                            }
-                            
-                            //动态插入盒子
-                            $('#aw-ajax-box').html(Hogan.compile(AW_TEMPLATE.userCard).render(
-                            {
-                                'verified' : verified,
-                                'verified_enterprise' : verified_enterprise,
-                                'verified_title' : verified_title,
-                                'uid': result.uid,
-                                'avatar_file': result.avatar_file,
-                                'user_name': result.user_name,
-                                'reputation': result.reputation,
-                                'agree_count': result.agree_count,
-                                'signature': result.signature,
-                                'url' : result.url,
-                                'category_enable' : result.category_enable,
-                                'focus': focus,
-                                'focusTxt': focusTxt
-                            }));
-                            //判断是否为游客or自己
-                            if (G_USER_ID == 0 || G_USER_ID == result.uid)
-                            {
-                                $('#aw-card-tips .aw-mod-footer').hide();
-                            }
-                            _init();
-                            //缓存
-                            cashUserData.push($('#aw-ajax-box').html());
+                        if (focus == 1)
+                        {
+                            focus = '';
+                            focusTxt = '取消关注';
                         }
-                    });
+                        else
+                        {
+                            focus = 'aw-active';
+                            focusTxt = '关注';
+                        }
+                        
+                        if(result.verified == 'enterprise')
+                        {
+                            verified_enterprise = 'icon-v i-ve';
+                            verified_title = '企业认证';
+                        }else if(result.verified == 'personal')
+                        {
+                            verified_enterprise = 'icon-v';
+                            verified_title = '个人认证';
+                        }else
+                        {
+                            verified_enterprise = verified_title = '';
+                        }
+                        
+                        //动态插入盒子
+                        $('#aw-ajax-box').html(Hogan.compile(AW_TEMPLATE.userCard).render(
+                        {
+                            'verified_enterprise' : verified_enterprise,
+                            'verified_title' : verified_title,
+                            'uid': result.uid,
+                            'avatar_file': result.avatar_file,
+                            'user_name': result.user_name,
+                            'reputation': result.reputation,
+                            'agree_count': result.agree_count,
+                            'signature': result.signature,
+                            'url' : result.url,
+                            'category_enable' : result.category_enable,
+                            'focus': focus,
+                            'focusTxt': focusTxt
+                        }));
+                        //判断是否为游客or自己
+                        if (G_USER_ID == 0 || G_USER_ID == result.uid)
+                        {
+                            $('#aw-card-tips .aw-mod-footer').hide();
+                        }
+                        _init();
+                        //缓存
+                        cashUserData.push($('#aw-ajax-box').html());
+                    }, 'json');
                 }
                 if (type == 'topic')
                 {
-                    $.ajax(
+                    $.get(G_BASE_URL + url + _this.attr('data-id'), function(result)
                     {
-                        type: 'GET',
-                        url: G_BASE_URL + url + _this.attr('data-id'),
-                        dataType: 'json',
-                        success: function (result)
-                        {
-                            var focus = result.focus,
-                                focusTxt;
+                        var focus = result.focus,
+                            focusTxt;
                             if (focus > 0)
                             {
                                 focus = '';
@@ -1603,8 +1584,7 @@ function show_card_box(selecter, type, time) //selecter -> .aw-user-name/.aw-top
                             _init();
                             //缓存
                             cashTopicData.push($('#aw-ajax-box').html());
-                        }
-                    });
+                    }, 'json');
                 }
             }
             //检测缓存
@@ -1647,7 +1627,7 @@ function show_card_box(selecter, type, time) //selecter -> .aw-user-name/.aw-top
                 $('#aw-card-tips').css(
                 {
                     left: _this.offset().left,
-                    top: _this.offset().top + _this.height() + 2
+                    top: _this.offset().top + _this.height() + 5
                 }).fadeIn();
                 //非正常状态下判断
                 if ($('#aw-card-tips').height() + 32 > nBottom) //判断下边距不足的情况
@@ -1692,7 +1672,7 @@ function show_card_box(selecter, type, time) //selecter -> .aw-user-name/.aw-top
         }, time);
     });
 
-    $(document).on('mouseout', selecter, function ()
+    $(document).on('mouseout', selector, function ()
     {
         clearTimeout(card_box_show);
         cardBoxTimeout = setTimeout(function ()
@@ -1702,402 +1682,8 @@ function show_card_box(selecter, type, time) //selecter -> .aw-user-name/.aw-top
     });
 }
 
-/*搜索下拉*/
-
-function search_tips(selecter, limit)
-{
-    var keyword;
-
-    $(selecter).on(
-    {
-        focus: function ()
-        {
-            //显示下拉列表,清空列表数据
-            $('.aw-search-dropdown-box').show().children('.aw-search-dropdown-list').empty();
-            /*给三角形定位*/
-            $('.aw-search-dropdown-box .i-dropdown-triangle').css('left', ($(this).width()) / 2 + 50);
-            $('.aw-search-dropdown-box .title').text(_t('输入关键字进行搜索')).show();
-            $('.aw-search-dropdown-box .search').hide().children('a').text('');
-            $('.aw-search-dropdown-box .txt').text('');
-        },
-
-        keyup: function ()
-        {
-            if ($(this).val().length >= 2)
-            {
-                //请求获取数据
-                $.ajax(
-                {
-                    type: 'GET',
-                    url: G_BASE_URL + '/search/ajax/search/?q=' + encodeURIComponent($(this).val()) + '&limit=' + limit,
-                    dataType: 'json',
-                    success: function (result)
-                    {
-                        //清空内容
-                        $('.aw-search-dropdown-box .aw-search-dropdown-list').html('');
-                        for (var i = 0; i < result.length; i++)
-                        {
-                            add_search_dropdown_list('.aw-search-dropdown-box .aw-search-dropdown-list', parseInt(result[i].type), result[i], keyword);
-                        }
-                    }
-
-                });
-
-                $('.aw-search-dropdown-box .search').show().children('a').text($(this).val());
-                $('.aw-search-dropdown-box .title').hide();
-
-            }
-            else
-            {
-                $('.aw-search-dropdown-box .title').text(_t('请输入两个以上关键字...')).show();
-                $('.aw-search-dropdown-box .search').hide();
-                $('.aw-search-dropdown-box .aw-search-dropdown-list').empty();
-            }
-            
-            $('.aw-search-dropdown-box .txt').text($(this).val());
-            
-            keyword = $(this).val();
-        },
-        blur: function ()
-        {
-            searchtimeout = setTimeout(function ()
-            {
-                $('.aw-search-dropdown-box').hide();
-            }, 300);
-        }
-    });
-
-}
-
-/*搜索下拉菜单插入*/
-
-function add_search_dropdown_list(selecter, type, json, keyword)
-{
-    switch (type) // type1 : 问题 , type2 : 话题 best_answer最佳回答, type3 : 用户
-    {
-    case 1:
-        if (json.detail.best_answer > 0)
-        {
-            var active = 'active';
-        }
-        else
-        {
-            var active = ''
-        }
-
-        $(selecter).append(Hogan.compile(AW_TEMPLATE.searchDropdownList1).render(
-        {
-            'url': G_BASE_URL + '/' + json.url,
-            'active': active,
-            'content': json.name,
-            'discuss_count': json.detail.answer_count
-        }));
-        //高亮显示
-        $('.aw-search-dropdown-list .question a').highText(keyword, 'span', 'active');
-        break;
-    case 2:
-        $(selecter).append(Hogan.compile(AW_TEMPLATE.searchDropdownList2).render(
-        {
-            'url': G_BASE_URL + '/' + json.url,
-            'name': json.name,
-            'discuss_count': json.detail.discuss_count,
-            'topic_id': json.detail.topic_id
-        }));
-        break;
-    case 3:
-        if (json.detail.signature == '')
-        {
-            var signature = _t('暂无介绍');
-        }
-        else
-        {
-            var signature = json.detail.signature;
-        }
-        
-        $(selecter).append(Hogan.compile(AW_TEMPLATE.searchDropdownList3).render(
-        {
-            'url': G_BASE_URL + '/' + json.url,
-            'uid': json.uid,
-            'img': json.detail.avatar_file,
-            'name': json.name,
-            'intro': signature
-        }));
-        break;
-    }
-}
-
-/*话题编辑下拉菜单*/
-function get_topic_list_data(e,data)
-{
-    //按,号自动添加话题
-    if (e.which == 188)
-    {
-        if ($('.aw-edit-topic-box #aw_edit_topic_title').val() != ',')
-        {
-            $('.aw-edit-topic-box #aw_edit_topic_title').val( $('.aw-edit-topic-box #aw_edit_topic_title').val().substring(0,$('.aw-edit-topic-box #aw_edit_topic_title').val().length-1));
-            $('.aw-edit-topic-box .aw-topic-dropdown').hide();
-            $('.aw-edit-topic-box .submit-edit').click(); 
-        }else
-        {
-            $('.aw-edit-topic-box #aw_edit_topic_title').val('');
-        }
-    }else
-    {
-         $('.aw-edit-topic-box .aw-topic-dropdown').css('width', $('.aw-edit-topic-box #aw_edit_topic_title').width() + 12);
-        if (data.length >= 2)
-        {
-            $.get(G_BASE_URL + '/search/ajax/search/?type-topic__q-' + encodeURIComponent(data) + '__limit-10', function (result)
-            {
-                if (result.length != 0)
-                {
-                    $('.aw-edit-topic-box .aw-topic-dropdown-list').empty();
-
-                    $.each(result, function (i, a)
-                    {
-                        $('.aw-edit-topic-box .aw-topic-dropdown .aw-topic-dropdown-list').append(Hogan.compile(AW_TEMPLATE.editTopicDorpdownList).render(
-                        {
-                            'name': a['name']
-                        }));
-                    });
-                    $('.aw-edit-topic-box .aw-topic-dropdown').show().children().show();
-                    $('.aw-edit-topic-box .aw-topic-dropdown .title').hide();
-                    //关键词高亮
-                    $('.aw-edit-topic-box .aw-topic-dropdown-list li a').highText(data, 'span', 'active');
-
-                }
-                else
-                {
-                    $('.aw-edit-topic-box .aw-topic-dropdown').show().children('.title').html(_t('没有找到相关结果')).show();
-                    $('.aw-edit-topic-box .aw-topic-dropdown-list').hide();
-                }
-            }, 'json');
-        }
-        else if (data.length > 0 && data.length < 2)
-        {
-            $('.aw-edit-topic-box .aw-topic-dropdown-list').hide();
-            $('.aw-edit-topic-box .aw-topic-dropdown').show().children('.title').html(_t('请输入两个以上关键字...')).show();
-        }
-        else
-        {
-            $('.aw-edit-topic-box .aw-topic-dropdown').hide();
-        }
-    }
-   
-}
-
-/*话题编辑下拉菜单失去焦点*/
-function hide_topic_list()
-{
-    setTimeout(function ()
-    {
-        $('.aw-edit-topic-box .aw-topic-dropdown').hide();
-    }, 300);
-}
-
-/*问题重定向下拉*/
-function get_question_list_data(data)
-{
-    $('.aw-question-drodpwon .aw-topic-dropdown').css('width', $('.aw-question-drodpwon #question-input').width() + 12);
-
-    if (data.length >= 2)
-    {
-        $.get(G_BASE_URL + '/search/ajax/search/?q=' + encodeURIComponent(data) + '&type=question&limit-30', function (result)
-        {
-            if (result.length != 0)
-            {
-                $('.aw-question-drodpwon .aw-question-dropdown-list').empty();
-                
-                $.each(result, function (i, a)
-                {
-                    $('.aw-question-drodpwon .aw-question-dropdown-list').append(Hogan.compile(AW_TEMPLATE.questionRedirectList).render(
-                    {
-                        'url': "'" + G_BASE_URL + "/question/ajax/redirect/', 'item_id=" + $('.aw-question-drodpwon #question-input').attr('data-id') + "&target_id=" + a['sno'] + "'",
-                        'name': a['name']
-                    }));
-                });
-                $('.aw-question-drodpwon .aw-topic-dropdown').show().children().show();
-                $('.aw-question-drodpwon .aw-topic-dropdown .title').hide();
-                //关键词高亮
-                $('.aw-question-drodpwon .aw-question-dropdown-list li a').highText(data, 'span', 'active');
-
-            }
-            else
-            {
-                $('.aw-question-drodpwon .aw-topic-dropdown').show().children('.title').html(_t('没有找到相关结果')).show();
-                $('.aw-question-drodpwon .aw-topic-dropdown .aw-question-dropdown-list').hide();
-            }
-        }, 'json');
-    }
-    else if (data.length > 0 && data.length < 2)
-    {
-        $('.aw-question-drodpwon .aw-topic-dropdown').show().children('.title').html(_t('请输入两个以上关键字...')).show();
-   		$('.aw-question-drodpwon .aw-topic-dropdown .aw-question-dropdown-list').hide();     
-    }
-    else
-    {
-        $('.aw-question-drodpwon .aw-topic-dropdown').hide();
-    }
-}
-
-function hide_question_list(obj)
-{
-	setTimeout(function() {
-		obj.next().hide();
-	},300);
-}
-
-/*话题页面搜索下拉*/
-function get_topic_question_list_data(data)
-{
-    $('.aw-question-drodpwon .aw-question-dropdown').css('width', $('.aw-topic-search').width());
-    if (data.length >= 2)
-    {
-        $('.aw-question-drodpwon .aw-question-dropdown-list').html('');
-        $.get(G_BASE_URL + '/search/ajax/search/?type=question&q=' + encodeURIComponent(data) + '&topic_ids=' + CONTENTS_TOPIC_ID, function (result)
-        {
-            if (result.length != 0)
-            {
-                $.each(result, function (i, a)
-                {
-                    $('.aw-topic-search .aw-question-dropdown-list').append(Hogan.compile(AW_TEMPLATE.questionDropdownList).render(
-                    {
-                        'url': G_BASE_URL + "/" + a.url,
-                        'name': a.name
-                    }));
-                });
-                $('.aw-question-drodpwon .aw-topic-dropdown').show().children().show();
-                $('.aw-question-drodpwon .aw-topic-dropdown .title').hide();
-                //关键词高亮
-                $('.aw-topic-search .aw-question-dropdown-list li a').highText(data, 'span', 'active');
-
-            }
-            else
-            {
-                $('.aw-question-drodpwon .aw-topic-dropdown').show().children('.title').html(_t('没有找到相关结果')).show();
-                $('.aw-question-drodpwon .aw-topic-dropdown .aw-question-dropdown-list').hide();
-            }
-        }, 'json');
-    }
-    else if (data.length > 0 && data.length < 2)
-    {
-        $('.aw-question-drodpwon .aw-topic-dropdown .aw-question-dropdown-list').hide();
-        $('.aw-question-drodpwon .aw-topic-dropdown').show().children('.title').html(_t('请输入两个以上关键字...')).show();
-    }
-    else
-    {
-        $('.aw-question-drodpwon .aw-topic-dropdown').hide();
-    }
-}
-
-/*话题页面搜索下拉隐藏*/
-function hide_topic_question_list()
-{
-    $('.aw-question-drodpwon .aw-topic-dropdown').delay(300).hide(0);
-}
-
-var qDropdownTimeout;
-
-/*快速发起问题搜索列表*/
-function get_quick_publich_question_list(obj,data)
-{
-    clearTimeout(qDropdownTimeout);
-    
-    var _obj = obj;
-    
-    obj.next().css('width', obj.width() + 12);
-    
-    if (data.length >= 2)
-    {
-        $.get(G_BASE_URL + '/search/ajax/search/?type=question&q=' + encodeURIComponent(data) + '&limit-10', function (result)
-        {
-            if (result.length != 0)
-            {
-                obj.next().find('.aw-question-dropdown-list').html('');
-                $.each(result, function (i, a)
-                {
-                    obj.next().find('.aw-question-dropdown-list').append(Hogan.compile(AW_TEMPLATE.questionDropdownList).render(
-                    {
-                        'url': G_BASE_URL + "/" + a.url,
-                        'name': a.name
-                    }));
-                });
-                obj.next().show().children().show();
-                obj.next().find('.title').hide();
-                //关键词高亮
-                $('.aw-publish-box .aw-question-dropdown-list li a').highText(data, 'span', 'active');
-                
-            }
-            else
-            {
-                obj.next().show().children('.title').html(_t('没有找到相关结果')).show();
-                obj.next().find('.aw-question-dropdown-list').hide();
-            }
-            //两秒后自动隐藏
-            qDropdownTimeout = setTimeout(function(){
-                _obj.next().hide();
-            },2000);
-        }, 'json');
-    }
-    else if (data.length > 0 && data.length < 2)
-    {
-        obj.next().find('.aw-question-dropdown-list').hide();
-        obj.next().show().children('.title').html(_t('请输入两个以上关键字...')).show();
-    }
-    else
-    {
-       obj.next().hide();
-    }
-}
-
-/*邀请回复下拉菜单*/
-function get_user_list_data(obj,data)
-{
-    if (obj.parents('.alert-box')[0])
-    {
-       obj.next().css({'top':obj.offset().top - obj.parents('.alert-box').offset().top});
-    }
-    
-    obj.next().css({'width': obj.width() + 12});
-
-    if (data.length >= 2)
-    {
-        $.get(G_BASE_URL + '/search/ajax/search/?type-user__q-' + encodeURIComponent(data) + '__limit-10', function (result)
-        {
-            if (result.length != 0)
-            {
-            	obj.next().find('.aw-user-dropdown-list').html('');
-                $.each(result, function (i, a)
-                {
-                    obj.next().find('.aw-user-dropdown-list').append(Hogan.compile(AW_TEMPLATE.inviteDropdownList).render(
-                    {
-                        'uid': a.uid,
-                        'name': a.name,
-                        'img': a.detail.avatar_file
-                    }));
-                });
-                obj.next().show().children().show();
-                obj.next().find('.title').hide();
-            }
-            else
-            {
-                obj.next().show().children('.title').html(_t('没有找到相关结果')).show();
-                obj.next().find('.aw-user-dropdown-list').hide();
-            }
-        }, 'json');
-    }
-    else if (data.length > 0 && data.length < 2)
-    {
-        obj.next().find('.aw-user-dropdown-list').hide();
-        obj.next().show().children('.title').html(_t('请输入两个以上关键字...')).show();
-    }
-    else
-    {
-       obj.next().hide();
-    }
-}
-
 /*邀请*/
-function invite_user(obj,name,img)
+function invite_user(obj, name, img)
 {
 	var _this = obj;
 	
@@ -2115,8 +1701,11 @@ function invite_user(obj,name,img)
                 'img': img,
                 'name': name
             }));
-            $('.aw-side-bar-invite-replay .aw-message-tooltip').text(parseInt($('.aw-side-bar-invite-replay .aw-message-tooltip').text()) + 1);
+            $('.aw-side-bar-invite-box #invite-input').val('');
+            $('.aw-side-bar-invite-replay .badge-info').text(parseInt($('.aw-side-bar-invite-replay .badge-info').text()) + 1);
             $('.aw-side-bar-invite-replay .aw-side-bar-invite-box div').eq(0).show();
+            $('.aw-side-bar-invite-replay .aw-dropdown').hide();
+
         }
         else if (result.errno == -1)
         {
@@ -2130,26 +1719,240 @@ function disinvite_user(obj, uid)
 {
     $.get(G_BASE_URL + '/question/ajax/cancel_question_invite/question_id-' + QUESTION_ID + "__recipients_uid-" + uid);
 
-    $('.aw-side-bar-invite-replay .aw-message-tooltip').text(parseInt($('.aw-side-bar-invite-replay .aw-message-tooltip').text()) - 1);
+    $('.aw-side-bar-invite-replay .badge-info').text(parseInt($('.aw-side-bar-invite-replay .badge-info').text()) - 1);
 }
 
 /*动态插入下拉菜单模板*/
-function add_dropdown_list(selecter, data, selected)
+function add_dropdown_list(selector, data, selected)
 {
-    $(selecter).append(Hogan.compile(AW_TEMPLATE.dropdownList).render(
+    $(selector).append(Hogan.compile(AW_TEMPLATE.dropdownList).render(
     {
         'items': data
     }));
 
-    $(selecter + ' .dropdown-menu li a').click(function ()
+    $(selector + ' .dropdown-menu li a').click(function ()
     {
         $('#aw-topic-tags-select').html($(this).text());
     });
 
     if (selected)
     {
-        $(selecter + " .dropdown-menu li a[data-value='" + selected + "']").click();
+        $(selector + " .dropdown-menu li a[data-value='" + selected + "']").click();
     }
+}
+
+/* 下拉菜单功能绑定 */
+function bind_dropdown_list(selector, type)
+{
+    if (type == 'search')
+    {
+        $(selector).focus(function()
+        {
+            $(selector).parent().find('.aw-dropdown').show();
+        });
+    }
+    $(selector).keyup(function(e)
+    {
+        //话题插入按,号自动插入
+        if (type == 'topic')
+        {
+            if (e.which == 188)
+            {
+                if ($('.aw-edit-topic-box #aw_edit_topic_title').val() != ',')
+                {
+                    $('.aw-edit-topic-box #aw_edit_topic_title').val( $('.aw-edit-topic-box #aw_edit_topic_title').val().substring(0,$('.aw-edit-topic-box #aw_edit_topic_title').val().length-1));
+                    $('.aw-edit-topic-box .aw-topic-dropdown').hide();
+                    $('.aw-edit-topic-box .submit-edit').click(); 
+                }
+                return false;
+            }
+        }
+        if ($(selector).val().length >= 2)
+        {
+           get_dropdown_list($(this), type, $(selector).val());
+        }
+        else if ($(selector).val().length > 0 && $(selector).val().length < 2)
+        {
+            $(selector).parent().find('.aw-dropdown-list').hide();
+            $(selector).parent().find('.aw-dropdown').show().children('.title').html(_t('请输入两个以上关键字...')).show();
+        }
+        else
+        {
+           $(selector).parent().find('.aw-dropdown-list').hide();
+        }
+    });
+
+    $(selector).blur(function()
+    {
+        $(selector).parent().find('.aw-dropdown').delay(500).fadeOut(300);
+    });
+}
+
+/* 下拉菜单数据获取 */
+/*
+*    type : search, publish, redirect, invite, inbox, topic_question, topic
+*/
+function get_dropdown_list(selector, type, data)
+{
+    var url;
+    switch (type)
+    {
+        case 'search' :
+            url = G_BASE_URL + '/search/ajax/search/?q=' + encodeURIComponent(data) + '&limit=5';
+        break;
+
+        case 'publish' :
+            url = G_BASE_URL + '/search/ajax/search/?type=questions&q=' + encodeURIComponent(data) + '&limit-10';
+        break;
+
+        case 'redirect' :
+            url = G_BASE_URL + '/search/ajax/search/?q=' + encodeURIComponent(data) + '&type=questions&limit-30';
+        break;
+
+        case 'invite' :
+        case 'inbox' :
+            url = G_BASE_URL + '/search/ajax/search/?type-users__q-' + encodeURIComponent(data) + '__limit-10';
+        break;
+
+        case 'topic_question' :
+            url = G_BASE_URL + '/search/ajax/search/?type=questions&q=' + encodeURIComponent(data) + '&topic_ids=' + CONTENTS_TOPIC_ID;
+        break;
+
+        case 'topic' :
+            url = G_BASE_URL + '/search/ajax/search/?type-topics__q-' + encodeURIComponent(data) + '__limit-10';
+        break;
+    }
+
+    $.get(url, function(result)
+    {
+        if (result.length != 0)
+        {
+            $(selector).parent().find('.aw-dropdown-list').html(''); //清空内容
+            switch (type)
+            {
+                case 'search' :
+                    $.each(result, function(i, a)
+                    {
+                        switch (a.type)
+                        {
+                            case 'questions':
+                                if (a.detail.best_answer > 0)
+                                {
+                                    var active = 'active';
+                                }
+                                else
+                                {
+                                    var active = ''
+                                }
+
+                                $(selector).parent().find('.aw-dropdown-list').append(Hogan.compile(AW_TEMPLATE.searchDropdownListQuestions).render(
+                                {
+                                    'url': a.url,
+                                    'active': active,
+                                    'content': a.name,
+                                    'discuss_count': a.detail.answer_count
+                                }));
+                                break;
+								
+							case 'articles':
+                                $(selector).parent().find('.aw-dropdown-list').append(Hogan.compile(AW_TEMPLATE.searchDropdownListArticles).render(
+                                {
+                                    'url': a.url,
+                                    'content': a.name,
+                                    'comments': a.detail.comments
+                                }));
+                                break;
+								
+                            case 'topics':
+                                $(selector).parent().find('.aw-dropdown-list').append(Hogan.compile(AW_TEMPLATE.searchDropdownListTopics).render(
+                                {
+                                    'url': a.url,
+                                    'name': a.name,
+                                    'discuss_count': a.detail.discuss_count,
+                                    'topic_id': a.detail.topic_id
+                                }));
+                                break;
+                            
+                            case 'users':
+                                if (a.detail.signature == '')
+                                {
+                                    var signature = _t('暂无介绍');
+                                }
+                                else
+                                {
+                                    var signature = a.detail.signature;
+                                }
+                                
+                                $(selector).parent().find('.aw-dropdown-list').append(Hogan.compile(AW_TEMPLATE.searchDropdownListUsers).render(
+                                {
+                                    'url': a.url,
+                                    'img': a.detail.avatar_file,
+                                    'name': a.name,
+                                    'intro': signature
+                                }));
+                                break;
+                        }
+                    });
+                break;
+
+                case 'publish' :
+                case 'topic_question' :
+                    $.each(result, function (i, a)
+                    {
+                        $(selector).parent().find('.aw-dropdown-list').append(Hogan.compile(AW_TEMPLATE.questionDropdownList).render(
+                        {
+                            'url': a.url,
+                            'name': a.name
+                        }));
+                    });
+                break;
+
+                case 'topic' :
+                    $.each(result, function (i, a)
+                    {
+                        $(selector).parent().find('.aw-dropdown-list').append(Hogan.compile(AW_TEMPLATE.editTopicDorpdownList).render(
+                        {
+                            'name': a['name']
+                        }));
+                    });
+                break;
+
+                case 'redirect' :
+                    $.each(result, function (i, a)
+                    {
+                        $(selector).parent().find('.aw-dropdown-list').append(Hogan.compile(AW_TEMPLATE.questionRedirectList).render(
+                        {
+                            'url': "'" + G_BASE_URL + "/question/ajax/redirect/', 'item_id=" + $(selector).attr('data-id') + "&target_id=" + a['search_id'] + "'",
+                            'name': a['name']
+                        }));
+                    });
+                break;
+
+                case 'inbox' :
+                case 'invite' :
+                    $.each(result, function (i, a)
+                    {
+                        $(selector).parent().find('.aw-dropdown-list').append(Hogan.compile(AW_TEMPLATE.inviteDropdownList).render(
+                        {
+                            'uid': a.uid,
+                            'name': a.name,
+                            'img': a.detail.avatar_file
+                        }));
+                    });
+                break;
+
+            }
+            $(selector).parent().find('.aw-dropdown').show().children().show();
+            $(selector).parent().find('.search').show().children('a').text($(selector).val());
+            $(selector).parent().find('.title').hide();
+            //关键词高亮
+            $(selector).parent().find('.aw-dropdown-list li.question a').highText(data, 'b', 'active');
+        }else
+        {
+            $(selector).parent().find('.aw-dropdown').show().children('.title').html(_t('没有找到相关结果')).show();
+            $(selector).parent().find('.aw-dropdown-list').hide();
+        }
+    }, 'json');
 }
 
 function _quick_publish_processer(result)
@@ -2192,140 +1995,13 @@ function _fix_textarea_focus_cursor_position(elTextarea)
     }
 }
 
-function verify_register_form(element)
-{
-    $(element).find(':text, :input').on({
-        focus : function()
-        {
-            if ($(this).attr('tips') != 'undefined' || $(this).attr('tips') != '')
-            {
-                $(this).parent().append('<span class="aw-reg-tips">' + $(this).attr('tips') + '</span>');
-            }
-        },
-        blur : function()
-        {
-            switch ($(this).attr('name'))
-            {
-                case 'user_name' : 
-                    var _this = $(this);
-                    $(this).parent().find('.aw-reg-tips').detach();
-                    if ($(this).val().length >= 0 && $(this).val().length < 2)
-                    {
-                        $(this).parent().find('.aw-reg-tips').detach();
-                        $(this).parent().append('<span class="aw-reg-tips aw-reg-err"><i class="aw-icon i-err"></i>' + $(this).attr('errortips') + '</span>');
-                        return;
-                    }
-                    if ($(this).val().length > 17)
-                    {
-                        $(this).parent().find('.aw-reg-tips').detach();
-                        $(this).parent().append('<span class="aw-reg-tips aw-reg-err"><i class="aw-icon i-err"></i>' + $(this).attr('errortips') + '</span>');
-                        return;
-                    }
-                    else
-                    {
-                        $.get(G_BASE_URL + '/account/ajax/check_username/username' + '-' + encodeURIComponent($(this).val()), function (result)
-                        {
-                            if (result.errno == -1)
-                            {
-                                _this.parent().find('.aw-reg-tips').detach();
-                                _this.parent().append('<span class="aw-reg-tips aw-reg-err"><i class="aw-icon i-err"></i>' + result.err + '</span>');
-                            }
-                            else
-                            {
-                                _this.parent().find('.aw-reg-tips').detach();
-                                _this.parent().append('<span class="aw-reg-tips aw-reg-right"><i class="aw-icon i-followed"></i></span>');
-                            }
-                        }, 'json');
-                    }
-                    return;
-
-                case 'email' : 
-                    $(this).parent().find('.aw-reg-tips').detach();
-                    var emailreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
-                    if (!emailreg.test($(this).val()))
-                    {
-                        $(this).parent().find('.aw-reg-tips').detach();
-                        $(this).parent().append('<span class="aw-reg-tips aw-reg-err"><i class="aw-icon i-err"></i>' + $(this).attr('errortips') + '</span>');
-                        return;
-                    }
-                    else
-                    {
-                        $(this).parent().find('.aw-reg-tips').detach();
-                        $(this).parent().append('<span class="aw-reg-tips aw-reg-right"><i class="aw-icon i-followed"></i></span>');
-                    }        
-                    return;
-                   
-                //手机验证
-                case 'mobile' : 
-                    $(this).parent().find('.aw-reg-tips').detach();
-                    var _this = $(this);
-                    var mobilereg = /^1(3|5|8)\d{9}$/;
-                    if (!mobilereg.test($(this).val()))
-                    {
-                        $(this).parent().find('.aw-reg-tips').detach();
-                        $(this).parent().append('<span class="aw-reg-tips aw-reg-err"><i class="aw-icon i-err"></i>' + $(this).attr('errortips') + '</span>');
-                        return;
-                    }else{
-                    //检查手机号码是否已经被使用
-                    $.get(G_BASE_URL + '/account/ajax/check_mobile/mobile' + '-' + encodeURIComponent($(this).val()), function (result)
-                        {
-                            if (result.errno == -1)
-                            {
-                                
-                                _this.parent().find('.aw-reg-tips').detach();
-                                _this.parent().append('<span class="aw-reg-tips aw-reg-err"><i class="aw-icon i-err"></i>' + result.err + '</span>');
-                            }
-                            else
-                            {
-                                
-                                _this.parent().find('.aw-reg-tips').detach();
-                                _this.parent().append('<span class="aw-reg-tips aw-reg-right"><i class="aw-icon i-followed"></i></span>');
-                            }
-                        }, 'json');
-                     } 
-                    return;
-                    
-                case 'authcode':
-                    $(this).parent().find('.aw-reg-tips').detach();
-                    if ($(this).val().length!=6)
-                    {
-                        $(this).parent().find('.aw-reg-tips').detach();
-                        $(this).parent().append('<span class="aw-reg-tips aw-reg-err"><i class="aw-icon i-err"></i>' + $(this).attr('errortips') + '</span>');
-                        return;
-                    }
-                    return;    
-                        
-                case 'password' :
-                    $(this).parent().find('.aw-reg-tips').detach();
-                    if ($(this).val().length >= 0 && $(this).val().length < 6)
-                    {
-                        $(this).parent().find('.aw-reg-tips').detach();
-                        $(this).parent().append('<span class="aw-reg-tips aw-reg-err"><i class="aw-icon i-err"></i>' + $(this).attr('errortips') + '</span>');
-                        return;
-                    }
-                    if ($(this).val().length > 17)
-                    {
-                        $(this).parent().find('.aw-reg-tips').detach();
-                        $(this).parent().append('<span class="aw-reg-tips aw-reg-err"><i class="aw-icon i-err"></i>' + $(this).attr('errortips') + '</span>');
-                        return;
-                    }
-                    else
-                    {
-                        $(this).parent().find('.aw-reg-tips').detach();
-                        $(this).parent().append('<span class="aw-reg-tips aw-reg-right"><i class="aw-icon i-followed"></i></span>');
-                    }
-                    return;
-
-            }
-        }
-    });
-}
-
+/*回复,评论@人功能*/
 var at_user_lists_flag = 0, at_user_lists_index = 0;
 
-function at_user_lists(selecter) {
-    $(selecter).keyup(function (e) {
+function at_user_lists(selector) {
+    $(selector).keyup(function (e) {
         init();
+        
         var _this = $(this),
              flag = getCursorPosition($(this)[0]).start,
             key = e.which,
@@ -2407,7 +2083,7 @@ function at_user_lists(selecter) {
                     }
             }
         }
-        if (selecter == '#advanced_editor')
+        if (selector == '#advanced_editor')
         {
             if ($(this).val() == '')
             {
@@ -2416,7 +2092,7 @@ function at_user_lists(selecter) {
         }
     });
 
-    $(selecter).keydown(function (e) {
+    $(selector).keydown(function (e) {
         var key = e.which;
         if ($('.aw-invite-dropdown').is(':visible')) {
             if (key == 38 || key == 40 || key == 13) {
@@ -2434,8 +2110,8 @@ function at_user_lists(selecter) {
             $('#aw-ajax-box').append('<span class="content_cursor"></span>');
         }
         $('#aw-ajax-box').find('.content_cursor').css({
-            'left': parseInt($(selecter).offset().left + parseInt($(selecter).css('padding-left')) + 2),
-            'top': parseInt($(selecter).offset().top + parseInt($(selecter).css('padding-left')))
+            'left': parseInt($(selector).offset().left + parseInt($(selector).css('padding-left')) + 2),
+            'top': parseInt($(selector).offset().top + parseInt($(selector).css('padding-left')))
         });
     }
 
@@ -2448,15 +2124,91 @@ function at_user_lists(selecter) {
     }
 }
 
+function article_vote(element, article_id, rating)
+{
+	$.loading('show');
+	
+	if ($(element).hasClass('active'))
+	{
+		rating = 0;
+	}
+	
+	$.post(G_BASE_URL + '/article/ajax/article_vote/', 'type=article&item_id=' + article_id + '&rating=' + rating, function (result) {
+		$.loading('hide');
+		
+		if (result.errno != 1)
+	    {
+	        $.alert(result.err);
+	    }
+	    else
+	    {
+			if (rating == 0)
+			{
 
+				$(element).removeClass('active');
+                $(element).find('b').html(parseInt($(element).find('b').html()) - 1);
+			}
+            else if (rating == -1)
+            {
+                if ($(element).parents('.aw-article-vote').find('.agree').hasClass('active'))
+                {
+                    $(element).parents('.aw-article-vote').find('b').html(parseInt($(element).parents('.aw-article-vote').find('b').html()) - 1);
+                    $(element).parents('.aw-article-vote').find('a').removeClass('active');
+                }
+                $(element).addClass('active');
+            }
+			else
+			{
+				$(element).parents('.aw-article-vote').find('a').removeClass('active');
+				$(element).addClass('active');
+                $(element).find('b').html(parseInt($(element).find('b').html()) + 1);
+			}
+	    }
+	}, 'json');
+}
 
-function getCursorPosition(textarea) {
+function comment_vote(element, comment_id, rating)
+{
+	$.loading('show');
+	
+	if ($(element).hasClass('active'))
+	{
+		rating = 0;
+	}
+	
+	$.post(G_BASE_URL + '/article/ajax/article_vote/', 'type=comment&item_id=' + comment_id + '&rating=' + rating, function (result) {
+		$.loading('hide');
+		
+		if (result.errno != 1)
+	    {
+	        $.alert(result.err);
+	    }
+	    else
+	    {
+			if (rating == 0)
+			{
+				$(element).removeClass('active');
+				$(element).html($(element).html().replace(_t('我已赞'), _t('赞')));
+			}
+			else
+			{
+				$(element).addClass('active');
+				$(element).html($(element).html().replace(_t('赞'), _t('我已赞')));
+			}
+	    }
+	}, 'json');
+}
+
+function getCursorPosition(textarea)
+{
     var rangeData = {
         text: "",
         start: 0,
         end: 0
     };
+    
     textarea.focus();
+    
     if (textarea.setSelectionRange) { // W3C
         rangeData.start = textarea.selectionStart;
         rangeData.end = textarea.selectionEnd;
@@ -2484,4 +2236,38 @@ function getCursorPosition(textarea) {
     }
 
     return rangeData;
+}
+
+/* 编辑器全屏模式切换 */
+function toggleFullScreen(type)
+{
+    switch (type)
+    {
+        case 'show' : 
+            $('body').addClass('aw-editing-free');
+            if ($('.aw-mod-publish .advanced_editor')[0])
+            {
+                $('.aw-free-editor .advanced_editor').val($('.aw-mod-publish .advanced_editor').val());
+            }
+            else
+            {
+                $('.aw-free-editor .advanced_editor').val($('.aw-mod-replay-box .advanced_editor').val());
+            }
+            $('.aw-free-editor').show();
+        break;
+
+        case 'hide' :
+            $('body').removeClass('aw-editing-free');
+            if ($('.aw-mod-publish .advanced_editor')[0])
+            {
+                $('.aw-mod-publish .advanced_editor').val($('.aw-free-editor .advanced_editor').val());
+            }
+            else
+            {
+                $('.aw-mod-replay-box .advanced_editor').val($('.aw-free-editor .advanced_editor').val());
+            }
+            $('.aw-free-editor').hide();
+
+        break;
+    }
 }

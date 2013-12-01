@@ -96,8 +96,6 @@ if (@ini_get('register_globals'))
 
 require_once(ROOT_PATH . 'version.php');
 require_once(AWS_PATH . 'functions.inc.php');
-//增加firephp调试
-require_once(AWS_PATH . 'fb.php');
 
 if (file_exists(AWS_PATH . 'config.inc.php'))
 {

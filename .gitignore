@@ -32,3 +32,4 @@ ask/uploads
 webapp/include/config.php
 webapp/tmp
 webapp/include/config.php
+ask/cache

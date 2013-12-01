@@ -90,7 +90,7 @@ $config[] = array(
 		array(
 			'id' => 300,
 			'title' => '内容审核',
-			'url' => 'admin/question/approval_list/',
+			'url' => 'admin/approval/list/',
 		),
 		
 		array(
@@ -98,6 +98,13 @@ $config[] = array(
 			'title' => '问题管理',
 			'url' => 'admin/question/question_list/',
 		),
+		
+		array(
+			'id' => 309,
+			'title' => '文章管理',
+			'url' => 'admin/article/list/',
+		),
+		
 		array(
 			'id' => 302,
 			'title' => '分类设置',
@@ -112,6 +119,11 @@ $config[] = array(
 			'id' => 304,
 			'title' => '专题管理',
 			'url' => 'admin/feature/list/',
+		),
+		array(
+			'id' => 308,
+			'title' => '页面管理',
+			'url' => 'admin/page/',
 		),
 		array(
 			'id' => 306,
