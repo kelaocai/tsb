@@ -30,8 +30,8 @@ class main extends AWS_CONTROLLER {
 	}
 
 	public function index_action() {
-		TPL::import_js('js/flipsnap.min.js');
-		TPL::import_css('css/tsbm.css');
+		TPL::import_js('js/tsb/flipsnap.min.js');
+		TPL::import_css('css/tsb/tsbm.css');
 		TPL::output('tsbm/index');
 	}
 
