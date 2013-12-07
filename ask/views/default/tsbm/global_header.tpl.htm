@@ -2,11 +2,12 @@
 <div class="container" id="mynav" style="z-index:1; ">
     <div class="row">
         <div class="col-xs-12 col-md-6" style="padding-left: 0px;padding-right: 0px;filter:alpha(Opacity=80);-moz-opacity:0.9;opacity: 0.9;" >
-            <form class="form-inline" role="form">
+            <form class="form-inline" role="form" action="tsbm/search/" method="post" id="search-form">
+                <input type="hidden" name="_is_mobile" value="true" />
                 <div class="input-group" >
                     <span class="input-group-addon" style="height: 40px;border-radius: 0px; background-color: #e74c3c;color: #FFFFFF";><a href="tsbm" style="color:white;"><i class="glyphicon glyphicon-home"></i></a></span>
-                    <input type="text" class="form-control" style="height: 40px; border: 1px solid #ecf0f1; font-size: 12px;" placeholder="查找问题/好友">
-                    <span class="input-group-addon" style="height: 40px;border-radius: 0px;background-color: #e74c3c;color: #FFFFFF"><i class="glyphicon glyphicon-search"></i></span>
+                    <input type="text" class="form-control" name="q" autocomplete="off" style="height: 40px; border: 1px solid #ecf0f1; font-size: 12px;" placeholder="查找问题/好友">
+                    <span class="input-group-addon" style="height: 40px;border-radius: 0px;background-color: #e74c3c;color: #FFFFFF"><a  href="javascript:;" onclick="$('#search-form').submit();" style="color: #FFFFFF"><i class="glyphicon glyphicon-search"></i></a></span>
                     <span class="input-group-addon" style="height: 40px;border-radius: 0px; background-color: #1abc9c;color: #FFFFFF"><i class="glyphicon glyphicon-edit"></i>&nbsp;<a href="tsbm/publish/" style="color:white;">发布</a></span>
                 </div>
             </form>

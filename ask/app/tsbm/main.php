@@ -445,5 +445,35 @@ class main extends AWS_CONTROLLER {
 
 		TPL::output('tsbm/register');
 	}
+	
+	public function search_action()
+	{
+		
+		if ($_POST['q'])
+		{
+			HTTP::redirect('/tsbm/search/q-' . base64_encode($_POST['q']));
+			fb('aa');
+		}
+		
+		$keyword = htmlspecialchars(base64_decode($_GET['q']));
+		
+		$this->crumb($keyword, 'tsbm/search/q-' . urlencode($keyword));
+		
+		if (!$keyword)
+		{
+			//HTTP::redirect('/tsbm/search/');
+			TPL::output('tsbm/search');	
+		}
+		
+		TPL::assign('keyword', $keyword);
+		
+		$split_keyword=implode(' ', $this->model('system')->analysis_keyword($keyword));
+	
+		TPL::assign('split_keyword', $split_keyword);
+		
+		//fb($aa,'aa');
+		
+		TPL::output('tsbm/search');
+	}
 
 }
