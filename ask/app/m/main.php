@@ -465,7 +465,6 @@ class main extends AWS_CONTROLLER
 	
 	public function explore_action()
 	{
-		fb($_GET['category'],'ca');	
 		$this->crumb(AWS_APP::lang()->_t('发现'), '/m/explore/');
 		
 		$nav_menu = $this->model('menu')->get_nav_menu_list(null, true);

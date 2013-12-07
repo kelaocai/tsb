@@ -481,4 +481,58 @@ class ajax extends AWS_CONTROLLER {
 		}
 	}
 
+	public function search_result_action() {
+		$limit = intval($_GET['page']) * $this -> per_page . ', ' . $this -> per_page;
+
+		switch ($_GET['search_type']) {
+			case 'all' :
+				$search_result = $this -> model('tsbsearch') -> search($_GET['q'], null, $limit);
+				break;
+
+			case 'questions' :
+				$search_result = $this -> model('tsbsearch') -> search($_GET['q'], 'questions', $limit);
+				break;
+
+			case 'topics' :
+				$search_result = $this -> model('tsbsearch') -> search($_GET['q'], 'topics', $limit);
+				break;
+
+			case 'users' :
+				$search_result = $this -> model('tsbsearch') -> search($_GET['q'], 'users', $limit);
+				break;
+
+			case 'articles' :
+				$search_result = $this -> model('tsbsearch') -> search($_GET['q'], 'articles', $limit);
+				break;
+		}
+
+		if ($this -> user_id AND $search_result) {
+			foreach ($search_result AS $key => $val) {
+				switch ($val['type']) {
+					case 'questions' :
+						$search_result[$key]['focus'] = $this -> model('question') -> has_focus_question($val['search_id'], $this -> user_id);
+						break;
+
+					case 'topics' :
+						$search_result[$key]['focus'] = $this -> model('topic') -> has_focus_topic($this -> user_id, $val['search_id']);
+						break;
+
+					case 'users' :
+						$search_result[$key]['focus'] = $this -> model('follow') -> user_follow_check($this -> user_id, $val['search_id']);
+						break;
+				}
+			}
+		}
+		
+		fb($search_result,'$search_result');
+
+		TPL::assign('search_result', $search_result);
+
+		if ($_GET['template'] == 'm') {
+			TPL::output('tsbm/ajax/search_result');
+		} else {
+			TPL::output('search/ajax/search_result');
+		}
+	}
+
 }

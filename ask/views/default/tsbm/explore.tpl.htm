@@ -6,28 +6,21 @@
         <div class="col-xs-12 col-md-6">
             <div class="feed-list" style="margin-top: 5px;">
                 <ul id="explore_listview">
-                    <li>
-                        <div class="row">
-                            <!-- <div class="list_item">
-                                <img src="static/images/avatar-max-img.png" class="list-avatar">
-                                <div class="list-summary">
-                                    <span class="list-title">人寿团体大客户业务经理招聘</span>
-                                    <span class="list-info"> 淘小二 2013-11-16 发起 •  <i class=" glyphicon glyphicon-pushpin"></i> 3• <i class="glyphicon glyphicon-comment"></i> 2  • <i class="glyphicon glyphicon-eye-open"></i> 20 </span>
-                                </div>
-                            </div> -->
-                        </div>
-                    </li>
-                   
+                    
                 </ul>
-                <a id="load_explore" class="aw-load-more">更多</a>
+                <div class="row">
+                    <div class="col-xs-12 col-md-6" style="padding: 5px 10px; ">
+                        <a id="load_explore" class="btn btn-large btn-block btn-default">更多</a>
+                    </div>
+
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script type="text/javascript">
-    $(document).ready(function() {
-        load_list_view(G_BASE_URL + '/tsbm/ajax/discuss/sort_type-new__feature_id-<?php echo $this->feature_info['id']; ?>__category-<?php echo $this->category_info['id']; ?>__template-m', $('#explore_listview'), $('#load_explore'), 1);
-    }); 
-</script>
-<?php TPL::output('tsbm/footer.tpl.htm'); ?>
+    <script type="text/javascript">
+$(document).ready(function() {
+load_list_view(G_BASE_URL + '/tsbm/ajax/discuss/sort_type-new__feature_id-<?php echo $this->feature_info['id']; ?>__category-<?php echo $this->category_info['id']; ?>__template-m', $('#explore_listview'), $('#load_explore'), 1);
+});
+    </script>
+    <?php TPL::output('tsbm/footer.tpl.htm'); ?>
