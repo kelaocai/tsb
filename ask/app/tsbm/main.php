@@ -255,6 +255,10 @@ class main extends AWS_CONTROLLER {
 	}
 
 	public function publish_action() {
+		if (!$this -> user_id) {
+			HTTP::redirect('/tsbm/login/url-' . base64_encode(get_js_url($_SERVER['QUERY_STRING'])));
+		}
+
 		if ($_GET['id']) {
 			if (!$question_info = $this -> model('question') -> get_question_info_by_id($_GET['id'])) {
 				H::redirect_msg(AWS_APP::lang() -> _t('指定问题不存在'));
@@ -379,56 +383,67 @@ class main extends AWS_CONTROLLER {
 			HTTP::redirect($url);
 		}
 	}
-	
-	public function login_action()
-	{
-		TPL::import_clean();
-		
-		TPL::import_css(array(
-			'js/mobile/mobile.css',
-		));
-		
-		TPL::import_js(array(
-			'js/jquery.2.js',
-			'js/jquery.form.js',
-			'js/mobile/framework.js',
-			'js/mobile/mobile.js',
-			'js/mobile/aw-mobile-template.js'
-		));
-			
+
+	public function login_action() {
+
 		$url = base64_decode($_GET['url']);
-		
-		if (($this->user_id AND !$_GET['weixin_id']) OR $this->user_info['weixin_id'])
-		{
-			if ($url)
-			{
-				header('Location: ' . $url); 
-			}
-			else
-			{
+
+		if (($this -> user_id AND !$_GET['weixin_id']) OR $this -> user_info['weixin_id']) {
+			if ($url) {
+				header('Location: ' . $url);
+			} else {
 				HTTP::redirect('/tsbm/');
 			}
 		}
-		
-		if ($url)
-		{
+
+		if ($url) {
 			$return_url = $url;
-		}
-		else if (strstr($_SERVER['HTTP_REFERER'], '/tsbm/'))
-		{
+		} else if (strstr($_SERVER['HTTP_REFERER'], '/tsbm/')) {
 			$return_url = $_SERVER['HTTP_REFERER'];
-		}
-		else
-		{
+		} else {
 			$return_url = get_js_url('/tsbm/');
 		}
-		
-		TPL::assign('body_class', 'explore-body');
+
+		//TPL::assign('body_class', 'explore-body');
 		TPL::assign('return_url', strip_tags($return_url));
-		
-		$this->crumb(AWS_APP::lang()->_t('登录'), '/m/login/');
-		
+
+		$this -> crumb(AWS_APP::lang() -> _t('登录'), '/m/login/');
+
 		TPL::output('tsbm/login');
+	}
+
+	public function register_action() {
+		if (($this -> user_id AND !$_GET['weixin_id']) OR $this -> user_info['weixin_id']) {
+			if ($url) {
+				header('Location: ' . $url);
+			} else {
+				HTTP::redirect('/tsbm/');
+			}
+		}
+
+		if ($this -> user_id AND $_GET['invite_question_id']) {
+			if ($invite_question_id = intval($_GET['invite_question_id'])) {
+				HTTP::redirect('/question/' . $invite_question_id);
+			}
+		}
+
+		if (get_setting('invite_reg_only') == 'Y' AND !$_GET['icode']) {
+			H::redirect_msg(AWS_APP::lang() -> _t('本站只能通过邀请注册'), '/');
+		}
+
+		if ($_GET['icode']) {
+			if ($this -> model('invitation') -> check_code_available($_GET['icode'])) {
+				TPL::assign('icode', $_GET['icode']);
+			} else {
+				H::redirect_msg(AWS_APP::lang() -> _t('邀请码无效或已经使用，请使用新的邀请码'), '/');
+			}
+		}
+
+		$this -> crumb(AWS_APP::lang() -> _t('注册'), '/m/register/');
+
+		TPL::assign('body_class', 'explore-body');
+
+		TPL::output('tsbm/register');
 	}
 
 }

@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-xs-12 col-md-6">
             <div class="publish-form" style="margin-top: 5px; ">
-                <form action="publish/ajax/<?php if ($this->question_info['question_id']) { ?>modify<?php } else { ?>publish<?php } ?>_question/" method="post" id="question_form" onsubmit="return false;" role="form">
+                <form action="tsbm/ajax/<?php if ($this->question_info['question_id']) { ?>modify<?php } else { ?>publish<?php } ?>_question/" method="post" id="question_form" onsubmit="return false;" role="form">
                     <input type="hidden" name="post_hash" value="<?php echo new_post_hash(); ?>" />
                     <input type="hidden" name="question_id" id="question_id" value="<?php echo $this->question_info['question_id']; ?>" />
                     <input type="hidden" name="ask_user_id" value="<?php echo $_POST['ask_user_id']; ?>" />

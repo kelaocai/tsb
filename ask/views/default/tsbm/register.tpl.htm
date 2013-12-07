@@ -1,0 +1,63 @@
+<?php TPL::output('tsbm/header.tpl.htm'); ?>
+
+<div class="container" >
+    <div class="row" >
+
+        <div class="col-xs-12 col-md-6"  >
+            <p class="text-center ">
+                <h1><?php echo get_setting('site_name'); ?> 注册</h1>
+            </p>
+            <div class="tsb-register">
+                <form id="register_form" method="post" onsubmit="ajax_post($('#register_form')); return false;" action="tsbm/ajax/register_process/" role="form" >
+                    <input type="hidden" name="agreement_chk" value="agree" />
+
+                    <?php if ($_GET['weixin_id']) { ?>
+                    <input type="hidden" name="weixin_id" value="<?php echo base64_decode($_GET['weixin_id']); ?>" />
+                    <?php } ?>
+
+                    <?php if ($this->icode) { ?>
+                    <input type="hidden" name="icode" id="icode" value="<?php echo $this->icode; ?>" />
+                    <?php } ?>
+
+                    <?php if ($this->return_url) { ?>
+                    <input type="hidden" name="return_url" value="<?php echo $this->return_url; ?>" />
+                    <?php } ?>
+
+                    <?php if ($this->fromuid AND $_GET['invite_question_id']) { ?>
+                    <input type="hidden" name="invite_question_id" value="<?php echo htmlspecialchars($_GET['invite_question_id']); ?>"/>
+                    <?php } ?>
+
+                
+                        
+                    <div class="title clearfix">
+                        <a class="pull-right btn-register" href="tsbm/login/"><?php _e('登录'); ?><i class="fa fa-arrow-circle-right"></i></a>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="question_content"><?php _e('用户名'); ?></label>
+                        <input type="text" id="user_name" name="user_name" placeholder="<?php _e('用户名'); ?>" value="<?php echo htmlspecialchars($_GET['user_name']); ?>"  class="pull-left form-control"  />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="question_content"><?php _e('邮箱'); ?></label>
+                        <input type="text" id="email" name="email" placeholder="<?php _e('邮箱'); ?>" value="<?php echo htmlspecialchars(urldecode($_GET['email'])); ?>"  class="pull-left form-control"  />
+                    </div>
+                    <div class="form-group">
+                        <label for="question_content"><?php _e('密码'); ?></label>
+                        <input type="password" id="password" name="password" placeholder="<?php _e('密码'); ?>"  class="pull-left form-control"  >
+                    </div>
+
+                    <?php if (!$this->fromuid AND !$this->icode AND get_setting('register_seccode') == 'Y') { ?>
+                    <div class="verify clearfix">
+                        <input type="text" id="seccode_verify" name="seccode_verify" placeholder="<?php _e('验证码'); ?>" />
+                        <img class="pull-right" id="captcha" onclick="this.src = G_BASE_URL + '/account/captcha/' + Math.floor(Math.random() * 10000);" src="" />
+                    </div>
+                    <?php } ?>
+                </form>
+                <a class="btn btn-block btn-primary" style="margin-top: 60px;" href="javascript:;" onclick="ajax_post($('#register_form'));"><?php _e('注册');?></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php TPL::output('tsbm/footer.tpl.htm'); ?>

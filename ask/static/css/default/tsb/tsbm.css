@@ -192,3 +192,17 @@ a{
 .detail-attach-imge{
 	width: 290px;
 }
+
+.tsb-login{
+	padding: 5px 15px;
+}
+
+.tsb-register{
+	padding: 5px 15px;
+}
+
+
+
+.login-misc a{
+	font-size:12px;
+}

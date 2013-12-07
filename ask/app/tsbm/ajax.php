@@ -279,4 +279,206 @@ class ajax extends AWS_CONTROLLER {
 		}
 	}
 
+	public function publish_question_action() {
+		if (!$this -> user_info['permission']['publish_question']) {
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang() -> _t('你没有权限发布问题')));
+		}
+
+		if ($this -> user_info['integral'] < 0 AND get_setting('integral_system_enabled') == 'Y') {
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang() -> _t('你的剩余积分已经不足以进行此操作')));
+		}
+
+		if (empty($_POST['question_content'])) {
+			H::ajax_json_output(AWS_APP::RSM(null, -1, AWS_APP::lang() -> _t('请输入问题标题')));
+		}
+
+		if (get_setting('category_enable') == 'N' OR $_POST['_is_mobile']) {
+			$_POST['category_id'] = 1;
+		}
+
+		if (!$_POST['category_id']) {
+			H::ajax_json_output(AWS_APP::RSM(null, -1, AWS_APP::lang() -> _t('请选择问题分类')));
+		}
+
+		if (cjk_strlen($_POST['question_content']) < 5) {
+			H::ajax_json_output(AWS_APP::RSM(null, -1, AWS_APP::lang() -> _t('问题标题字数不得少于 5 个字')));
+		}
+
+		if (get_setting('question_title_limit') > 0 && cjk_strlen($_POST['question_content']) > get_setting('question_title_limit')) {
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang() -> _t('问题标题字数不得大于 %s 字节', get_setting('question_title_limit'))));
+		}
+
+		if (!$this -> user_info['permission']['publish_url'] && FORMAT::outside_url_exists($_POST['question_detail'])) {
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang() -> _t('你所在的用户组不允许发布站外链接')));
+		}
+
+		if (human_valid('question_valid_hour') AND !AWS_APP::captcha() -> is_validate($_POST['seccode_verify'])) {
+			if ($_POST['_is_mobile']) {
+				H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang() -> _t('你发帖频率太快了, 坐下来喝杯咖啡休息一下吧')));
+			}
+
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang() -> _t('请填写正确的验证码')));
+		}
+
+		if ($_POST['topics'] AND get_setting('question_topics_limit') AND sizeof($_POST['topics']) > get_setting('question_topics_limit')) {
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang() -> _t('单个问题话题数量最多为 %s 个, 请调整话题数量', get_setting('question_topics_limit'))));
+		}
+
+		if (get_setting('new_question_force_add_topic') == 'Y' AND !$_POST['topics']) {
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang() -> _t('请为问题添加话题')));
+		}
+
+		// !注: 来路检测后面不能再放报错提示
+		if (!valid_post_hash($_POST['post_hash'])) {
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang() -> _t('表单来路不正确或内容已提交, 请刷新页面重试')));
+		}
+
+		$this -> model('draft') -> delete_draft(1, 'question', $this -> user_id);
+
+		if ($this -> publish_approval_valid()) {
+			$this -> model('publish') -> publish_approval('question', array('question_content' => $_POST['question_content'], 'question_detail' => $_POST['question_detail'], 'category_id' => $_POST['category_id'], 'topics' => $_POST['topics'], 'anonymous' => $_POST['anonymous'], 'attach_access_key' => $_POST['attach_access_key'], 'ask_user_id' => $_POST['ask_user_id'], 'permission_create_topic' => $this -> user_info['permission']['create_topic']), $this -> user_id, $_POST['attach_access_key']);
+
+			H::ajax_json_output(AWS_APP::RSM(array('url' => get_js_url('/publish/wait_approval/')), 1, null));
+		} else {
+			$question_id = $this -> model('publish') -> publish_question($_POST['question_content'], $_POST['question_detail'], $_POST['category_id'], $this -> user_id, $_POST['topics'], $_POST['anonymous'], $_POST['attach_access_key'], $_POST['ask_user_id'], $this -> user_info['permission']['create_topic']);
+
+			if ($_POST['_is_mobile']) {
+				$url = get_js_url('/tsbm/question/' . $question_id);
+			} else {
+				$url = get_js_url('/question/' . $question_id);
+			}
+
+			H::ajax_json_output(AWS_APP::RSM(array('url' => $url), 1, null));
+		}
+	}
+
+	public function register_process_action() {
+		if (HTTP::get_cookie('fromuid')) {
+			$fromuid = HTTP::get_cookie('fromuid');
+		}
+
+		if (get_setting('invite_reg_only') == 'Y' AND !$_POST['icode']) {
+			H::ajax_json_output(AWS_APP::RSM(null, -1, AWS_APP::lang() -> _t('本站只能通过邀请注册')));
+		}
+
+		if ($_POST['icode']) {
+			$invitation = $this -> model('invitation') -> check_code_available($_POST['icode']);
+
+			if ($invitation && ($_POST['email'] == $invitation['invitation_email'])) {
+				$email_valid = true;
+			} else {
+				H::ajax_json_output(AWS_APP::RSM(null, -1, AWS_APP::lang() -> _t('邀请码无效')));
+			}
+		}
+
+		if (trim($_POST['user_name']) == '') {
+			H::ajax_json_output(AWS_APP::RSM(null, -1, AWS_APP::lang() -> _t('请输入用户名')));
+		} else if ($this -> model('account') -> check_username($_POST['user_name'])) {
+			H::ajax_json_output(AWS_APP::RSM(null, -1, AWS_APP::lang() -> _t('用户名已经存在')));
+		} else if ($check_rs = $this -> model('account') -> check_username_char($_POST['user_name'])) {
+			H::ajax_json_output(AWS_APP::RSM(null, -1, AWS_APP::lang() -> _t('用户名包含无效字符')));
+		} else if ($this -> model('account') -> check_username_sensitive_words($_POST['user_name']) OR trim($_POST['user_name']) != $_POST['user_name']) {
+			H::ajax_json_output(AWS_APP::RSM(null, -1, AWS_APP::lang() -> _t('用户名中包含敏感词或系统保留字')));
+		}
+
+		if ($this -> model('account') -> check_email($_POST['email'])) {
+			H::ajax_json_output(AWS_APP::RSM(null, -1, AWS_APP::lang() -> _t('E-Mail 已经被使用, 或格式不正确')));
+		}
+
+		if (strlen($_POST['password']) < 6 OR strlen($_POST['password']) > 16) {
+			H::ajax_json_output(AWS_APP::RSM(null, -1, AWS_APP::lang() -> _t('密码长度不符合规则')));
+		}
+
+		if (!$_POST['agreement_chk']) {
+			H::ajax_json_output(AWS_APP::RSM(null, -1, AWS_APP::lang() -> _t('你必需同意用户协议才能继续')));
+		}
+
+		// 检查验证码
+		if (!($_POST['fromuid'] OR $_POST['icode']) AND !AWS_APP::captcha() -> is_validate($_POST['seccode_verify']) AND get_setting('register_seccode') == 'Y') {
+			H::ajax_json_output(AWS_APP::RSM(null, -1, AWS_APP::lang() -> _t('请填写正确的验证码')));
+		}
+
+		if (get_setting('ucenter_enabled') == 'Y') {
+			$result = $this -> model('ucenter') -> register($_POST['user_name'], $_POST['password'], $_POST['email'], $email_valid);
+
+			if (is_array($result)) {
+				$uid = $result['user_info']['uid'];
+			} else {
+				H::ajax_json_output(AWS_APP::RSM(null, -1, $result));
+			}
+		} else {
+			$uid = $this -> model('account') -> user_register($_POST['user_name'], $_POST['password'], $_POST['email'], $email_valid);
+		}
+
+		if ($uid) {
+			$this -> model("account") -> setcookie_logout();
+			// 清除COOKIE
+			$this -> model("account") -> setsession_logout();
+			// 清除session;
+
+			if ($fromuid) {
+				// 有来源的用户无邀请码
+				$follow_users = $this -> model('account') -> get_user_info_by_uid($fromuid);
+			} else {
+				$follow_users = $this -> model('invitation') -> get_invitation_by_code($_POST['icode']);
+			}
+
+			if ($follow_users) {
+				$follow_uid = $follow_users['uid'];
+			}
+
+			// 发送邀请问答站内信
+			if ($_POST['invite_question_id'] and $follow_users) {
+				$url = get_js_url('/question/' . $_POST['invite_question_id']);
+
+				$title = $follow_users['user_name'] . ' 邀请你来回复问题';
+				$content = $follow_users['user_name'] . "  邀请你来回复问题: " . $url . " \r\n\r\n 邀请你来回复问题期待您的回复";
+
+				$this -> model('message') -> send_message($follow_uid, $uid, $title, $content, 0, 0);
+			}
+
+			// 互为关注
+			if ($follow_uid) {
+				$this -> model('follow') -> user_follow_add($uid, $follow_uid);
+				$this -> model('follow') -> user_follow_add($follow_uid, $uid);
+
+				$this -> model('integral') -> process($follow_uid, 'INVITE', get_setting('integral_system_config_invite'), '邀请注册: ' . $_POST['user_name'], $follow_uid);
+			}
+
+			if ($_POST['icode']) {
+				$this -> model('invitation') -> invitation_code_active($_POST['icode'], time(), fetch_ip(), $uid);
+			}
+
+			if ($email_valid OR get_setting('register_email_reqire') == 'N') {
+				$user_info = $this -> model('account') -> get_user_info_by_uid($uid);
+
+				$this -> model('account') -> setcookie_login($user_info['uid'], $user_info['user_name'], $_POST['password'], $user_info['salt']);
+
+				if (!$_POST['_is_mobile']) {
+					H::ajax_json_output(AWS_APP::RSM(array('url' => get_js_url('/home/first_login-TRUE')), 1, null));
+				}
+			} else {
+				AWS_APP::session() -> valid_email = $_POST['email'];
+
+				$this -> model('active') -> new_valid_email($uid);
+
+				H::ajax_json_output(AWS_APP::RSM(array('url' => get_js_url('/account/valid_email/')), 1, null));
+			}
+
+			if ($_POST['weixin_id'] AND $_POST['_is_mobile']) {
+				if (!$this -> model('account') -> get_user_info_by_weixin_id($_POST['weixin_id'])) {
+					$this -> model('account') -> update_users_fields(array('weixin_id' => $_POST['weixin_id'], ), $uid);
+				}
+
+				H::ajax_json_output(AWS_APP::RSM(array('url' => get_js_url('/m/weixin_bind_success/')), 1, null));
+			}
+
+			if ($_POST['_is_mobile']) {
+				H::ajax_json_output(AWS_APP::RSM(array('url' => get_js_url('/tsbm/')), 1, null));
+			}
+		} else {
+			H::ajax_json_output(AWS_APP::RSM(null, -1, AWS_APP::lang() -> _t('系统错误, 请联系管理员')));
+		}
+	}
+
 }
