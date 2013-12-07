@@ -189,6 +189,10 @@ a{
 	
 }
 
+.detail-content{
+	padding: 10px 10px;
+}
+
 .detail-attach-imge{
 	width: 290px;
 }
