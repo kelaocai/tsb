@@ -1,0 +1,69 @@
+<?php TPL::output('tsbm/header.tpl.htm'); ?>
+<?php TPL::output('tsbm/global_header.tpl.htm'); ?>
+
+<!-- 内容 -->
+<div class="container" >
+    <div class="row">
+        <div class="col-xs-12 col-md-6" style="padding-left: 0px;padding-right: 0px;" >
+            <div class="people-info">
+
+                <h2><?php if ($this->user_id == $this->user['uid']) { ?><?php _e('我的资料'); ?><?php } else { ?><?php _e('资料'); ?><?php } ?></h2>
+                <div class="people-info-avatar"><img src="<?php echo get_avatar_url($this->user['uid'], 'max'); ?>" alt=""  class="img-rounded"/>
+                </div>
+                <div class="people-info-name">
+                    <?php echo $this->user['user_name']; ?>
+
+                    <p>
+                        <span><a class="btn btn-primary ">关注</a>&nbsp;<a class="btn btn-primary ">私信</a></span>
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-md-6" style="padding: 5px 10px; top:10px;" >
+            <h2><?php if ($this->user_id == $this->user['uid']) { ?><?php _e('我的回复'); ?><?php } else { ?><?php _e('资料'); ?><?php } ?></h2>
+            <div style="margin-left: 10px;">
+                <ul>
+                    <?php foreach ($this->user_actions_answers AS $key => $val) { ?>
+                    <li>
+                        <a href="tsbm/question/<?php echo $val['answer_info']['question_id']; ?>"><?php echo $val['title']; ?></a>
+                        <p style="font-size: 10px;">
+                            <?php echo cjk_substr($val['answer_info']['answer_content'], 0, 70, 'UTF-8', '...'); ?>
+                        </p>
+                    </li>
+                    <?php } ?>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-md-6" style="padding: 5px 10px; top:10px;" >
+            <h2><?php if ($this->user_id == $this->user['uid']) { ?><?php _e('我的提问'); ?><?php } else { ?><?php _e('资料'); ?><?php } ?></h2>
+            <div style="margin-left: 10px;">
+                <ul>
+                    <?php foreach ($this->user_actions_questions AS $key => $val) { ?>
+                    <li>
+                        <a href="tsbm/question/<?php echo $val['question_info']['question_id']; ?>"><?php echo $val['title']; ?></a>
+                        <p class="num" style="font-size: 10px;">
+                            <?php _e('%s 个关注', $val['question_info']['focus_count']); ?> • <?php echo date_friendly($val['add_time']); ?>
+                        </p>
+                    </li>
+                    <?php } ?>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-md-6" style="padding: 5px 10px; top:10px;" >
+            <span><a class="btn btn-danger btn-block" href="tsbm/logout/">退出</a>&nbsp;</span>
+        </div>
+    </div>
+</div>
+<!-- end 内容 -->
+
+<?php TPL::output('tsbm/footer.tpl.htm'); ?>

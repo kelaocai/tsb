@@ -67,6 +67,7 @@ class FORMAT
 			preg_match_all('/\[attach\]([0-9]+)\[\/attach]/', $str, $matches);
 			
 			return array_unique($matches[1]);
+			
 		}
 		else
 		{

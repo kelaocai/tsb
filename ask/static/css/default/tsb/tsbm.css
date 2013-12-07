@@ -45,13 +45,21 @@
 	text-align: left;
 }
 
+.board a{
+	color:#7f8c8d;
+}
+
+a{
+	color:#34495e;
+}
+
 .board-icon {
 	font-size: 35px;
 	text-align: right;
 	float: right;
 	color: #3498db;
 	line-height: 0;
-	top:8px;
+	top:2px;
 }
 
 .pointer span.current {
@@ -71,29 +79,103 @@
    
 }
 
-.list-avatar{
+.list-avatar {
 	width: 50px;
 	height: 50px;
 	float: left;
 	margin-left: 2px;
 }
 
-.list_item{
+.answer-item{
+	position:relative;
+	height:auto;
+	padding:5px 15px;
+	margin-top:10px;
+	border-top: 1px solid #999999;
+}
+
+.answer-item-avatar{
+	
+	float: left;
+	margin-left: 2px;
+}
+
+
+.answer-item-avatar span{
+	
+	float: left;
+	font-size: 12px;
+}
+
+
+.answer-item-content{
+	float: left;
+	width: 240px;
+	line-height:24px;
+	clear: left;
+	text-align: left;
+	margin-left:36px;
+	
+}
+
+.answer-item-content .detail-attach-imge{
+	width: 250px;
+}
+
+.answer-item-info{
+	font-size: 12px;
+	float: right;
+	margin-right:5px;
+}
+
+
+.people-info{
+	position:relative;
+	height:auto;
+	padding:5px 15px;
+	margin-top:10px;
+}
+
+.people-info-avatar{
+	float: left;
+	margin-left:5px;
+}
+
+.people-info-name{
+	float: left;
+	margin-left:15px;
+	font-size: 20px;
+	font:bold; 
+	line-height:40px;
+}
+
+
+
+.list_item {
 	height:60px;
+	width:300px;
 	border-bottom: 1px solid #bdc3c7;
 	margin:10px 0px;
 }
 
 .list-summary{
 	line-height:30px;
-	float: left;
-	margin-left: 5px;
+	width:235px;
+	position:relative;
+	float: right;
+	margin-left: 10px;
 	
 }
-.list-info{
+.list-date{
 	font-size: 12px;
 	float: left;
 	clear:left;
+}
+
+.list-info{
+	font-size: 12px;
+	float: right;
+	margin-right:5px;
 }
 
 .list-title{
@@ -101,4 +183,12 @@
 	font:bold;
 	color:#000000;
 	line-height: 20px;
+}
+
+.detail-imges{
+	
+}
+
+.detail-attach-imge{
+	width: 290px;
 }

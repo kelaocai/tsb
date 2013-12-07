@@ -96,6 +96,9 @@ if (@ini_get('register_globals'))
 
 require_once(ROOT_PATH . 'version.php');
 require_once(AWS_PATH . 'functions.inc.php');
+//tsb
+require_once('system/fb.php');
+require_once(AWS_PATH . 'tsb_functions.inc.php');
 
 if (file_exists(AWS_PATH . 'config.inc.php'))
 {

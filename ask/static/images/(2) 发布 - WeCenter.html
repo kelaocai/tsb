@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html class=""><head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+<title>(2) 发布 - WeCenter</title>
+<meta name="keywords" content="WeCenter,知识社区,社交社区,问答社区">
+<meta name="description" content="WeCenter 社交化知识社区">
+<!-- base href="http://localhost/ask/?/" --><!--[if IE]></base><![endif]-->
+<link href="http://localhost/ask/static/css/default/img/favicon.png?v=20131203" rel="shortcut icon" type="image/x-icon">
+
+<link rel="stylesheet" type="text/css" href="%282%29%20%E5%8F%91%E5%B8%83%20-%20WeCenter_files/bootstrap.css">
+<link rel="stylesheet" type="text/css" href="%282%29%20%E5%8F%91%E5%B8%83%20-%20WeCenter_files/font-awesome.css">
+<link rel="stylesheet" type="text/css" href="%282%29%20%E5%8F%91%E5%B8%83%20-%20WeCenter_files/aw-font.css">
+
+<link href="%282%29%20%E5%8F%91%E5%B8%83%20-%20WeCenter_files/common.css" rel="stylesheet" type="text/css">
+<link href="%282%29%20%E5%8F%91%E5%B8%83%20-%20WeCenter_files/link.css" rel="stylesheet" type="text/css">
+<link href="%282%29%20%E5%8F%91%E5%B8%83%20-%20WeCenter_files/style.css" rel="stylesheet" type="text/css">
+<link href="%282%29%20%E5%8F%91%E5%B8%83%20-%20WeCenter_files/codemirror.css" rel="stylesheet" type="text/css">
+
+
+<script type="text/javascript">
+	var _CA7BC2DE96A18455C8129817FF60C35E='035F918BFCECD40E';
+	var G_POST_HASH=_CA7BC2DE96A18455C8129817FF60C35E;
+	var G_INDEX_SCRIPT = '?/';
+	var G_SITE_NAME = 'WeCenter';
+	var G_BASE_URL = 'http://localhost/ask/?';
+	var G_STATIC_URL = 'http://localhost/ask/static';
+	var G_UPLOAD_URL = 'http://localhost/ask/uploads';
+	var G_USER_ID = 1;
+	var G_USER_NAME = 'admin';
+	var G_UPLOAD_ENABLE = 'Y';
+	var G_QUICK_PUBLISH_HUMAN_VALID = '';
+	var G_UNREAD_NOTIFICATION = 0;
+	var G_NOTIFICATION_INTERVAL = 100000;
+	var G_CAN_CREATE_TOPIC = '1';
+</script>
+<script type="text/javascript" src="%282%29%20%E5%8F%91%E5%B8%83%20-%20WeCenter_files/compatibility.js"></script>
+<script src="%282%29%20%E5%8F%91%E5%B8%83%20-%20WeCenter_files/jquery_002.js" type="text/javascript"></script>
+<script src="%282%29%20%E5%8F%91%E5%B8%83%20-%20WeCenter_files/jquery.js" type="text/javascript"></script>
+<script src="%282%29%20%E5%8F%91%E5%B8%83%20-%20WeCenter_files/plug-in_module.js" type="text/javascript"></script>
+<script src="%282%29%20%E5%8F%91%E5%B8%83%20-%20WeCenter_files/functions.js" type="text/javascript"></script>
+<script src="%282%29%20%E5%8F%91%E5%B8%83%20-%20WeCenter_files/aw_template.js" type="text/javascript"></script>
+<script src="%282%29%20%E5%8F%91%E5%B8%83%20-%20WeCenter_files/common.js" type="text/javascript"></script>
+<script src="%282%29%20%E5%8F%91%E5%B8%83%20-%20WeCenter_files/app.js" type="text/javascript"></script>
+<script src="%282%29%20%E5%8F%91%E5%B8%83%20-%20WeCenter_files/publish.js" type="text/javascript"></script>
+<script src="%282%29%20%E5%8F%91%E5%B8%83%20-%20WeCenter_files/codemirror.js" type="text/javascript"></script>
+<script src="%282%29%20%E5%8F%91%E5%B8%83%20-%20WeCenter_files/continuelist.js" type="text/javascript"></script>
+<script src="%282%29%20%E5%8F%91%E5%B8%83%20-%20WeCenter_files/xml.js" type="text/javascript"></script>
+<script src="%282%29%20%E5%8F%91%E5%B8%83%20-%20WeCenter_files/markdown.js" type="text/javascript"></script>
+<script src="%282%29%20%E5%8F%91%E5%B8%83%20-%20WeCenter_files/jquery_003.js" type="text/javascript"></script>
+<script src="%282%29%20%E5%8F%91%E5%B8%83%20-%20WeCenter_files/markdown_002.js" type="text/javascript"></script>
+<script src="%282%29%20%E5%8F%91%E5%B8%83%20-%20WeCenter_files/set.js" type="text/javascript"></script>
+<style type="text/css">.fancybox-margin{margin-right:0px;}</style></head>
+<body>
+	<div class="aw-top-menu-wrap">
+		<div class="aw-wecenter aw-top-menu">
+			<div class="row">
+				<!-- logo -->
+				<div class="col-xs-1 col-sm-1 aw-logo hidden-xs">
+					<a href="http://localhost/ask"></a>
+				</div>
+				<!-- end logo -->
+				<!-- 搜索框 -->
+				<div class="col-xs-4 col-sm-4  aw-search-box  hidden-xs hidden-sm">
+					<form class="navbar-search pull-right" action="http://localhost/ask/?/search/" id="global_search_form" method="post">
+						<div class="input-group">
+							<input style="margin-right: 0px; padding-right: 0px;" class="form-control" placeholder="搜索问题、话题或人" autocomplete="off" name="q" id="aw-search-query" type="text"><img title="最大的字段长度是未知ߥ" style="position: relative; left: 207px; top: -22px; z-index: 999; cursor: pointer; vertical-align: bottom; border: 0px none; width: 14px; height: 19px; display: none;" class="ife_marker" src="%282%29%20%E5%8F%91%E5%B8%83%20-%20WeCenter_files/marker.png" id="q_ife_marker_0">
+							<span class="input-group-addon" title="搜索" id="global_search_btns" onclick="$('#global_search_form').submit();"><i class="fa fa-search"></i></span>
+							<div class="clearfix"></div>
+							<div class="aw-dropdown">
+								<i class="i-dropdown-triangle"></i>
+								<p class="title">输入关键字进行搜索</p>
+								<ul class="aw-dropdown-list"></ul>
+								<p class="search"><span>搜索:</span><a onclick="$('#global_search_form').submit();"></a></p>
+								<p><a href="javascript:;" onclick="$('#header_publish').click();" class="pull-right btn btn-normal btn-success publish">发起问题</a></p>
+							</div>
+						</div>
+					</form>
+				</div>
+				<!-- end 搜索框 -->
+				<!-- 导航 -->
+				<div class="col-xs-4 col-sm-4 aw-top-nav">
+					<ul>
+												<li><a href="http://localhost/ask">首页</a></li>
+												
+						<li><a href="http://localhost/ask/?/home/explore/" class="">问题</a></li>
+
+						<li><a href="http://localhost/ask/?/article/square/" class="">经验</a></li>
+						
+						<li><a href="http://localhost/ask/?/topic/">话题</a></li>
+						
+												<li>
+							<a href="http://localhost/ask/?/notifications/" class="">通知<span class="badge badge-important" style="" id="notifications_unread">2</span></a>
+							<div class="aw-message-dropdown">
+								<span><i class="aw-icon i-dropdown-triangle active"></i></span>
+								<ul id="header_notification_list">			<li class="notification">
+		<p>
+			<span class="pull-right aw-new-message-tips-close">
+				
+				<a href="javascript:;" onclick="read_notification(2,$(this).parents('.notification'),false)"><button class="close aw-close" type="button">×</button></a>
+			</span>
+			<span class="message"><a href="http://localhost/ask/?/people/kelaocai">kelaocai</a> 回复了问题 <a href="http://localhost/ask/?/question/1?notification_id-2__rf-false__item_id-1#%21answer_1">深圳新机场怎么去？</a></span>
+		</p>
+		<p class="aw-message-dropdown-more">
+						
+			<span class="aw-text-color-999"><small>19 小时前</small></span>
+		</p>
+		<div class="hide" id="extend_message_2">
+			<small></small>
+		</div>
+	</li>
+		<li class="notification">
+		<p>
+			<span class="pull-right aw-new-message-tips-close">
+				
+				<a href="javascript:;" onclick="read_notification(1,$(this).parents('.notification'),false)"><button class="close aw-close" type="button">×</button></a>
+			</span>
+			<span class="message"><a href="http://localhost/ask/?/people/kelaocai">kelaocai</a> 评论了文章 <a href="http://localhost/ask/?/article/1?notification_id-1">可以增加一个标签的功能吗 </a></span>
+		</p>
+		<p class="aw-message-dropdown-more">
+						
+			<span class="aw-text-color-999"><small>19 小时前</small></span>
+		</p>
+		<div class="hide" id="extend_message_1">
+			<small></small>
+		</div>
+	</li>
+	</ul>
+							</div>
+						</li>
+											</ul>
+				</div>
+				<!-- end 导航 -->
+				<!-- 发起 -->
+								<div class="col-xs-1 col-sm-1 aw-publish-btn hidden-xs">
+					<a id="header_publish" href="http://localhost/ask/?/publish/" class=" active" onclick="$.dialog('publish', {'category_enable':'1', 'category_id':'0', 'topic_title':''}); return false;"><i class="fa fa-edit"></i>发起</a>
+				</div>
+								<!-- end 发起 -->
+				<!-- 用户栏 -->
+				<div class="col-xs-2 col-sm-2 aw-user-nav">
+					<!-- 登陆&注册栏 -->
+											<a href="http://localhost/ask/?/people/admin" class="aw-user-nav-dropdown aw-hide-txt">
+							<img alt="admin" src="%282%29%20%E5%8F%91%E5%B8%83%20-%20WeCenter_files/01_avatar_mid.jpg">
+							admin														
+						</a>
+						<div class="aw-user-nav-dropdown-list pull-right">
+							<ul>
+								<li><a href="http://localhost/ask/?/inbox/"><i class="fa fa-envelope"></i> 私信<span style="display: none;" class="badge badge-important hide" id="inbox_unread">0</span></a></li>
+								<li><a href="http://localhost/ask/?/account/setting/profile/"><i class="fa fa-cog"></i> 设置</a></li>
+																<li><a href="http://localhost/ask?/admin/"><i class="fa fa-wrench"></i> 管理</a></li>
+																<li><a href="http://localhost/ask/?/account/logout/"><i class="fa fa-power-off"></i> 退出</a></li>
+							</ul>
+						</div>
+										<!-- end 登陆&注册栏 -->
+				</div>
+				<!-- end 用户栏 -->
+			</div>
+		</div>
+	</div>
+<div class="aw-container-wrap">
+	<div class="aw-container aw-wecenter aw-publish">
+		<div class="row aw-content-wrap">
+			<div class="tabbable">
+				<!-- tab 切换 -->
+				<ul class="nav nav-tabs aw-reset-nav-tabs aw-publish-tabs">
+					<li class="active"><a href="http://localhost/ask/?/publish/">发起问题</a></li>
+										<li><a href="http://localhost/ask/?/publish/article/">发起文章</a></li>
+									</ul>
+				<!-- end tab 切换 -->
+
+				<div class="col-sm-12 col-md-9 aw-main-content">
+					<form action="http://localhost/ask/?/publish/ajax/modify_question/" method="post" id="question_form" onsubmit="return false;">
+						<input name="post_hash" value="9a0683fd6a966ad6" type="hidden">
+						<input name="attach_access_key" value="17e658427ea46cf29066cfc6bcf7d7e6" type="hidden">
+						<input name="question_id" id="question_id" value="8" type="hidden">
+						<input name="ask_user_id" value="" type="hidden">
+												<select name="category_id" class="hide" id="category_id">
+							<option value="0">- 请选择分类 -</option>
+							<option value="1" selected="selected">默认分类</option>						</select>
+												<div class="aw-mod aw-dynamic-index aw-mod-publish">
+							<div class="aw-mod-body">
+								<h3>问题标题:</h3>
+								<!-- 问题标题 -->
+								<div class="aw-publish-title">
+									<input style="margin-right: 0px; padding-right: 0px;" placeholder="问题标题..." name="question_content" id="question_contents" value="未来房地产市场调控政策将更加注重长" class="form-control" type="text"><img title="最大的字段长度是未知ߥ" style="position: relative; left: 539px; top: -22px; z-index: 999; cursor: pointer; vertical-align: bottom; border: 0px none; width: 14px; height: 19px; display: none;" class="ife_marker" src="%282%29%20%E5%8F%91%E5%B8%83%20-%20WeCenter_files/marker.png" id="question_content_ife_marker_1">
+																		<div class="aw-dropdown aw-question-dropdown">
+										<i class="aw-icon i-dropdown-triangle active"></i>
+										<p class="title">没有找到相关结果</p>
+										<ul class="aw-question-dropdown-list"></ul>
+									</div>
+									<div class="aw-publish-title-dropdown">
+										<p class="dropdown-toggle" data-toggle="dropdown">
+											<span id="aw-topic-tags-select">默认分类</span>
+											<a href="javascript:;"><i class="fa fa-chevron-down"></i></a>
+										</p>
+									<div aria-labelledby="dropdownMenu" role="menu" class="dropdown-menu aw-dropdown-menu"><span><i class="aw-icon i-dropdown-triangle"></i></span><ul><li><a data-value="1">默认分类</a></li></ul></div></div>
+																	</div>
+								<!-- end 问题标题 -->
+
+								<h3>问题补充 (选填):</h3>
+								<div class="aw-mod aw-mod-publish-box">
+									<div class="aw-mod-head">
+										<div class="markdown"><div id="markItUpAdvanced_editor" class="markItUp"><div class="markItUpContainer"><div class="markItUpHeader"><ul><li class="markItUpButton markItUpButton1 fa fa-bold"><a href="" title="粗体">粗体</a></li><li class="markItUpButton markItUpButton2 fa fa-italic"><a href="" title="斜体">斜体</a></li><li class="markItUpSeparator"> </li><li class="markItUpButton markItUpButton3 fa fa-quote-left"><a href="" title="引用">引用</a></li><li class="markItUpButton markItUpButton4 fa fa-code"><a href="" title="代码">代码</a></li><li class="markItUpSeparator"> </li><li class="markItUpButton markItUpButton5 fa fa-list"><a href="" title="普通列表">普通列表</a></li><li class="markItUpButton markItUpButton6 fa fa-list-ol"><a href="" title="数字列表">数字列表</a></li><li class="markItUpButton markItUpButton7 fa fa-h-square"><a href="" title="标题">标题</a></li><li class="markItUpSeparator"> </li><li class="markItUpButton markItUpButton8 fa fa-link"><a href="" title="超链接">超链接</a></li><li class="markItUpButton markItUpButton9 fa fa-picture-o"><a href="" title="图片">图片</a></li><li class="markItUpButton markItUpButton10 fa fa-toggle-right"><a href="" title="视频">视频</a></li><li class="markItUpSeparator"> </li><li class="markItUpButton markItUpButton11 fa fa-eraser"><a href="" title="清空">清空</a></li><li class="markItUpButton markItUpButton12 toggleMode fa fa-eye"><a class="cur" href="" title="ToggleMode">ToggleMode</a></li><li class="markItUpButton markItUpButton13 toggleFree fa fa-fullscreen pull-right"><a href="" title="全屏模式">全屏模式</a></li><li class="markItUpButton markItUpButton14 fa fa-reorder pull-right"><a href="" title="预览模式">预览模式</a></li><li class="markItUpButton markItUpButton15 fa fa-question pull-right"><a href="" title="编辑器语法帮助">编辑器语法帮助</a></li></ul></div><div class="markItUpHelper clearfix hide"><ul class="clearfix"><li>标题 / 粗斜体</li><li>代码片段</li><li>超链接 / 图片 / 视频</li><li>列表 / 引用</li></ul><div class="content"><div class="tab-pane"><p>文章内容较多时，可以用标题分段 : </p><pre>## 大标题 <br>### 小标题</pre><p>斜体 / 粗体 : </p><pre>**粗体** <br>*斜体* <br>***粗斜体*** </pre></div><div class="tab-pane"><p>代码片段 : </p><pre>{{{<br>代码片段<br>}}}</pre></div><div class="tab-pane"><p>超链接 : </p><pre>[链接文字](链接地址) 例: [百度](http://www.baidu.com)</pre><p>图片 : </p><pre>![图片说明](图片地址) 例: ![百度logo](http://www.baidu.com/img/bdlogo.gif)</pre><p>视频 : </p><pre>!![视频说明](视频地址) 例: !![优酷视频](http://youku.com)</pre></div><div class="tab-pane"><p>有序列表 : </p><pre>1. 123<br>2. 123<br>3. 123</pre><p>无序列表 : </p><pre>- 123<br>- 123<br>- 123<br></pre><p>引用 : ( 双回车后结束引用 )</p><pre>&gt; 引用内容<br>引用内容<br>引用内容</pre></div></div></div><textarea style="overflow: hidden; word-wrap: break-word; resize: none; height: 414px; margin-right: 0px; padding-right: 0px;" name="question_detail" id="advanced_editor" rows="20" class="autosize form-control advanced_editor markItUpEditor">近
+日，习近平总书记主持召开政治局会议，分析研究了2014年经济工作，提出要做好住房保障和房地产市场调控工作。此前，在十八届三中全会召开前夕，中共中
+央政治局就加快推进住房保障和供应体系建设进行集中学习。这些情况表明，未来房地产市场调控政策或将更加注重长效机制建设，同时楼市运行存在调整需要，资
+金面约束也在增强，在此背景下，明年楼市预期演化或将临近拐点。
+
+　　首先，未[attach]4[/attach]来房地产市场调控政策将更加注重长效机制建设。以抑制短期房价过快上涨为目的的调控政策，往往会因为对
+住房需求抑制偏多，可能会加剧未来供求失衡的矛盾，进一步强化了房价上涨预期。从目前公开发布的有关政策文件分析，未来我国房地产市场调控将更加注重长期
+稳定机制建设，从建立全国统一的不动产登记制度入手，加大保障性住房建设，增加市场供应，完善差别化调控措施等等，将重新塑造房地产市场运行的外部政策环
+境，势必对未来楼市预期产生深远影响。
+
+</textarea><img title="最大的字段长度是未知ߥ" style="position: relative; left: 689px; top: -22px; z-index: 999; cursor: pointer; vertical-align: bottom; border: 0px none; width: 14px; height: 19px; display: none;" class="ife_marker" src="%282%29%20%E5%8F%91%E5%B8%83%20-%20WeCenter_files/marker.png" id="question_detail_ife_marker_2"><div class="markItUpFooter"></div></div></div></div>
+										<p class="aw-text-color-999"><span class="pull-right" id="question_detail_message">已保存草稿, 13:29:20 <a href="#" onclick="$('textarea#advanced_editor').attr('value', ''); delete_draft(1, 'question'); $(this).parent().html(' '); return false;">删除草稿</a></span></p>
+									</div>
+									<div class="aw-mod-body">
+										<span id="file_uploader_question"><a style="position: relative; overflow: hidden; direction: ltr;" href="javascript:;" class="_ajax_upload-button btn btn-default btn-normal"><i class="icon-upload-alt"></i>上传附件<input style="position: absolute; right: 0px; top: 0px; font-family: Arial; font-size: 118px; margin: 0px; padding: 0px; cursor: pointer; opacity: 0;" name="file" multiple="multiple" type="file"></a><div class="aw-file-uploader _ajax_upload-list clearfix" id="upload-ul"><dl><dt rel="http://localhost/ask/uploads/questions/20131206/90x90_fb3e246d2cce841609896d8500eeb911.jpg" style="background-image: url(&quot;http://localhost/ask/uploads/questions/20131206/90x90_fb3e246d2cce841609896d8500eeb911.jpg&quot;);" class="aw-icon"></dt><dd><p class="_ajax_upload-file aw-file-uploader-name">376024.jpg</p><p style="" class="_ajax_upload-size aw-text-color-999">21.0kB</p><p class="_ajax_upload-inset"><a href="http://localhost/ask/?/publish/ajax/remove_attach/attach_id-d3R2VzFzbmZ6OWpTeWRDT2xZMmVqc2pGMk12cTQ4N1owT3pCdnBlVW1NeVlxcDZyb3FiVHpLZVp4TktWbXBlWXE4bmQwNlhRenRtYXhhUElsdy4u" class="_ajax_upload_delete_file" onclick="if (confirm('确认删除?')) { _ajax_uploader_delete_attach(this.href, $(this).parents('dl')) } return false;">删除</a> <a onclick="insert_attach(this,4,'attach')" href="javascript:;">插入</a></p></dd></dl></div></span>
+
+										<span style="display: inline;" class="aw-text-color-999 aw-upload-tips hide">允许的附件文件类型: jpg,jpeg,png,gif,zip,doc,docx,rar,pdf,psd</span>
+										
+										<div id="markItUpPreviewFrame" class="markItUpPreviewFrame">
+											<h2 class="title">
+												预览模式:
+											</h2>
+											<div id="markItUpPreviewFrames" class="markItUpPreviewFrames">近
+日，习近平总书记主持召开政治局会议，分析研究了2014年经济工作，提出要做好住房保障和房地产市场调控工作。此前，在十八届三中全会召开前夕，中共中
+央政治局就加快推进住房保障和供应体系建设进行集中学习。这些情况表明，未来房地产市场调控政策或将更加注重长效机制建设，同时楼市运行存在调整需要，资
+金面约束也在增强，在此背景下，明年楼市预期演化或将临近拐点。<br><br>　　首先，未[attach]4[/attach]来房地产市场调控政策
+将更加注重长效机制建设。以抑制短期房价过快上涨为目的的调控政策，往往会因为对住房需求抑制偏多，可能会加剧未来供求失衡的矛盾，进一步强化了房价上涨
+预期。从目前公开发布的有关政策文件分析，未来我国房地产市场调控将更加注重长期稳定机制建设，从建立全国统一的不动产登记制度入手，加大保障性住房建
+设，增加市场供应，完善差别化调控措施等等，将重新塑造房地产市场运行的外部政策环境，势必对未来楼市预期产生深远影响。</div>
+										</div>
+									</div>
+								</div>
+																							</div>
+							<div class="aw-mod-footer clearfix">
+								<span class="aw-anonymity">
+																		<label><input class="pull-left" value="1" name="do_delete" type="checkbox">
+										删除问题</label>
+																		
+								</span>
+								<a class="btn btn-large btn-success" id="publish_submit" onclick="ajax_post($('#question_form')); return false;">确认发起</a>
+							</div>
+						</div>
+					</form>
+				</div>
+				<!-- 侧边栏 -->
+				<div class="col-sm-12 col-md-3 aw-side-bar">
+					<!-- 问题发起指南 -->
+					<div class="aw-side-bar-mod aw-no-border-bottom aw-side-bar-mod-publish">
+						<div class="aw-side-bar-mod-head">
+							<h3>问题发起指南</h3>
+						</div>
+						<div class="aw-side-bar-mod-body">
+							<p><b>● 问题标题:</b> 请用准确的语言描述您发布的问题思想</p>
+							<p><b>● 问题补充:</b> 详细补充您的问题内容, 并提供一些相关的素材以供参与者更多的了解您所要问题的主题思想</p>
+							<p><b>● 选择话题:</b> 选择一个或者多个合适的话题, 让您发布的问题得到更多有相同兴趣的人参与. 所有人可以在您发布问题之后添加和编辑该问题所属的话题</p>
+				            						</div>
+					</div>
+					<!-- end 问题状态 -->		
+				</div>
+				<!-- end 侧边栏 -->
+
+			</div>
+		</div>
+	</div>
+</div>
+<div class="aw-mod aw-free-editor hide">
+	<form action="http://localhost/ask/?/question/ajax/save_answer/" onsubmit="return false;" method="post" id="answer_form">
+    	<input name="post_hash" value="21C003A882D98EBD" type="hidden">
+    	<input name="question_id" value="8" type="hidden">
+    	<input name="attach_access_key" value="17e658427ea46cf29066cfc6bcf7d7e6" type="hidden">
+		<div class="aw-mod-head">
+			<div class="aw-wecenter">
+				<a href="#" class="btn btn-large btn-default pull-left" onclick="toggleFullScreen('hide');return false;">退出全屏模式</a>
+				全屏模式
+				<a href="#" class="btn btn-large btn-default pull-right" onclick="ajax_post($(this).parents('#answer_form'));return false;">回复</a>
+			</div>
+		</div>
+		<div class="aw-mod-body">
+			<div class="aw-mod-side-left pull-left">
+				<div class="markdown"><div id="markItUpAdvanced_editor" class="markItUp"><div class="markItUpContainer"><div class="markItUpHeader"><ul><li class="markItUpButton markItUpButton1 fa fa-bold"><a href="" title="粗体">粗体</a></li><li class="markItUpButton markItUpButton2 fa fa-italic"><a href="" title="斜体">斜体</a></li><li class="markItUpSeparator"> </li><li class="markItUpButton markItUpButton3 fa fa-quote-left"><a href="" title="引用">引用</a></li><li class="markItUpButton markItUpButton4 fa fa-code"><a href="" title="代码">代码</a></li><li class="markItUpSeparator"> </li><li class="markItUpButton markItUpButton5 fa fa-list"><a href="" title="普通列表">普通列表</a></li><li class="markItUpButton markItUpButton6 fa fa-list-ol"><a href="" title="数字列表">数字列表</a></li><li class="markItUpButton markItUpButton7 fa fa-h-square"><a href="" title="标题">标题</a></li><li class="markItUpSeparator"> </li><li class="markItUpButton markItUpButton8 fa fa-link"><a href="" title="超链接">超链接</a></li><li class="markItUpButton markItUpButton9 fa fa-picture-o"><a href="" title="图片">图片</a></li><li class="markItUpButton markItUpButton10 fa fa-toggle-right"><a href="" title="视频">视频</a></li><li class="markItUpSeparator"> </li><li class="markItUpButton markItUpButton11 fa fa-eraser"><a href="" title="清空">清空</a></li><li class="markItUpButton markItUpButton12 toggleMode fa fa-eye"><a class="cur" href="" title="ToggleMode">ToggleMode</a></li><li class="markItUpButton markItUpButton13 toggleFree fa fa-fullscreen pull-right"><a href="" title="全屏模式">全屏模式</a></li><li class="markItUpButton markItUpButton14 fa fa-reorder pull-right"><a href="" title="预览模式">预览模式</a></li><li class="markItUpButton markItUpButton15 fa fa-question pull-right"><a href="" title="编辑器语法帮助">编辑器语法帮助</a></li></ul></div><div class="markItUpHelper clearfix hide"><ul class="clearfix"><li>标题 / 粗斜体</li><li>代码片段</li><li>超链接 / 图片 / 视频</li><li>列表 / 引用</li></ul><div class="content"><div class="tab-pane"><p>文章内容较多时，可以用标题分段 : </p><pre>## 大标题 <br>### 小标题</pre><p>斜体 / 粗体 : </p><pre>**粗体** <br>*斜体* <br>***粗斜体*** </pre></div><div class="tab-pane"><p>代码片段 : </p><pre>{{{<br>代码片段<br>}}}</pre></div><div class="tab-pane"><p>超链接 : </p><pre>[链接文字](链接地址) 例: [百度](http://www.baidu.com)</pre><p>图片 : </p><pre>![图片说明](图片地址) 例: ![百度logo](http://www.baidu.com/img/bdlogo.gif)</pre><p>视频 : </p><pre>!![视频说明](视频地址) 例: !![优酷视频](http://youku.com)</pre></div><div class="tab-pane"><p>有序列表 : </p><pre>1. 123<br>2. 123<br>3. 123</pre><p>无序列表 : </p><pre>- 123<br>- 123<br>- 123<br></pre><p>引用 : ( 双回车后结束引用 )</p><pre>&gt; 引用内容<br>引用内容<br>引用内容</pre></div></div></div><textarea style="overflow: hidden; word-wrap: break-word; resize: none; height: 500px;" name="answer_content" id="advanced_editor" rows="15" class="autosize advanced_editor markItUpEditor form-control"></textarea><div class="markItUpFooter"></div></div></div></div>
+			</div>
+			<div class="aw-mod-side-right pull-left">
+				<div id="markItUpPreviewFrame" class="markItUpPreviewFrame">
+					<div id="markItUpPreviewFrames" class="markItUpPreviewFrames">近日，习近
+平总书记主持召开政治局会议，分析研究了2014年经济工作，提出要做好住房保障和房地产市场调控工作。此前，在十八届三中全会召开前夕，中共中央政治局
+就加快推进住房保障和供应体系建设进行集中学习。这些情况表明，未来房地产市场调控政策或将更加注重长效机制建设，同时楼市运行存在调整需要，资金面约束
+也在增强，在此背景下，明年楼市预期演化或将临近拐点。<br><br>　　首先，未[attach]4[/attach]来房地产市场调控政策将更加注
+重长效机制建设。以抑制短期房价过快上涨为目的的调控政策，往往会因为对住房需求抑制偏多，可能会加剧未来供求失衡的矛盾，进一步强化了房价上涨预期。从
+目前公开发布的有关政策文件分析，未来我国房地产市场调控将更加注重长期稳定机制建设，从建立全国统一的不动产登记制度入手，加大保障性住房建设，增加市
+场供应，完善差别化调控措施等等，将重新塑造房地产市场运行的外部政策环境，势必对未来楼市预期产生深远影响。</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+
+<script type="text/javascript">
+	var ATTACH_ACCESS_KEY = '17e658427ea46cf29066cfc6bcf7d7e6';
+	var CATEGORY_ID = 0;
+	var PUBLISH_TYPE = 'question';
+</script>
+
+<div class="aw-footer-wrap">
+	<div class="aw-footer aw-wecenter">
+				<div class="row">
+			<div class="col-sm-3 aw-powerby hidden-xs hidden-sm">
+				Powered By <a href="http://www.wecenter.com/?copyright" target="blank">WeCenter 2.5 Beta 3</a>
+			</div>
+			<div class="col-xs-12 col-sm-12 aw-copyright">
+				Copyright © 2013 - WeCenter &nbsp; 当前时区: GMT +8 &nbsp; <a href="http://localhost/ask/?/feed/" target="blank"><i class="fa fa-rss-square"></i> RSS Feed</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<a style="display: none;" href="javascript:;" onclick="$.scrollTo(1, 600, {queue:true});" class="aw-back-top"><i class="fa fa-arrow-up"></i></a>
+
+
+<!-- DO NOT REMOVE -->
+<div id="aw-ajax-box" class="aw-ajax-box"></div>
+
+<div style="display:none;" id="__crond"><img src="%282%29%20%E5%8F%91%E5%B8%83%20-%20WeCenter_files/a.html" height="1" width="1"></div>
+
+<!-- Escape time: 0.073019981384277 -->
+<script type="text/javascript" id="bdshare_js" data="type=tools"></script>
+<!-- / DO NOT REMOVE -->
+
+
+<textarea class="autosizejs" tabindex="-1" style="position: absolute; top: -999px; left: 0px; right: auto; bottom: auto; border: 0px none; padding: 0px; -moz-box-sizing: content-box; word-wrap: break-word; height: 0px ! important; min-height: 0px ! important; overflow: hidden; transition: none 0s ease 0s ; font-family: &quot;Helvetica Neue&quot;,Helvetica,Arial,'Microsoft YaHei',sans-serif; font-size: 14px; font-weight: 400; font-style: normal; letter-spacing: 0px; text-transform: none; word-spacing: 0px; text-indent: 0px; line-height: 20px; width: 673.5px; margin-right: 0px;">近
+日，习近平总书记主持召开政治局会议，分析研究了2014年经济工作，提出要做好住房保障和房地产市场调控工作。此前，在十八届三中全会召开前夕，中共中
+央政治局就加快推进住房保障和供应体系建设进行集中学习。这些情况表明，未来房地产市场调控政策或将更加注重长效机制建设，同时楼市运行存在调整需要，资
+金面约束也在增强，在此背景下，明年楼市预期演化或将临近拐点。
+
+　　首先，未[attach]4[/attach]来房地产市场调控政策将更加注重长效机制建设。以抑制短期房价过快上涨为目的的调控政策，往往会因为对
+住房需求抑制偏多，可能会加剧未来供求失衡的矛盾，进一步强化了房价上涨预期。从目前公开发布的有关政策文件分析，未来我国房地产市场调控将更加注重长期
+稳定机制建设，从建立全国统一的不动产登记制度入手，加大保障性住房建设，增加市场供应，完善差别化调控措施等等，将重新塑造房地产市场运行的外部政策环
+境，势必对未来楼市预期产生深远影响。
+
+</textarea><img title="最大的字段长度是未知ߥ" style="position: relative; left: 687px; top: -2272px; z-index: 999; cursor: pointer; vertical-align: bottom; border: 0px none; width: 14px; height: 12px; display: none;" class="ife_marker" src="%282%29%20%E5%8F%91%E5%B8%83%20-%20WeCenter_files/marker.png" id="null_ife_marker_3"></body></html>

@@ -1,0 +1,53 @@
+<?php TPL::output('tsbm/header.tpl.htm'); ?>
+<?php TPL::output('tsbm/global_header.tpl.htm'); ?>
+<!-- 内容 -->
+
+<div class="container" >
+    <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <div class="publish-form" style="margin-top: 5px; ">
+                <form action="publish/ajax/<?php if ($this->question_info['question_id']) { ?>modify<?php } else { ?>publish<?php } ?>_question/" method="post" id="question_form" onsubmit="return false;" role="form">
+                    <input type="hidden" name="post_hash" value="<?php echo new_post_hash(); ?>" />
+                    <input type="hidden" name="question_id" id="question_id" value="<?php echo $this->question_info['question_id']; ?>" />
+                    <input type="hidden" name="ask_user_id" value="<?php echo $_POST['ask_user_id']; ?>" />
+
+                    <div class="form-group">
+                        <label for="question_content"><?php _e('问题标题'); ?></label>
+                        <input type="text" class="pull-left form-control" placeholder="<?php _e('问题标题'); ?>..." name="question_content" id="question_content" value="<?php echo $this->question_info['question_content']; ?>" />
+                    </div>
+
+                    <?php if ($this->question_category_list) { ?>
+                    <div class="form-group">
+                        <label for="category_id"><?php _e('请选择分类'); ?></label>
+                        <select name="category_id"  id="category_id" class="form-control" style="width: 150px;">
+                            <option value="0">- <?php _e('分类'); ?> -</option>
+                            <?php echo $this->question_category_list; ?>
+                        </select>
+                        <label for="question_detail"><?php _e('问题内容'); ?></label>
+                        <textarea name="question_detail"  class="form-control" id="question_detail" rows="4"><?php echo $this->question_info['question_detail']; ?></textarea>
+                    </div>
+                    <?php } ?>
+
+                    <span><a href="#" id="backPrev" class="pull-left">取消</a>
+                        <button class="btn btn-primary  pull-right" onclick="ajax_post($('#question_form')); return false;">
+                            <?php _e('发布'); ?>
+                        </button></span>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 内容end -->
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#backPrev").attr("href", "javascript:void(0);").click(function() {
+             //window.location.href = window.document.referrer;
+             window.history.go("-1");
+        });
+    });
+  
+
+</script>
+
+<?php TPL::output('tsbm/footer.tpl.htm'); ?>

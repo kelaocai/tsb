@@ -9,6 +9,13 @@
 <script type="text/javascript">
     $(document).ready(function() {
         var $pointer = $('.pointer span');
+        if (document.referrer) {
+            var urlback = document.referrer;
+            
+        }
+        function back(){
+            window.location.href=urlback;
+        }
     }); 
 </script>
 </body>
