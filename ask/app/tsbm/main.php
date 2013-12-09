@@ -70,10 +70,10 @@ class main extends AWS_CONTROLLER {
 	}
 
 	public function test_action() {
-		$question_list = $this -> model('question') -> get_questions_list($_GET['page'], $per_page, $_GET['sort_type'], $_GET['topic_id'], $_GET['category'], $_GET['answer_count'], $_GET['day']);
-
-		fb($question_list);
-		echo "hello";
+		$user_agent=strtolower($_SERVER['HTTP_USER_AGENT']);
+		
+		
+		echo "hello:".$user_agent;
 
 	}
 

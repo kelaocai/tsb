@@ -1,11 +1,13 @@
 同事帮二次开发文件清单
 
-system/init.php
+--system/init.php
 
 .引用firephp库
 .增加tsb_functions
 
 
-app/home/main.php
+--app/home/main.php
 
 修改setup()移动首页为tsbm
+
+--system/functions.inc.php
