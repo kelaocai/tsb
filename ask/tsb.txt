@@ -11,3 +11,7 @@
 修改setup()移动首页为tsbm
 
 --system/functions.inc.php
+修改ipad浏览页面规则，采用移动端页面
+
+--views/default/account/login.tpl.htm
+屏蔽左侧文字
