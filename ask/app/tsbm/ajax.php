@@ -292,7 +292,10 @@ class ajax extends AWS_CONTROLLER {
 			H::ajax_json_output(AWS_APP::RSM(null, -1, AWS_APP::lang() -> _t('请输入问题标题')));
 		}
 
-		if (get_setting('category_enable') == 'N' OR $_POST['_is_mobile']) {
+		// if (get_setting('category_enable') == 'N' OR $_POST['_is_mobile']) {
+		// $_POST['category_id'] = 1;
+		// }
+		if (get_setting('category_enable') == 'N') {
 			$_POST['category_id'] = 1;
 		}
 
@@ -523,8 +526,8 @@ class ajax extends AWS_CONTROLLER {
 				}
 			}
 		}
-		
-		fb($search_result,'$search_result');
+
+		fb($search_result, '$search_result');
 
 		TPL::assign('search_result', $search_result);
 

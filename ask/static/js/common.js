@@ -291,6 +291,15 @@ $.dialog = function (type_id, data)
 	            'message': data
 	        });
 	        break;
+
+	    case 'alertImg':
+	    	var template = Hogan.compile(AW_TEMPLATE.alertImg).render(
+	    	{
+	    		'hide': data.hide,
+	    		'url': data.url,
+	    		'message': data.message
+	    	});
+	    	break;
 	
 	    case 'publish':
 	        var template = Hogan.compile(AW_TEMPLATE.publishBox).render(
@@ -384,6 +393,12 @@ $.dialog = function (type_id, data)
 		case 'ajaxData':
 			var template = AW_TEMPLATE.ajaxData.replace('{{title}}', data.title).replace('{{data}}', '<div id="aw_dialog_ajax_data"></div>');
 			break;
+			
+		case 'imagePreview':
+			var template = AW_TEMPLATE.ajaxData.replace('{{title}}', _t('图片预览')).replace('{{data}}', '<p align="center"><img src="' + data.image + '" alt="" style="max-width:520px" /></p>');
+			break;
+
+
     }
 
     if (template)
@@ -399,6 +414,7 @@ $.dialog = function (type_id, data)
         $(".alert-box .modal-dialog").css({
             left: $(window).width() / 2 - $(".alert-box .modal-dialog").width() / 2
         });
+        
         $(".alert-box").modal('show');
 
         switch (type_id)
@@ -414,7 +430,7 @@ $.dialog = function (type_id, data)
 	        	{
 		        	$.get(G_BASE_URL + '/publish/ajax/fetch_question_category/', function (result)
 		            {
-		                add_dropdown_list('.aw-publish-title-dropdown', eval(result), data.category_id);
+		                add_dropdown_list('.aw-publish-box .aw-publish-title-dropdown', eval(result), data.category_id);
 		
 		                $('.aw-publish-title-dropdown li a').click(function ()
 		                {

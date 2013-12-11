@@ -17,7 +17,34 @@ jQuery.fn.extend({
     outerHTML: function (s)
     {
         return (s) ? this.before(s).remove() : jQuery("<p>").append(this.eq(0).clone()).html();
+    },
+    insertAtCaret : function (textFeildValue)
+    {
+    	var textObj = $(this).get(0);
+        if (document.all && textObj.createTextRange && textObj.caretPos)
+        {
+            var caretPos = textObj.caretPos;
+            caretPos.text = caretPos.text.charAt(caretPos.text.length - 1) == '' ?
+                textFeildValue + '' : textFeildValue;
+        }
+        else if (textObj.setSelectionRange)
+        {
+            var rangeStart = textObj.selectionStart;
+            var rangeEnd = textObj.selectionEnd;
+            var tempStr1 = textObj.value.substring(0, rangeStart);
+            var tempStr2 = textObj.value.substring(rangeEnd);
+            textObj.value = tempStr1 + textFeildValue + tempStr2;
+            textObj.focus();
+            var len = textFeildValue.length;
+            textObj.setSelectionRange(rangeStart + len, rangeStart + len);
+            textObj.blur();
+        }
+        else
+        {
+            textObj.value += textFeildValue;
+        }
     }
+
 });
 
 $(window).on('hashchange', function() {
@@ -31,6 +58,16 @@ $(window).on('hashchange', function() {
 });
 
 $(document).ready(function () {
+	// 判断是否微信打开
+    if (G_IN_WECHAT == true)
+    {
+        $('header, nav, footer').hide();
+        // if ($.cookie('wechat-tips-close') != 'true')
+        // {
+        // 	$('.aw-global-tips').show();
+        // }
+    }
+
 	if (window.location.hash.indexOf('#!') != -1)
 	{
 		if ($('a[name=' + window.location.hash.replace('#!', '') + ']').length)
@@ -547,6 +584,75 @@ function _quick_publish_processer(result)
             window.location.reload();
         }
     }
+}
+
+function init_fileuploader(element_id, action_url)
+{
+    if (!document.getElementById(element_id))
+    {
+        return false;
+    }
+    
+    // if (G_UPLOAD_ENABLE == 'Y')
+    // {
+    // 	$('.aw-upload-tips').show();
+    // }
+
+    return new _ajax_uploader.FileUploader(
+    {
+        element: document.getElementById(element_id),
+        action: action_url,
+        debug: false
+    });
+}
+
+function insert_attach(element, attach_id, attach_tag)
+{
+    $(element).parents('form').find('textarea').insertAtCaret("\n[" + attach_tag + "]" + attach_id + "[/" + attach_tag + "]\n");
+}
+
+/* 文章赞同反对 */
+function article_vote(element, article_id, rating)
+{
+	$.loading('show');
+	
+	if ($(element).hasClass('active'))
+	{
+		rating = 0;
+	}
+	
+	$.post(G_BASE_URL + '/article/ajax/article_vote/', 'type=article&item_id=' + article_id + '&rating=' + rating, function (result) {
+		$.loading('hide');
+		
+		if (result.errno != 1)
+	    {
+	        $.alert(result.err);
+	    }
+	    else
+	    {
+			if (rating == 0)
+			{
+
+				$(element).removeClass('active');
+                $(element).find('b').html(parseInt($(element).find('b').html()) - 1);
+			}
+            else if (rating == -1)
+            {
+                if ($(element).parents('.aw-article-vote').find('.agree').hasClass('active'))
+                {
+                    $(element).parents('.aw-article-vote').find('b').html(parseInt($(element).parents('.aw-article-vote').find('b').html()) - 1);
+                    $(element).parents('.aw-article-vote').find('a').removeClass('active');
+                }
+                $(element).addClass('active');
+            }
+			else
+			{
+				$(element).parents('.aw-article-vote').find('a').removeClass('active');
+				$(element).addClass('active');
+                $(element).find('b').html(parseInt($(element).find('b').html()) + 1);
+			}
+	    }
+	}, 'json');
 }
 
 

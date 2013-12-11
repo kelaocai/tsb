@@ -692,7 +692,7 @@ CREATE TABLE `[#DB_PREFIX#]users` (
   `verified` varchar(32) DEFAULT NULL,
   `default_timezone` varchar(32) DEFAULT NULL,
   `email_settings` varchar(255) DEFAULT '',
-  `weixin_id` varchar(32) DEFAULT NULL,
+  `weixin_settings` varchar(255) DEFAULT '',
   `recent_topics` text,
   PRIMARY KEY (`uid`),
   KEY `user_name` (`user_name`),
@@ -707,8 +707,7 @@ CREATE TABLE `[#DB_PREFIX#]users` (
   KEY `last_active` (`last_active`),
   KEY `integral` (`integral`),
   KEY `url_token` (`url_token`),
-  KEY `verified` (`verified`),
-  KEY `weixin_id` (`weixin_id`)
+  KEY `verified` (`verified`)
 ) ENGINE=[#DB_ENGINE#] DEFAULT CHARSET=utf8;
 
 CREATE TABLE `[#DB_PREFIX#]users_attrib` (
@@ -731,15 +730,6 @@ CREATE TABLE `[#DB_PREFIX#]weixin_message` (
   PRIMARY KEY (`id`),
   KEY `weixin_id` (`weixin_id`),
   KEY `time` (`time`)
-) ENGINE=[#DB_ENGINE#] DEFAULT CHARSET=utf8;
-
-CREATE TABLE `[#DB_PREFIX#]weixin_valid` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
-  `uid` int(11) NOT NULL,
-  `code` varchar(16) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `uid` (`uid`),
-  KEY `code` (`code`)
 ) ENGINE=[#DB_ENGINE#] DEFAULT CHARSET=utf8;
 
 CREATE TABLE `[#DB_PREFIX#]redirect` (
@@ -811,6 +801,52 @@ CREATE TABLE `[#DB_PREFIX#]users_sina` (
   `access_token` varchar(64) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uid` (`uid`)
+) ENGINE=[#DB_ENGINE#] DEFAULT CHARSET=utf8;
+
+CREATE TABLE `[#DB_PREFIX#]geo_location` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `item_type` varchar(32) NOT NULL,
+  `item_id` int(10) NOT NULL,
+  `latitude` float NOT NULL,
+  `longitude` float NOT NULL,
+  `add_time` int(10) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `item_type` (`item_type`),
+  KEY `add_time` (`add_time`),
+  KEY `geo_location` (`latitude`,`longitude`),
+  KEY `item_id` (`item_id`)
+) ENGINE=[#DB_ENGINE#] DEFAULT CHARSET=utf8;
+
+CREATE TABLE `[#DB_PREFIX#]users_weixin` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `uid` int(10) NOT NULL,
+  `openid` varchar(255) NOT NULL,
+  `expires_in` int(10) NOT NULL,
+  `access_token` varchar(255) NOT NULL,
+  `refresh_token` varchar(255) NOT NULL,
+  `scope` varchar(64) NOT NULL,
+  `headimgurl` varchar(255) NOT NULL,
+  `nickname` varchar(64) NOT NULL,
+  `sex` tinyint(1) NOT NULL DEFAULT '0',
+  `province` varchar(32) NOT NULL,
+  `city` varchar(32) NOT NULL,
+  `country` varchar(32) NOT NULL,
+  `add_time` int(10) NOT NULL,
+  `latitude` float DEFAULT NULL,
+  `longitude` float DEFAULT NULL,
+  `location_update` int(10) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uid` (`uid`),
+  KEY `openid` (`openid`),
+  KEY `expires_in` (`expires_in`),
+  KEY `scope` (`scope`),
+  KEY `sex` (`sex`),
+  KEY `province` (`province`),
+  KEY `city` (`city`),
+  KEY `country` (`country`),
+  KEY `add_time` (`add_time`),
+  KEY `geo_location` (`latitude`,`longitude`),
+  KEY `location_update` (`location_update`)
 ) ENGINE=[#DB_ENGINE#] DEFAULT CHARSET=utf8;
 
 CREATE TABLE `[#DB_PREFIX#]users_ucenter` (
@@ -983,38 +1019,11 @@ CREATE TABLE `[#DB_PREFIX#]weixin_reply_rule` (
   `description` text COLLATE utf8_unicode_ci,
   `link` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `enabled` tinyint(1) DEFAULT '0',
-  `event_key` varchar(32) COLLATE utf8_unicode_ci DEFAULT '',
   `sort_status` int(10) DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `keyword` (`keyword`),
   KEY `enabled` (`enabled`),
-  KEY `event_key` (`event_key`),
   KEY `sort_status` (`sort_status`)
-) ENGINE=[#DB_ENGINE#] DEFAULT CHARSET=utf8;
-
-CREATE TABLE `[#DB_PREFIX#]weixin_publish_rule` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
-  `keyword` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `image_file` varchar(255) COLLATE utf8_unicode_ci DEFAULT '',
-  `description` text COLLATE utf8_unicode_ci,
-  `link` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `topics` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `item_id` int(10) NOT NULL,
-  `publish_type` varchar(16) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `enabled` tinyint(1) DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `keyword` (`keyword`),
-  KEY `enabled` (`enabled`)
-) ENGINE=[#DB_ENGINE#] DEFAULT CHARSET=utf8;
-
-CREATE TABLE `[#DB_PREFIX#]weixin_fake_id` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
-  `type` varchar(16) NOT NULL,
-  `fake_id` bigint(10) NOT NULL,
-  `item_id` int(10) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `type` (`type`,`item_id`)
 ) ENGINE=[#DB_ENGINE#] DEFAULT CHARSET=utf8;
 
 INSERT INTO `[#DB_PREFIX#]category`(`title`,`type`) VALUES

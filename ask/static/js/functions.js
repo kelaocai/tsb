@@ -484,7 +484,7 @@ function check_notifications()
                 $("#index_notification").fadeOut();
             }
 
-            if (('#tab_all_notifications').length > 0)
+            if ($('#tab_all_notifications').length > 0)
             {
                 $('#tab_all_notifications').click();
             }
@@ -798,13 +798,13 @@ function init_img_uploader(upload_url, upload_name, upload_element, upload_statu
             {
                 alert(response.err);
             }
-            else
+            else if (typeof (response.rsm != 'undefined'))
             {
-                if (typeof (perview_element.attr('src')) != 'undefined')
+                if (typeof (perview_element.attr('src')) != 'undefined' && response.rsm.preview)
                 {
                     perview_element.attr('src', response.rsm.preview + '?' + Math.floor(Math.random() * 10000));
                 }
-                else
+                else if (response.rsm.preview)
                 {
                     perview_element.css('background-image', 'url(' + response.rsm.preview + '?' + Math.floor(Math.random() * 10000) + ')');
                 }
@@ -1753,6 +1753,10 @@ function bind_dropdown_list(selector, type)
     }
     $(selector).keyup(function(e)
     {
+        if (type == 'search')
+        {
+            $(selector).parent().find('.search').show().children('a').text($(selector).val());
+        }
         //话题插入按,号自动插入
         if (type == 'topic')
         {
@@ -1943,7 +1947,6 @@ function get_dropdown_list(selector, type, data)
 
             }
             $(selector).parent().find('.aw-dropdown').show().children().show();
-            $(selector).parent().find('.search').show().children('a').text($(selector).val());
             $(selector).parent().find('.title').hide();
             //关键词高亮
             $(selector).parent().find('.aw-dropdown-list li.question a').highText(data, 'b', 'active');

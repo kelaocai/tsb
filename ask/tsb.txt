@@ -1,5 +1,15 @@
 同事帮二次开发文件清单
 
+增加文件：
+-static/js/tsb_search.js
+-static/fonts
+-static/images/bg.gif
+-static/images
+-static/js/tsb
+-system/fb.php
+-system/FirePHP.class.php
+-system/tsb_functions.inc.php
+
 --system/init.php
 
 .引用firephp库

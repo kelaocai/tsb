@@ -55,7 +55,6 @@ class main extends AWS_CONTROLLER
 			case 'login':
 			case 'question':
 			case 'register':
-			case 'weixin_bind_success':
 			case 'topic':
 			case 'search':
 			case 'people':
@@ -274,7 +273,25 @@ class main extends AWS_CONTROLLER
 			}
 		}
 		
-		$answer_list = $this->model('answer')->get_answer_list_by_question_id($question_info['question_id'], calc_page_limit($_GET['page'], 20), null, 'agree_count DESC, against_count ASC, add_time ASC');
+		if (isset($_GET['answer_id']) and (! $this->user_id OR $_GET['single']))
+		{
+			$answer_list = $this->model('answer')->get_answer_list_by_question_id($question_info['question_id'], 1, 'answer_id = ' . intval($_GET['answer_id']));
+		}
+		else if (! $this->user_id && !$this->user_info['permission']['answer_show'])
+		{
+			if ($question_info['best_answer'])
+			{
+				$answer_list = $this->model('answer')->get_answer_list_by_question_id($question_info['question_id'], 1, 'answer_id = ' . intval($question_info['best_answer']));
+			}
+			else
+			{
+				$answer_list = $this->model('answer')->get_answer_list_by_question_id($question_info['question_id'], 1, null, 'agree_count DESC');
+			}
+		}
+		else
+		{
+			$answer_list = $this->model('answer')->get_answer_list_by_question_id($question_info['question_id'], calc_page_limit($_GET['page'], 20), null, 'agree_count DESC, against_count ASC, add_time ASC');
+		}
 		
 		// 最佳回复预留
 		$answers[0] = '';
@@ -355,6 +372,8 @@ class main extends AWS_CONTROLLER
 		}
 		
 		TPL::assign('answers_list', $answers);
+
+		TPL::assign('attach_access_key', md5($this->user_id . time()));
 		
 		TPL::assign('question_related_list', $this->model('question')->get_related_question_list($question_info['question_id'], $question_info['question_content']));
 		
@@ -384,7 +403,7 @@ class main extends AWS_CONTROLLER
 	{
 		$url = base64_decode($_GET['url']);
 		
-		if (($this->user_id AND !$_GET['weixin_id']) OR $this->user_info['weixin_id'])
+		if ($this->user_id)
 		{
 			if ($url)
 			{
@@ -686,11 +705,6 @@ class main extends AWS_CONTROLLER
 		TPL::output('m/notifications');
 	}
 	
-	public function weixin_bind_success_action()
-	{
-		H::redirect_msg(AWS_APP::lang()->_t('微信绑定成功, 请返回'));
-	}
-	
 	public function draft_action()
 	{
 		$this->crumb(AWS_APP::lang()->_t('草稿'), '/m/draft/');
@@ -763,7 +777,10 @@ class main extends AWS_CONTROLLER
 		{
 			TPL::assign('question_category_list', $this->model('system')->build_category_html('question', 0, $question_info['category_id']));
 		}
-				
+		if (($this->user_info['permission']['is_administortar'] OR $this->user_info['permission']['is_moderator'] OR $question_info['published_uid'] == $this->user_id AND $_GET['id']) OR !$_GET['id'])
+		{
+			TPL::assign('attach_access_key', md5($this->user_id . time()));
+		}
 		//TPL::assign('human_valid', human_valid('question_valid_hour'));
 		
 		TPL::output('m/publish');
@@ -838,4 +855,48 @@ class main extends AWS_CONTROLLER
 		TPL::output('m/article');
 	}
 
+	public function article_square_action()
+	{
+		TPL::assign('feature_list', $this->model('feature')->get_feature_list());
+		
+		TPL::output('m/article_square');
+	}
+
+	public function nearby_people_action()
+	{
+		if ($weixin_user = $this->model('openid_weixin')->get_user_info_by_uid($this->user_id))
+		{
+			if (!$near_by_users = $this->model('people')->get_near_by_users($weixin_user['longitude'], $weixin_user['latitude'], $this->user_id, 20))
+			{
+				H::redirect_msg(AWS_APP::lang()->_t('你的附近暂时没有人'));
+			}
+		}
+		else
+		{
+			H::redirect_msg(AWS_APP::lang()->_t('请先绑定微信或打开地理位置分享'));
+		}
+		
+		TPL::assign('near_by_users', $near_by_users);
+		
+		TPL::output('m/nearby_people');
+	}
+
+	public function nearby_question_action()
+	{
+		if ($near_by_questions = $this->model('openid_weixin')->get_user_info_by_uid($this->user_id))
+		{
+			if (!$near_by_questions = $this->model('people')->get_near_by_users($weixin_user['longitude'], $weixin_user['latitude'], $this->user_id, 20))
+			{
+				H::redirect_msg(AWS_APP::lang()->_t('你的附近暂时没有问题'));
+			}
+		}
+		else
+		{
+			H::redirect_msg(AWS_APP::lang()->_t('请先绑定微信或打开地理位置分享'));
+		}
+		
+		TPL::assign('near_by_questions', $near_by_questions);
+		
+		TPL::output('m/nearby_question');
+	}
 }

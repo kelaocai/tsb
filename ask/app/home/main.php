@@ -43,7 +43,7 @@ class main extends AWS_CONTROLLER
 			switch ($_GET['app'])
 			{
 				default:
-					HTTP::redirect('/tsbm/');
+					HTTP::redirect('/m/');
 				break;
 			}
 		}
