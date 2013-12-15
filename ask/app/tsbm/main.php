@@ -30,7 +30,7 @@ class main extends AWS_CONTROLLER {
 	public function setup() {
 
 		HTTP::no_cache_header();
-		TPL::import_js(array('js/jquery.2.js', 'js/jquery.form.js', 'js/mobile/framework.js', 'js/mobile/mobile.js', 'js/mobile/aw-mobile-template.js'));
+		TPL::import_js(array('js/jquery.2.js', 'js/jquery.form.js', 'js/mobile/framework.js', 'js/tsb/tsb_mobile.js', 'js/tsb/tsb-mobile-template.js', 'js/tsb/bootstrap.min.js'));
 		TPL::import_css('css/tsb/tsbm.css');
 	}
 
@@ -70,10 +70,9 @@ class main extends AWS_CONTROLLER {
 	}
 
 	public function test_action() {
-		$user_agent=strtolower($_SERVER['HTTP_USER_AGENT']);
-		
-		
-		echo "hello:".$user_agent;
+		$user_agent = strtolower($_SERVER['HTTP_USER_AGENT']);
+
+		echo "hello:" . $user_agent;
 
 	}
 
@@ -230,7 +229,6 @@ class main extends AWS_CONTROLLER {
 				TPL::assign('user_answered', TRUE);
 			}
 		}
-		fb($answers, 'aa');
 		TPL::assign('answers_list', $answers);
 
 		TPL::assign('question_related_list', $this -> model('question') -> get_related_question_list($question_info['question_id'], $question_info['question_content']));
@@ -445,35 +443,76 @@ class main extends AWS_CONTROLLER {
 
 		TPL::output('tsbm/register');
 	}
-	
-	public function search_action()
-	{
-		
-		if ($_POST['q'])
-		{
+
+	public function search_action() {
+
+		if ($_POST['q']) {
 			HTTP::redirect('/tsbm/search/q-' . base64_encode($_POST['q']));
 			fb('aa');
 		}
-		
+
 		$keyword = htmlspecialchars(base64_decode($_GET['q']));
-		
-		$this->crumb($keyword, 'tsbm/search/q-' . urlencode($keyword));
-		
-		if (!$keyword)
-		{
+
+		$this -> crumb($keyword, 'tsbm/search/q-' . urlencode($keyword));
+
+		if (!$keyword) {
 			//HTTP::redirect('/tsbm/search/');
-			TPL::output('tsbm/search');	
+			TPL::output('tsbm/search');
 		}
-		
+
 		TPL::assign('keyword', $keyword);
-		
-		$split_keyword=implode(' ', $this->model('system')->analysis_keyword($keyword));
-	
+
+		$split_keyword = implode(' ', $this -> model('system') -> analysis_keyword($keyword));
+
 		TPL::assign('split_keyword', $split_keyword);
-		
+
 		//fb($aa,'aa');
-		
+
 		TPL::output('tsbm/search');
+	}
+
+	public function inbox_action() {
+		if ($_GET['dialog_id']) {
+			if (!$dialog = $this -> model('message') -> get_dialog_by_id($_GET['dialog_id'])) {
+				H::redirect_msg(AWS_APP::lang() -> _t('指定的站内信不存在'), '/tsbm/inbox/');
+			}
+
+			if ($dialog['recipient_uid'] != $this -> user_id AND $dialog['sender_uid'] != $this -> user_id) {
+				H::redirect_msg(AWS_APP::lang() -> _t('指定的站内信不存在'), '/tsbm/inbox/');
+			}
+
+			$this -> model('message') -> read_message($_GET['dialog_id'], $this -> user_id);
+
+			if ($list = $this -> model('message') -> get_message_by_dialog_id($_GET['dialog_id'], $this -> user_id)) {
+				if ($dialog['sender_uid'] != $this -> user_id) {
+					$recipient_user = $this -> model('account') -> get_user_info_by_uid($dialog['sender_uid']);
+				} else {
+					$recipient_user = $this -> model('account') -> get_user_info_by_uid($dialog['recipient_uid']);
+				}
+
+				foreach ($list as $key => $value) {
+					$value['notice_content'] = FORMAT::parse_links($value['notice_content']);
+					$value['user_name'] = $recipient_user['user_name'];
+					$value['url_token'] = $recipient_user['url_token'];
+
+					$list_data[] = $value;
+				}
+			}
+
+			$this -> crumb(AWS_APP::lang() -> _t('私信对话') . ': ' . $recipient_user['user_name'], '/tsbm/inbox/dialog_id-' . intval($_GET['dialog_id']));
+
+			TPL::assign('list', $list_data);
+			
+			fb($list_data);
+
+			TPL::assign('recipient_user', $recipient_user);
+
+			TPL::output('tsbm/inbox_read');
+		} else {
+			$this -> crumb(AWS_APP::lang() -> _t('私信'), '/tsbm/inbox/');
+
+			TPL::output('tsbm/inbox');
+		}
 	}
 
 }

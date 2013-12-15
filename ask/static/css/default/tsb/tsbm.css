@@ -1,7 +1,26 @@
+.home-body{
+	margin-top:1px;
+	
+}
+.home-page {
+	padding-left: 0px;
+	padding-right: 0px;
+	height: 370px;
+	width: 320px !important;
+}
+
+.home-content {
+	/*border: 1px solid #FF0000;*/
+	width: 100% !important;
+	position: relative;
+	height: 100%;
+	padding: 0px 0px;
+}
+
 .viewport {
 	width: 320px;
 	overflow: hidden;
-	margin: 0 auto;
+	margin: 0 0;
 	-webkit-transform: translateZ(0); /* Optional: When heavy at iOS6+ */
 }
 
@@ -24,7 +43,10 @@
 	background-color: #FFFFFF;
 	border-radius: 6px;
 	padding: 10px;
-	height: 110px;
+	height: 100%;
+	width:30%;
+	float:left;
+	margin:5px 4px;
 	position: relative;
 	text-align: center;
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
@@ -32,12 +54,11 @@
 	-moz-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.3);
 }
 
-
-.focus-title{
-  font-size:14px;
-  color:#3E3E3E;
-  border-top:#F9F9F9 1px solid;
-  background-color: #FFFFFF	
+.focus-title {
+	font-size: 14px;
+	color: #3E3E3E;
+	border-top: #F9F9F9 1px solid;
+	background-color: #FFFFFF
 }
 
 .board-title {
@@ -45,12 +66,12 @@
 	text-align: left;
 }
 
-.board a{
-	color:#7f8c8d;
+.board a {
+	color: #7f8c8d;
 }
 
-a{
-	color:#34495e;
+a {
+	color: #34495e;
 }
 
 .board-icon {
@@ -59,24 +80,23 @@ a{
 	float: right;
 	color: #3498db;
 	line-height: 0;
-	top:2px;
+	top: 2px;
 }
 
 .pointer span.current {
-    background: none repeat scroll 0 0 #2c3e50;
+	background: none repeat scroll 0 0 #2c3e50;
 }
 .pointer span {
-    border: 1px solid #798795;
-    border-radius: 8px;
-    display: inline-block;
-    height: 8px;
-    width: 8px;
-    margin-right: 10px;
+	border: 1px solid #798795;
+	border-radius: 8px;
+	display: inline-block;
+	height: 8px;
+	width: 8px;
+	margin-right: 10px;
 }
 .pointer {
-    text-align: center;
-    font-size:7px;
-   
+	text-align: center;
+	font-size: 7px;
 }
 
 .list-avatar {
@@ -86,136 +106,162 @@ a{
 	margin-left: 2px;
 }
 
-.answer-item{
-	position:relative;
-	height:auto;
-	padding:5px 15px;
-	margin-top:10px;
+.answer-item {
+	position: relative;
+	height: auto;
+	padding: 5px 15px;
+	margin-top: 10px;
 	border-top: 1px solid #999999;
 }
 
-.answer-item-avatar{
-	
+.answer-item-avatar {
+
 	float: left;
 	margin-left: 2px;
 }
 
+.answer-item-avatar span {
 
-.answer-item-avatar span{
-	
 	float: left;
 	font-size: 12px;
 }
 
-
-.answer-item-content{
+.answer-item-content {
 	float: left;
 	width: 240px;
-	line-height:24px;
+	line-height: 24px;
 	clear: left;
 	text-align: left;
-	margin-left:36px;
-	
+	margin-left: 36px;
 }
 
-.answer-item-content .detail-attach-imge{
+.answer-item-content .detail-attach-imge {
 	width: 250px;
 }
 
-.answer-item-info{
+.answer-item-info {
 	font-size: 12px;
 	float: right;
-	margin-right:5px;
+	margin-right: 5px;
 }
 
-
-.people-info{
-	position:relative;
-	height:auto;
-	padding:5px 15px;
-	margin-top:10px;
+.people-info {
+	position: relative;
+	height: auto;
+	padding: 5px 15px;
+	margin-top: 10px;
 }
 
-.people-info-avatar{
+.people-info-avatar {
 	float: left;
-	margin-left:5px;
+	margin-left: 5px;
 }
 
-.people-info-name{
+.people-info-name {
 	float: left;
-	margin-left:15px;
+	margin-left: 15px;
 	font-size: 20px;
-	font:bold; 
-	line-height:40px;
+	line-height: 40px;
 }
-
-
 
 .list_item {
-	height:60px;
-	width:300px;
+	height: 60px;
+	width: 300px;
 	border-bottom: 1px solid #bdc3c7;
-	margin:10px 0px;
+	margin: 10px 0px;
 }
 
-.list-summary{
-	line-height:30px;
-	width:235px;
-	position:relative;
+.list-summary {
+	line-height: 30px;
+	width: 235px;
+	position: relative;
 	float: right;
 	margin-left: 10px;
-	
 }
-.list-date{
+.list-date {
 	font-size: 12px;
 	float: left;
-	clear:left;
+	clear: left;
 }
 
-.list-info{
+.list-info {
 	font-size: 12px;
 	float: right;
-	margin-right:5px;
+	margin-right: 5px;
 }
 
-.list-title{
+.list-title {
 	float: left;
-	font:bold;
-	color:#000000;
+	font: bold;
+	color: #000000;
 	line-height: 20px;
 }
 
-.detail-imges{
-	
+.detail-imges {
+
 }
 
-.detail-content{
+.detail-content {
 	padding: 10px 10px;
 }
 
-.detail-attach-imge{
+.detail-attach-imge {
 	width: 290px;
 }
 
-.tsb-login{
+.tsb-login {
 	padding: 5px 15px;
 }
 
-.tsb-register{
+.tsb-register {
 	padding: 5px 15px;
 }
 
-
-
-.login-misc a{
-	font-size:12px;
+.login-misc a {
+	font-size: 12px;
 }
 
 /* aw css */
-.aw-user-name, .aw-topic-name{display:inline-block;font-size:12px;line-height:20px;font-weight:normal;}
-.aw-user-name img, .aw-topic-name img{width: 50px;height: 50px;}
-.aw-topic-name span{display:inline-block;padding:0 6px;background-color:#e0f5ff;}
-.aw-topic-name span:hover{background:#C1E8F9;text-decoration:none;}
-.aw-topic-name .aw-close{margin-left:5px;color: #295477;opacity: 1;}
-.aw-title{line-height: 12px;margin:5px 0;padding-bottom:5px;font-size: 16px;color: #666;border-bottom: 1px solid #CCCCCC;}
+.aw-user-name, .aw-topic-name {
+	display: inline-block;
+	font-size: 12px;
+	line-height: 20px;
+	font-weight: normal;
+}
+.aw-user-name img, .aw-topic-name img {
+	width: 50px;
+	height: 50px;
+}
+.aw-topic-name span {
+	display: inline-block;
+	padding: 0 6px;
+	background-color: #e0f5ff;
+}
+.aw-topic-name span:hover {
+	background: #C1E8F9;
+	text-decoration: none;
+}
+.aw-topic-name .aw-close {
+	margin-left: 5px;
+	color: #295477;
+	opacity: 1;
+}
+.aw-title {
+	line-height: 12px;
+	margin: 5px 0;
+	padding-bottom: 5px;
+	font-size: 16px;
+	color: #666;
+	border-bottom: 1px solid #CCCCCC;
+}
 
+/**/
+.msg-home {
+	font-size: 14px;
+}	
+.msg-item{
+	padding-left: 10px;
+}
+.msg-item p{
+	font-size: 14px;
+}
