@@ -34,7 +34,6 @@ class ajax extends AWS_CONTROLLER {
 		HTTP::no_cache_header();
 	}
 
-	
 	public function focus_topics_list_action() {
 		if ($topics_list = $this -> model('topic') -> get_focus_topic_list($this -> user_id, intval($_GET['page']) * 5 . ', ' . 5)) {
 			foreach ($topics_list AS $key => $val) {
@@ -79,7 +78,7 @@ class ajax extends AWS_CONTROLLER {
 
 		TPL::assign('question_list', $question_list);
 
-		fb($question_list, 'aa');
+		//fb($_GET['page'], 'aa');
 
 		if ($_GET['template'] == 'm') {
 			TPL::output('tsbm/ajax/question_list');
@@ -537,6 +536,14 @@ class ajax extends AWS_CONTROLLER {
 		TPL::assign('list', $data);
 
 		TPL::output('tsbm/ajax/inbox_list');
+	}
+
+	public function search_action() {
+		if ($result = $this -> model('tsbsearch') -> search($_GET['q'], $_GET['type'], intval($_GET['limit']), $_GET['topic_ids'])) {
+			H::ajax_json_output($this -> model('tsbsearch') -> search($_GET['q'], $_GET['type'], intval($_GET['limit']), $_GET['topic_ids']));
+		} else {
+			H::ajax_json_output(array());
+		}
 	}
 
 }

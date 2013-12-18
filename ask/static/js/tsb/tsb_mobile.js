@@ -155,7 +155,7 @@ $(document).ready(function () {
 		return false;
 	});
 
-	dropdown_list('.aw-search-input','search');
+	dropdown_list('.tsb-search-input','search');
 	dropdown_list('.aw-invite-input','invite');
 	add_topic_box('.aw-question-detail .aw-add-topic-box','question');
 	add_topic_box('.aw-mod-publish .aw-add-topic-box','publish');
@@ -262,7 +262,7 @@ function dropdown_list(element, type)
 					switch (type)
 					{
 						case 'search' : 
-							$.get(G_BASE_URL + '/search/ajax/search/?q=' + encodeURIComponent($(element).val()) + '&limit=5',function(result)
+							$.get(G_BASE_URL + '/tsbm/ajax/search/?q=' + encodeURIComponent($(element).val()) + '&limit=5',function(result)
 							{
 								if (result.length > 0)
 								{
@@ -273,7 +273,7 @@ function dropdown_list(element, type)
 										switch(result[i].type)
 										{
 											case 'questions' :
-												ul.append('<li><a href="' + decodeURIComponent(result[i].url) + '">' + result[i].name + '<span class="num">' + result[i].detail.answer_count + ' 个回答</span></a></li>');
+												ul.append('<li><a href="' + decodeURIComponent(result[i].url) + '">' + result[i].name + '<span class="num small">&nbsp;' + result[i].detail.answer_count + ' &nbsp;个回答</span></a></li>');
 												break;
 												
 											case 'articles' :
@@ -281,11 +281,11 @@ function dropdown_list(element, type)
 												break;
 
 											case 'topics' :
-												ul.append('<li><a class="aw-topic-name" href="' + decodeURIComponent(result[i].url) + '">' + result[i].name  + '</a><span class="num">' + result[i].detail.discuss_count + ' 个问题</span></li>');
+												ul.append('<li><a class="aw-topic-name" href="' + decodeURIComponent(result[i].url) + '">' + result[i].name  + '</a><span class="num">' + result[i].detail.discuss_count + ' &nbsp;个问题</span></li>');
 												break;
 
 											case 'users' :
-												ul.append('<li><a href="' + decodeURIComponent(result[i].url) + '"><img src="' + result[i].detail.avatar_file + '"><span>' + result[i].name + '</span></a></li>');
+												ul.append('<li><a href="' + decodeURIComponent(result[i].url) + '"><img src="' + result[i].detail.avatar_file + '"><span>&nbsp;' + result[i].name + '</span></a></li>');
 												break;
 										}
 									});
@@ -299,7 +299,7 @@ function dropdown_list(element, type)
 						break;
 
 						case 'message' :
-							$.get(G_BASE_URL + '/search/ajax/search/?type-users__q-' + encodeURIComponent($(element).val()) + '__limit-10',function(result)
+							$.get(G_BASE_URL + '/tsbm/ajax/search/?type-users__q-' + encodeURIComponent($(element).val()) + '__limit-10',function(result)
 							{
 								
 								if (result.length > 0)
@@ -324,7 +324,7 @@ function dropdown_list(element, type)
 						break;
 
 						case 'invite' : 
-							$.get(G_BASE_URL + '/search/ajax/search/?type-users__q-' + encodeURIComponent($(element).val()) + '__limit-10',function(result)
+							$.get(G_BASE_URL + '/tsbm/ajax/search/?type-users__q-' + encodeURIComponent($(element).val()) + '__limit-10',function(result)
 							{
 								if (result.length > 0)
 								{
@@ -362,7 +362,7 @@ function dropdown_list(element, type)
 						break;
 
 						case 'redirect' :
-							$.get(G_BASE_URL + '/search/ajax/search/?q=' + encodeURIComponent($(element).val()) + '&type=questions&limit-30',function(result)
+							$.get(G_BASE_URL + '/tsbm/ajax/search/?q=' + encodeURIComponent($(element).val()) + '&type=questions&limit-30',function(result)
 							{
 								if (result.length > 0)
 								{
@@ -382,7 +382,7 @@ function dropdown_list(element, type)
 						break;
 
 						case 'topic' :
-							$.get(G_BASE_URL + '/search/ajax/search/?type-topics__q-' + encodeURIComponent($(element).val()) + '__limit-10',function(result)
+							$.get(G_BASE_URL + '/tsbm/ajax/search/?type-topics__q-' + encodeURIComponent($(element).val()) + '__limit-10',function(result)
 							{
 								if (result.length > 0)
 								{

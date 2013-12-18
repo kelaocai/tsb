@@ -30,12 +30,21 @@ class main extends AWS_CONTROLLER {
 	public function setup() {
 
 		HTTP::no_cache_header();
-		TPL::import_js(array('js/jquery.2.js', 'js/jquery.form.js', 'js/mobile/framework.js', 'js/tsb/tsb_mobile.js', 'js/tsb/tsb-mobile-template.js', 'js/tsb/bootstrap.min.js'));
+		TPL::import_js(array('js/jquery.form.js', 'js/mobile/framework.js', 'js/tsb/tsb_mobile.js', 'js/tsb/tsb-mobile-template.js'));
+		TPL::import_css('css/tsb/bootstrap/main/bootstrap.min.css');
 		TPL::import_css('css/tsb/tsbm.css');
+		TPL::import_js('js/tsb/bootstrap.min.js');
 	}
 
 	public function index_action() {
+
+		//TPL::import_css('css/tsb/responsive-nav.css');
+		
 		TPL::import_js('js/tsb/flipsnap.min.js');
+		// TPL::import_js('js/tsb/unslider.min.js');
+		
+		
+
 
 		TPL::output('tsbm/index');
 	}
@@ -77,6 +86,8 @@ class main extends AWS_CONTROLLER {
 	}
 
 	public function question_action() {
+		//TPL::import_css('js/mobile/mobile.css');
+		
 		if (!isset($_GET['id'])) {
 			HTTP::redirect('/m/explore/');
 		}
