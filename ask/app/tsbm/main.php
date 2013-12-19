@@ -43,9 +43,6 @@ class main extends AWS_CONTROLLER {
 		TPL::import_js('js/tsb/flipsnap.min.js');
 		// TPL::import_js('js/tsb/unslider.min.js');
 		
-		
-
-
 		TPL::output('tsbm/index');
 	}
 
@@ -302,7 +299,6 @@ class main extends AWS_CONTROLLER {
 
 		if (get_setting('category_enable') == 'Y') {
 			$question_category_list = $this -> model('system') -> build_category_html('question', 0, $question_info['category_id']);
-			fb($question_category_list);
 			TPL::assign('question_category_list', $question_category_list);
 		}
 
@@ -357,7 +353,6 @@ class main extends AWS_CONTROLLER {
 
 		$user_actions_questions = $this -> model('account') -> get_user_actions($user['uid'], 5, ACTION_LOG::ADD_QUESTION, $this -> user_id);
 		$user_actions_answers = $this -> model('account') -> get_user_actions($user['uid'], 5, ACTION_LOG::ANSWER_QUESTION, $this -> user_id);
-		fb($user_actions_answers, '$user_actions_answers');
 		TPL::assign('user_actions_questions', $user_actions_questions);
 		TPL::assign('user_actions_answers', $user_actions_answers);
 
@@ -459,7 +454,6 @@ class main extends AWS_CONTROLLER {
 
 		if ($_POST['q']) {
 			HTTP::redirect('/tsbm/search/q-' . base64_encode($_POST['q']));
-			fb('aa');
 		}
 
 		$keyword = htmlspecialchars(base64_decode($_GET['q']));
@@ -477,7 +471,6 @@ class main extends AWS_CONTROLLER {
 
 		TPL::assign('split_keyword', $split_keyword);
 
-		//fb($aa,'aa');
 
 		TPL::output('tsbm/search');
 	}
@@ -514,8 +507,6 @@ class main extends AWS_CONTROLLER {
 
 			TPL::assign('list', $list_data);
 			
-			fb($list_data);
-
 			TPL::assign('recipient_user', $recipient_user);
 
 			TPL::output('tsbm/inbox_read');

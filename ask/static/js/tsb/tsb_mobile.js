@@ -466,7 +466,7 @@ function add_topic_box(element, type)
 	{
 		var data_id = $(this).parents('.aw-topic-edit-box').attr('data-id');
 		$(element).hide();
-		$(element).parents('.aw-topic-edit-box').append(AW_MOBILE_TEMPLATE.topic_edit_box);
+		$(element).parents('.aw-topic-edit-box').append(TSB_MOBILE_TEMPLATE.topic_edit_box);
 		$.each($(element).parents('.aw-topic-edit-box').find('.aw-topic-name'), function(i, e)
 		{
 			if (!$(e).has('i')[0])
@@ -530,7 +530,7 @@ function disinvite_user(obj, uid)
 /*动态插入下拉菜单模板*/
 function add_dropdown_list(selecter, data, selected)
 {
-    $(selecter).append(Hogan.compile(AW_MOBILE_TEMPLATE.dropdownList).render(
+    $(selecter).append(Hogan.compile(TSB_MOBILE_TEMPLATE.dropdownList).render(
     {
         'items': data
     }));
@@ -595,10 +595,10 @@ function init_fileuploader(element_id, action_url)
         return false;
     }
     
-    // if (G_UPLOAD_ENABLE == 'Y')
-    // {
-    // 	$('.aw-upload-tips').show();
-    // }
+    if (G_UPLOAD_ENABLE == 'Y')
+    {
+    	$('.aw-upload-tips').show();
+    }
 
     return new _ajax_uploader.FileUploader(
     {
@@ -1135,7 +1135,7 @@ function init_comment_box(selecter)
 
             if (G_USER_ID && $(this).attr('data-close') != 'true')
             {
-                $(this).parents('.aw-mod-footer').append(Hogan.compile(AW_MOBILE_TEMPLATE.commentBox).render(
+                $(this).parents('.aw-mod-footer').append(Hogan.compile(TSB_MOBILE_TEMPLATE.commentBox).render(
                 {
                     'comment_form_id': comment_box_id.replace('#', ''),
                     'comment_form_action': comment_form_action
@@ -1150,7 +1150,7 @@ function init_comment_box(selecter)
             }
             else
             {
-                $(this).parent().parent().append(Hogan.compile(AW_MOBILE_TEMPLATE.commentBoxClose).render(
+                $(this).parent().parent().append(Hogan.compile(TSB_MOBILE_TEMPLATE.commentBoxClose).render(
                 {
                     'comment_form_id': comment_box_id.replace('#', ''),
                     'comment_form_action': comment_form_action
@@ -1192,7 +1192,7 @@ function init_article_comment_box(selecter)
         }
         else
         {
-            $(this).parents('.aw-item').append(Hogan.compile(AW_MOBILE_TEMPLATE.articleCommentBox).render(
+            $(this).parents('.aw-item').append(Hogan.compile(TSB_MOBILE_TEMPLATE.articleCommentBox).render(
             {
                 'at_uid' : $(this).attr('data-id'),
                 'article_id' : $('.aw-anwser-box input[name="article_id"]').val()

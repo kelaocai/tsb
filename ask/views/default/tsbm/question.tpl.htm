@@ -37,7 +37,7 @@
             <?php } ?>
         </div>
         <div class="aw-mod-footer clearfix">
-            <?php if ($this->user_id) { ?><a herf="javascript:;" data-id="<?php echo $this->question_info['question_id']; ?>" data-type="question" class="aw-add-comment"<?php if ($this->question_info['lock']) { ?> data-close="true"<?php } ?>><i class="fa fa-comment"></i> <?php if ($this->question_info['comment_count']) { ?><?php _e('%s 条评论', $this->question_info['comment_count']); ?><?php } else { ?><?php _e('添加评论'); ?><?php } ?></a><?php if ((!$this->question_info['lock'] AND ($this->question_info['published_uid'] == $this->user_id OR $this->user_info['permission']['edit_question'])) OR $this->user_info['permission']['is_administortar'] OR $this->user_info['permission']['is_moderator']) { ?><a href="m/publish/<?php echo $this->question_info['question_id']; ?>"><i class="fa fa-edit"></i> <?php _e('编辑'); ?></a><?php } ?><a <?php if (!$this->question_thanks) { ?>onclick="question_thanks(<?php echo $this->question_info['question_id']; ?>, this);"<?php } ?>><i class="fa fa-heart"></i><?php if ($this->question_thanks) { ?> <?php _e('已感谢'); ?><?php } else { ?> <?php _e('感谢'); ?><?php } ?></a><a class="aw-invite-replay-btn">邀请回答</a><?php } ?> 
+            <?php if ($this->user_id) { ?><a herf="javascript:;" data-id="<?php echo $this->question_info['question_id']; ?>" data-type="question" class="aw-add-comment"<?php if ($this->question_info['lock']) { ?> data-close="true"<?php } ?>><i class="fa fa-comment"></i> <?php if ($this->question_info['comment_count']) { ?><?php _e('%s 条评论', $this->question_info['comment_count']); ?><?php } else { ?><?php _e('添加评论'); ?><?php } ?></a><?php if ((!$this->question_info['lock'] AND ($this->question_info['published_uid'] == $this->user_id OR $this->user_info['permission']['edit_question'])) OR $this->user_info['permission']['is_administortar'] OR $this->user_info['permission']['is_moderator']) { ?><a href="tsbm/publish/<?php echo $this->question_info['question_id']; ?>"><i class="fa fa-edit"></i> <?php _e('编辑'); ?></a><?php } ?><a <?php if (!$this->question_thanks) { ?>onclick="question_thanks(<?php echo $this->question_info['question_id']; ?>, this);"<?php } ?>><i class="fa fa-heart"></i><?php if ($this->question_thanks) { ?> <?php _e('已感谢'); ?><?php } else { ?> <?php _e('感谢'); ?><?php } ?></a><?php } ?> 
             
             
             <!-- 邀请回答 -->
@@ -87,7 +87,7 @@
     <div class="aw-answers-title">
         <?php if ($this->user_id) { ?>
         <span class="pull-right">
-            <a class="btn btn-primary btn-mini<?php if ($this->question_focus) { ?> aw-active<?php } ?>" onclick="focus_question($(this), $(this), <?php echo $this->question_info['question_id']; ?>);"><?php if ($this->question_focus) { ?><?php _e('取消关注'); ?><?php } else { ?><?php _e('关注'); ?><?php } ?></a>
+            <a class="btn btn-danger btn-mini<?php if ($this->question_focus) { ?> aw-active<?php } ?>" onclick="focus_question($(this), $(this), <?php echo $this->question_info['question_id']; ?>);"><?php if ($this->question_focus) { ?><?php _e('取消关注'); ?><?php } else { ?><?php _e('关注'); ?><?php } ?></a>
             <div class="btn-group">
                 <a href="javascript:;" data-toggle="dropdown" class="btn btn-default btn-normal dropdown-toggle">
                     <i class="fa fa-cog"></i>
@@ -196,7 +196,7 @@
     <?php } else { ?>
     <!-- 评论box -->
     <div class="aw-anwser-box">
-        <form action="question/ajax/save_answer/" onsubmit="return false;" method="post" id="answer_form" class="form-inline">
+        <form action="tsbm/ajax/save_answer/" onsubmit="return false;" method="post" id="answer_form" class="form-inline">
             <div class="aw-mod-head">
                 <a href="m/people/" class="avatar"><img src="<?php echo get_avatar_url($this->user_id, 'mid'); ?>" alt="" /></a>
                 <?php echo $this->user_info['user_name']; ?>
@@ -216,9 +216,9 @@
                     <input type="hidden" name="question_id" value="<?php echo $this->question_info['question_id']; ?>" />
                     <textarea class="form-control" rows="5" name="answer_content"><?php echo htmlspecialchars($this->draft_content['message']); ?></textarea>
             </div>
-            <div class="aw-mod-footer clearfix">
+            <div class="aw-mod-footer clearfix" style="margin-top: 5px;" >
                 <span class="pull-right">
-                    <a class="btn btn-success pull-left" onclick="ajax_post($('#answer_form'));"><?php _e('回复'); ?></a>
+                    <a class="btn btn-danger pull-left" onclick="ajax_post($('#answer_form'));"><?php _e('回复'); ?></a>
                 </span>
                 <div id="file_uploader_answer"></div>
                 <span class="num" id="answer_content_message">&nbsp;</span>
