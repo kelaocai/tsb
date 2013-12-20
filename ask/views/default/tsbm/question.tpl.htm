@@ -37,7 +37,7 @@
             <?php } ?>
         </div>
         <div class="aw-mod-footer clearfix">
-            <?php if ($this->user_id) { ?><a herf="javascript:;" data-id="<?php echo $this->question_info['question_id']; ?>" data-type="question" class="aw-add-comment"<?php if ($this->question_info['lock']) { ?> data-close="true"<?php } ?>><i class="fa fa-comment"></i> <?php if ($this->question_info['comment_count']) { ?><?php _e('%s 条评论', $this->question_info['comment_count']); ?><?php } else { ?><?php _e('添加评论'); ?><?php } ?></a><?php if ((!$this->question_info['lock'] AND ($this->question_info['published_uid'] == $this->user_id OR $this->user_info['permission']['edit_question'])) OR $this->user_info['permission']['is_administortar'] OR $this->user_info['permission']['is_moderator']) { ?><a href="tsbm/publish/<?php echo $this->question_info['question_id']; ?>"><i class="fa fa-edit"></i> <?php _e('编辑'); ?></a><?php } ?><a <?php if (!$this->question_thanks) { ?>onclick="question_thanks(<?php echo $this->question_info['question_id']; ?>, this);"<?php } ?>><i class="fa fa-heart"></i><?php if ($this->question_thanks) { ?> <?php _e('已感谢'); ?><?php } else { ?> <?php _e('感谢'); ?><?php } ?></a><?php } ?> 
+            <?php if ($this->user_id) { ?><a herf="javascript:;" data-id="<?php echo $this->question_info['question_id']; ?>" data-type="question" class="aw-add-comment"<?php if ($this->question_info['lock']) { ?> data-close="true"<?php } ?>><i class="fa fa-comment"></i> <?php if ($this->question_info['comment_count']) { ?><?php _e('%s 条评论', $this->question_info['comment_count']); ?><?php } else { ?><?php //_e('添加评论'); ?><?php } ?></a><?php if ((!$this->question_info['lock'] AND ($this->question_info['published_uid'] == $this->user_id OR $this->user_info['permission']['edit_question'])) OR $this->user_info['permission']['is_administortar'] OR $this->user_info['permission']['is_moderator']) { ?><a href="tsbm/publish/<?php echo $this->question_info['question_id']; ?>"><i class="fa fa-edit"></i> <?php _e('编辑'); ?></a><?php } ?><a <?php if (!$this->question_thanks) { ?>onclick="question_thanks(<?php echo $this->question_info['question_id']; ?>, this);"<?php } ?>><i class="fa fa-heart"></i><?php if ($this->question_thanks) { ?> <?php _e('已感谢'); ?><?php } else { ?> <?php _e('感谢'); ?><?php } ?></a><?php } ?> 
             
             
             <!-- 邀请回答 -->
@@ -69,7 +69,7 @@
                     <ul>
                         <?php foreach ($this->helpful_users AS $key => $val) { ?>
                         <li>
-                            <a href="m/people/<?php echo $val['url_token']; ?>" class="avatar"><img src="<?php echo get_avatar_url($val['uid'], 'mid'); ?>" alt="" /></a>
+                            <a href="tsbm/people/<?php echo $val['url_token']; ?>" class="avatar"><img src="<?php echo get_avatar_url($val['uid'], 'mid'); ?>" alt="" /></a>
                             <p>
                                 <a class="btn btn-mini btn-primary pull-right"><?php _e('邀请回复'); ?></a>
                                 <a><?php echo $val['user_name']; ?></a>
@@ -135,8 +135,8 @@
                     <?php } ?>
                     
                     <h3>
-                        <a class="avatar pull-right" href="<?php if ($val['anonymous']) { ?>javascript:;<?php } else { ?>m/people/<?php echo $val['uid']; ?><?php } ?>"><img src="<?php if ($val['anonymous']) { ?><?php echo G_STATIC_URL; ?>/common/avatar-mid-img.png<?php } else { ?><?php echo get_avatar_url($val['uid'], 'mid'); ?><?php } ?>" alt="" /></a>
-                        <a href="<?php if ($val['anonymous']) { ?>javascript:;<?php } else { ?>m/people/<?php echo $val['uid']; ?><?php } ?>"><?php if ($val['anonymous']) { ?><?php _e('匿名用户'); ?><?php } else { ?><?php echo $val['user_name']; ?><?php } ?></a><?php if (!$val['anonymous']) { ?>
+                        <a class="avatar pull-right" href="<?php if ($val['anonymous']) { ?>javascript:;<?php } else { ?>tsbm/people/<?php echo $val['uid']; ?><?php } ?>"><img src="<?php if ($val['anonymous']) { ?><?php echo G_STATIC_URL; ?>/common/avatar-mid-img.png<?php } else { ?><?php echo get_avatar_url($val['uid'], 'mid'); ?><?php } ?>" alt="" /></a>
+                        <a href="<?php if ($val['anonymous']) { ?>javascript:;<?php } else { ?>tsbm/people/<?php echo $val['uid']; ?><?php } ?>"><?php if ($val['anonymous']) { ?><?php _e('匿名用户'); ?><?php } else { ?><?php echo $val['user_name']; ?><?php } ?></a><?php if (!$val['anonymous']) { ?>
                         <?php if ($val['verified']) { ?> <i class="aw-icon i-v<?php if ($val['verified'] == 'enterprise') { ?> i-ve<?php } ?>" title="<?php if ($this->user['verified'] == 'enterprise') { ?>个人认证<?php } else { ?>企业认证<?php } ?>"></i><?php } ?>
                         <strong><?php echo $val['signature']; ?></strong><?php } ?>
                     </h3>
@@ -163,7 +163,7 @@
                     <?php } ?>
                 </div>
                 <div class="aw-mod-footer clearfix">
-                     <?php if ($this->user_id) { ?><a onclick="agreeVote(this, <?php echo $val['answer_id']; ?>)" class="answer_vote"><span><i class="fa fa-thumbs-up<?php if ($val['agree_status'] == 1) { ?> active<?php } ?>"></i> <em><?php echo $val['agree_count']; ?></em></span></a><a class="answer_vote" onclick="disagreeVote(this, <?php echo $val['answer_id']; ?>)"><span><i class="icon-thumbs-down-alt<?php if ($val['agree_status'] == -1) { ?> active<?php } ?>"></i></span></a><?php } ?><?php if ($this->user_id) { ?><a class="aw-add-comment" data-id="<?php echo $val['answer_id']; ?>" data-type="answer" href="javascript:;"><i class="fa fa-comment"></i> <?php if ($val['comment_count']) { ?> <?php _e('%s 条评论', $val['comment_count']); ?><?php } else { ?><?php _e('添加评论'); ?><?php } ?></a><?php } ?><?php if ($this->user_info['permission']['is_administortar'] OR $this->user_info['permission']['is_moderator']) { ?><a href="javascript:;" onclick="answer_force_fold(<?php echo $val['answer_id']; ?>, this);"><i class="fa fa-flag"></i> <?php if ($val['force_fold']) { ?> <?php _e('撤消折叠'); ?><?php } else { ?> <?php _e('折叠'); ?><?php } ?></a><?php } else { ?><a onclick="answer_user_rate(<?php echo $val['answer_id']; ?>, 'uninterested', this);"><i class="fa fa-flag"></i> <?php if ($val['user_rated_uninterested']) { ?><?php _e('撤消没有帮助'); ?><?php } else { ?><?php _e('没有帮助'); ?><?php } ?></a><?php } ?><?php if ($this->user_id != $val['uid'] AND $this->user_id) { ?><a href="javascript:;"<?php if (!$val['user_rated_thanks']) { ?> onclick="answer_user_rate(<?php echo $val['answer_id']; ?>, 'thanks', this);"<?php } ?>> <i class="fa fa-heart"></i> <?php if ($val['user_rated_thanks']) { ?><?php _e('已感谢'); ?><?php } else { ?><?php _e('感谢'); ?><?php } ?></a><?php } ?>
+                     <?php if ($this->user_id) { ?><a onclick="agreeVote(this, <?php echo $val['answer_id']; ?>)" class="answer_vote"><span><i class="fa fa-thumbs-up<?php if ($val['agree_status'] == 1) { ?> active<?php } ?>"></i> <em><?php echo $val['agree_count']; ?></em></span></a><a class="answer_vote" onclick="disagreeVote(this, <?php echo $val['answer_id']; ?>)"><span><i class="icon-thumbs-down-alt<?php if ($val['agree_status'] == -1) { ?> active<?php } ?>"></i></span></a><?php } ?><?php if ($this->user_id) { ?><a class="aw-add-comment" data-id="<?php echo $val['answer_id']; ?>" data-type="answer" href="javascript:;"><i class="fa fa-comment"></i> <?php if ($val['comment_count']) { ?> <?php _e('%s 条评论', $val['comment_count']); ?><?php } else { ?><?php //_e('添加评论'); ?><?php } ?></a><?php } ?><?php if ($this->user_info['permission']['is_administortar'] OR $this->user_info['permission']['is_moderator']) { ?><a href="javascript:;" onclick="answer_force_fold(<?php echo $val['answer_id']; ?>, this);"><i class="fa fa-flag"></i> <?php if ($val['force_fold']) { ?> <?php _e('撤消折叠'); ?><?php } else { ?> <?php _e('折叠'); ?><?php } ?></a><?php } else { ?><a onclick="answer_user_rate(<?php echo $val['answer_id']; ?>, 'uninterested', this);"><i class="fa fa-flag"></i> <?php if ($val['user_rated_uninterested']) { ?><?php _e('撤消没有帮助'); ?><?php } else { ?><?php _e('没有帮助'); ?><?php } ?></a><?php } ?><?php if ($this->user_id != $val['uid'] AND $this->user_id) { ?><a href="javascript:;"<?php if (!$val['user_rated_thanks']) { ?> onclick="answer_user_rate(<?php echo $val['answer_id']; ?>, 'thanks', this);"<?php } ?>> <i class="fa fa-heart"></i> <?php if ($val['user_rated_thanks']) { ?><?php _e('已感谢'); ?><?php } else { ?><?php _e('感谢'); ?><?php } ?></a><?php } ?>
                      <div class="clearfix"></div>
                      <p><span class="num"><?php echo date_friendly($val['add_time']); ?></span></p>
                 </div>
@@ -198,7 +198,7 @@
     <div class="aw-anwser-box">
         <form action="tsbm/ajax/save_answer/" onsubmit="return false;" method="post" id="answer_form" class="form-inline">
             <div class="aw-mod-head">
-                <a href="m/people/" class="avatar"><img src="<?php echo get_avatar_url($this->user_id, 'mid'); ?>" alt="" /></a>
+                <a href="tsbm/people/" class="avatar"><img src="<?php echo get_avatar_url($this->user_id, 'mid'); ?>" alt="" /></a>
                 <?php echo $this->user_info['user_name']; ?>
                 <span class="pull-right">
                     <label class="pull-left">
@@ -214,10 +214,10 @@
             <div class="aw-mod-body">
                     <input type="hidden" name="post_hash" value="<?php echo new_post_hash(); ?>" />
                     <input type="hidden" name="question_id" value="<?php echo $this->question_info['question_id']; ?>" />
-                    <textarea class="form-control" rows="5" name="answer_content"><?php echo htmlspecialchars($this->draft_content['message']); ?></textarea>
+                    <textarea class="form-control" rows="4" name="answer_content"><?php echo htmlspecialchars($this->draft_content['message']); ?></textarea>
             </div>
-            <div class="aw-mod-footer clearfix" style="margin-top: 5px;" >
-                <span class="pull-right">
+            <div class="aw-mod-footer clearfix" style="margin-top: 5px; " >
+                <span class="pull-right" style="margin-bottom: 10px;">
                     <a class="btn btn-danger pull-left" onclick="ajax_post($('#answer_form'));"><?php _e('回复'); ?></a>
                 </span>
                 <div id="file_uploader_answer"></div>
