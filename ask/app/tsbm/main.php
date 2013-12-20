@@ -373,7 +373,7 @@ class main extends AWS_CONTROLLER {
 		if ($_GET['return_url']) {
 			$url = strip_tags(urldecode($_GET['return_url']));
 		} else if (!$return_url) {
-			$url = '/tsbm';
+			$url = '/tsbm/login/';
 		} else {
 			$url = $return_url;
 		}

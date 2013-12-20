@@ -29,28 +29,28 @@
             </li>
 
             <!-- <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-file"></i>&nbsp;问题 <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li>
-                        <a href="#"><i class="glyphicon glyphicon-bullhorn"></i>&nbsp;我发起的</a>
-                    </li>
-                    <li>
-                        <a href="#"><i class="glyphicon glyphicon-share-alt"></i>&nbsp;我回复的</a>
-                    </li>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-file"></i>&nbsp;问题 <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+            <li>
+            <a href="#"><i class="glyphicon glyphicon-bullhorn"></i>&nbsp;我发起的</a>
+            </li>
+            <li>
+            <a href="#"><i class="glyphicon glyphicon-share-alt"></i>&nbsp;我回复的</a>
+            </li>
 
-                </ul>
+            </ul>
             </li> -->
             <?php $unread=$this->user_info['notice_unread']+$this->user_info['notification_unread'];  ?>
-            
+
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-envelope"></i>&nbsp;消息<?php if ($unread) { ?><span class="badge badge-info" style="background: #FFFFFF;color: #E02722;"><?php echo $unread; ?></span><?php } ?> <b class="caret"></b></a>
                 <ul class="dropdown-menu">
                     <li>
                         <a href="tsbm/inbox/"><i class="glyphicon glyphicon-send"></i>&nbsp;私信&nbsp;<?php if ($this->user_info['notice_unread']) { ?>(<?php echo $this->user_info['notice_unread']; ?>)<?php } ?></a>
                     </li>
-                    <li>
+                    <!-- <li>
                         <a href="#"><i class="glyphicon glyphicon-volume-up"></i>&nbsp;通知&nbsp;<?php if ($this->user_info['notification_unread']) { ?>(<?php echo $this->user_info['notification_unread']; ?>)<?php } ?></a>
-                    </li>
+                    </li> -->
 
                 </ul>
             </li>
@@ -70,3 +70,21 @@
 
     </div><!-- /.navbar-collapse -->
 </nav>
+<!-- 通知  -->
+
+<?php if ($this->user_info['notification_unread']) { ?>
+<div id="accordion" class="panel-group " style="margin-left: -5px;margin-right: -5px; margin-top: 0px;">
+    <div class="panel panel-default">
+        <div class="panel-heading"  >
+            <span class="badge badge-info"><?php echo $this->user_info['notification_unread']; ?></span><a  data-toggle="collapse" data-target="#collapse_noticefaction">条新的通知</a>
+        </div>
+        <div class="panel-collapse collapse" id="collapse_noticefaction" style="height: 0px;">
+            <div class="panel-body">
+                <ul id="notifications_list"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+<?php } ?>
+<!-- 通知end  -->
+

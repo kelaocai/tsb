@@ -638,4 +638,32 @@ class ajax extends AWS_CONTROLLER {
 
 	}
 
+	public function notifications_list_action() {
+		if ($_GET['limit']) {
+			$per_page = intval($_GET['limit']);
+		} else {
+			$per_page = $this -> per_page;
+		}
+
+		$list = $this -> model('notify') -> list_notification($this -> user_id, $_GET['flag'], intval($_GET['page']) * $per_page . ', ' . $per_page);
+
+		if (!$list AND $this -> user_info['notification_unread'] != 0) {
+			$this -> model('account') -> update_notification_unread($this -> user_id);
+		}
+
+		TPL::assign('flag', $_GET['flag']);
+		TPL::assign('list', $list);
+		fb($list,'list');
+
+		// if ($_GET['template'] == 'header_list') {
+			// TPL::output("notifications/ajax/header_list");
+		// } else if ($_GET['template'] == 'm') {
+			// TPL::output('tsbm/ajax/notifications_list');
+		// } else {
+			// TPL::output("notifications/ajax/list");
+		// }
+		
+		TPL::output('tsbm/ajax/notifications_list');
+	}
+
 }
