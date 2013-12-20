@@ -1,0 +1,22 @@
+load_list_view(G_BASE_URL + '/tsbm/ajax/discuss/sort_type-new__feature_id-'+feature_id='__category-__template-m', listview, more, 1);
+
+
+<span class="list-info-avatar"><img alt="老财" data-id="3"   src="http://localhost/ask/uploads/avatar/000/00/00/03_avatar_min.jpg"></a><a href="http://localhost/ask/?/people/admin"><img alt="admin" data-id="1" src="http://localhost/ask/uploads/avatar/000/00/00/01_avatar_min.jpg"></a><a href="http://localhost/ask/?/people/kelaocai"><img alt="kelaocai" data-id="2"   src="http://localhost/ask/uploads/avatar/000/00/00/02_avatar_min.jpg"></a><a href="http://localhost/ask/?/people/%E8%80%81%E8%B4%A2"><img alt="老财" data-id="3"   src="http://localhost/ask/uploads/avatar/000/00/00/03_avatar_min.jpg"></a>
+                </span>
+                
+
+
+<div class="list_item">
+    <div class="list-avatar">
+        <img class="img-rounded" alt="kelaocai" src="http://localhost/ask/uploads/avatar/000/00/00/02_avatar_min.jpg">
+    </div>
+    <div class="list-summary">
+    	<ul>
+    	<li><span class="list-title"><a href="http://localhost/ask/?/tsbm/question/11">china tv</a></span></li>
+    	<li> <span class="list-date"><a class="aw-user-name" href="http://localhost/ask/?/tsbm/people/kelaocai">kelaocai</a> 发布 • 17 小时前 </span></li>  <span class="list-info"> 回复 0  • 浏览 14</span>
+    	</ul>
+    </div>
+</div>
+
+
+html body div.aw-content div.replay-list ul li.active div.aw-item i.tsb-i-private-replay-triangle

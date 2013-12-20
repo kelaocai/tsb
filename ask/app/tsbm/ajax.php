@@ -34,7 +34,6 @@ class ajax extends AWS_CONTROLLER {
 		HTTP::no_cache_header();
 	}
 
-	
 	public function focus_topics_list_action() {
 		if ($topics_list = $this -> model('topic') -> get_focus_topic_list($this -> user_id, intval($_GET['page']) * 5 . ', ' . 5)) {
 			foreach ($topics_list AS $key => $val) {
@@ -79,7 +78,7 @@ class ajax extends AWS_CONTROLLER {
 
 		TPL::assign('question_list', $question_list);
 
-		fb($question_list, 'aa');
+		//fb($_GET['page'], 'aa');
 
 		if ($_GET['template'] == 'm') {
 			TPL::output('tsbm/ajax/question_list');
@@ -537,6 +536,134 @@ class ajax extends AWS_CONTROLLER {
 		TPL::assign('list', $data);
 
 		TPL::output('tsbm/ajax/inbox_list');
+	}
+
+	public function search_action() {
+		if ($result = $this -> model('tsbsearch') -> search($_GET['q'], $_GET['type'], intval($_GET['limit']), $_GET['topic_ids'])) {
+			H::ajax_json_output($this -> model('tsbsearch') -> search($_GET['q'], $_GET['type'], intval($_GET['limit']), $_GET['topic_ids']));
+		} else {
+			H::ajax_json_output(array());
+		}
+	}
+
+	function modify_question_action() {
+		if (!$question_info = $this -> model('question') -> get_question_info_by_id($_POST['question_id'])) {
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang() -> _t('问题不存在')));
+		}
+
+		if ($question_info['lock'] && !($this -> user_info['permission']['is_administortar'] OR $this -> user_info['permission']['is_moderator'])) {
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang() -> _t('问题已锁定, 不能编辑')));
+		}
+
+		if (!$this -> user_info['permission']['is_administortar'] AND !$this -> user_info['permission']['is_moderator'] AND !$this -> user_info['permission']['edit_question']) {
+			if ($question_info['published_uid'] != $this -> user_id) {
+				H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang() -> _t('你没有权限编辑这个问题')));
+			}
+		}
+
+		if (!$_POST['category_id'] AND get_setting('category_enable') == 'Y') {
+			H::ajax_json_output(AWS_APP::RSM(null, -1, AWS_APP::lang() -> _t('请选择分类')));
+		}
+
+		if (cjk_strlen($_POST['question_content']) < 5) {
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang() -> _t('问题标题字数不得少于 5 个字')));
+		}
+
+		if (get_setting('question_title_limit') > 0 && cjk_strlen($_POST['question_content']) > get_setting('question_title_limit')) {
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang() -> _t('问题标题字数不得大于') . ' ' . get_setting('question_title_limit') . ' ' . AWS_APP::lang() -> _t('字节')));
+		}
+
+		if (!$this -> user_info['permission']['publish_url'] && FORMAT::outside_url_exists($_POST['question_detail'])) {
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang() -> _t('你所在的用户组不允许发布站外链接')));
+		}
+
+		if (human_valid('question_valid_hour') AND !AWS_APP::captcha() -> is_validate($_POST['seccode_verify'])) {
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang() -> _t('请填写正确的验证码')));
+		}
+
+		// !注: 来路检测后面不能再放报错提示
+		if (!valid_post_hash($_POST['post_hash'])) {
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang() -> _t('表单来路不正确或内容已提交, 请刷新页面重试')));
+		}
+
+		$this -> model('draft') -> delete_draft(1, 'question', $this -> user_id);
+
+		if ($_POST['do_delete'] AND !$this -> user_info['permission']['is_administortar'] AND !$this -> user_info['permission']['is_moderator']) {
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang() -> _t('对不起, 你没有删除问题的权限')));
+		}
+
+		if ($_POST['do_delete']) {
+			if ($this -> user_id != $question_info['published_uid']) {
+				$this -> model('account') -> send_delete_message($question_info['published_uid'], $question_info['question_content'], $question_info['question_detail']);
+			}
+
+			$this -> model('question') -> remove_question($question_info['question_id']);
+
+			H::ajax_json_output(AWS_APP::RSM(array('url' => get_js_url('/home/explore/')), 1, null));
+		}
+
+		$IS_MODIFY_VERIFIED = TRUE;
+
+		if (!$this -> user_info['permission']['is_administortar'] AND !$this -> user_info['permission']['is_moderator'] AND $question_info['published_uid'] != $this -> user_id) {
+			$IS_MODIFY_VERIFIED = FALSE;
+		}
+
+		$this -> model('question') -> update_question($question_info['question_id'], $_POST['question_content'], $_POST['question_detail'], $this -> user_id, $IS_MODIFY_VERIFIED, $_POST['modify_reason'], $question_info['anonymous']);
+
+		if ($_POST['category_id']) {
+			$this -> model('question') -> update_question_category($question_info['question_id'], $_POST['category_id']);
+		}
+
+		if ($this -> user_id != $question_info['published_uid']) {
+			$this -> model('question') -> add_focus_question($question_info['question_id'], $this -> user_id);
+
+			$this -> model('notify') -> send($this -> user_id, $question_info['published_uid'], notify_class::TYPE_MOD_QUESTION, notify_class::CATEGORY_QUESTION, $question_info['question_id'], array('from_uid' => $this -> user_id, 'question_id' => $question_info['question_id']));
+
+			$this -> model('email') -> action_email('QUESTION_MOD', $question_info['published_uid'], get_js_url('/question/' . $question_info['question_id']), array('user_name' => $this -> user_info['user_name'], 'question_title' => $question_info['question_content']));
+		}
+
+		if ($_POST['category_id'] AND $_POST['category_id'] != $question_info['category_id']) {
+			$category_info = $this -> model('system') -> get_category_info(intval($_POST['category_id']));
+
+			ACTION_LOG::save_action($this -> user_id, $question_info['question_id'], ACTION_LOG::CATEGORY_QUESTION, ACTION_LOG::MOD_QUESTION_CATEGORY, $category_info['title'], $category_info['id']);
+		}
+
+		if ($_POST['attach_access_key'] AND $IS_MODIFY_VERIFIED) {
+			if ($this -> model('publish') -> update_attach('question', $question_info['question_id'], $_POST['attach_access_key'])) {
+				ACTION_LOG::save_action($this -> user_id, $question_info['question_id'], ACTION_LOG::CATEGORY_QUESTION, ACTION_LOG::MOD_QUESTION_ATTACH);
+			}
+		}
+
+		H::ajax_json_output(AWS_APP::RSM(array('url' => get_js_url('/tsbm/question/' . $question_info['question_id'] . '?column=log&rf=false')), 1, null));
+
+	}
+
+	public function notifications_list_action() {
+		if ($_GET['limit']) {
+			$per_page = intval($_GET['limit']);
+		} else {
+			$per_page = $this -> per_page;
+		}
+
+		$list = $this -> model('notify') -> list_notification($this -> user_id, $_GET['flag'], intval($_GET['page']) * $per_page . ', ' . $per_page);
+
+		if (!$list AND $this -> user_info['notification_unread'] != 0) {
+			$this -> model('account') -> update_notification_unread($this -> user_id);
+		}
+
+		TPL::assign('flag', $_GET['flag']);
+		TPL::assign('list', $list);
+		fb($list,'list');
+
+		// if ($_GET['template'] == 'header_list') {
+			// TPL::output("notifications/ajax/header_list");
+		// } else if ($_GET['template'] == 'm') {
+			// TPL::output('tsbm/ajax/notifications_list');
+		// } else {
+			// TPL::output("notifications/ajax/list");
+		// }
+		
+		TPL::output('tsbm/ajax/notifications_list');
 	}
 
 }

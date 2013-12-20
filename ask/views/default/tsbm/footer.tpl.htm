@@ -11,12 +11,29 @@
         var $pointer = $('.pointer span');
         if (document.referrer) {
             var urlback = document.referrer;
-            
+
         }
-        function back(){
-            window.location.href=urlback;
+        function back() {
+            window.location.href = urlback;
+        }
+
+    }); 
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        if (G_USER_ID) {
+            $.get(G_BASE_URL + '/tsbm/ajax/notifications_list/flag-0__limit-10', function(data) {
+                if (data) {
+                    //alert(data);
+                    $('#notifications_list').html(data);
+                } else {
+                    $('#notifications_list').html('<li><p align="center">暂无新通知</p></li>');
+                }
+            });
         }
     }); 
 </script>
+
 </body>
 </html>

@@ -155,7 +155,7 @@ class tsbsearch_class extends AWS_MODEL
 				
 			$name = $user_info['user_name'];
 			
-			$url = get_js_url('tsbm/people/' . $user_info['url_token']);
+			$url = get_js_url('/tsbm/people/' . $user_info['url_token']);
 			
 			$detail = array(
 				'avatar_file' => get_avatar_url($user_info['uid'], 'mid'),	// 头像
@@ -171,7 +171,7 @@ class tsbsearch_class extends AWS_MODEL
 			
 			$search_id = $result_info['topic_id'];
 			
-			$url = get_js_url('tsbm/topic/' . $result_info['url_token']);
+			$url = get_js_url('/tsbm/topic/' . $result_info['url_token']);
 			
 			$name = $result_info['topic_title'];
 			
@@ -189,7 +189,7 @@ class tsbsearch_class extends AWS_MODEL
 			
 			$search_id = $result_info['question_id'];
 			
-			$url = get_js_url('tsbm/question/' . $result_info['question_id']);
+			$url = get_js_url('/tsbm/question/' . $result_info['question_id']);
 			
 			$name = $result_info['question_content'];
 			
@@ -207,7 +207,7 @@ class tsbsearch_class extends AWS_MODEL
 			
 			$search_id = $result_info['id'];
 			
-			$url = get_js_url('tsbm/article/' . $result_info['id']);
+			$url = get_js_url('/tsbm/article/' . $result_info['id']);
 			
 			$name = $result_info['title'];
 			
