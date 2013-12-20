@@ -40,7 +40,7 @@ var TSB_MOBILE_TEMPLATE = {
 						'</div>'+
 					    '<div class="modal-footer">'+
 					    	//'<a class="pull-left" href="'+ G_BASE_URL +'/tsbm/publish/">高级模式</a>'+
-					    	'<a data-dismiss="modal" aria-hidden="true">' + _t('取消') + '</a>'+
+					    	'<a class="btn  btn-success pull-left" data-dismiss="modal" aria-hidden="true">' + _t('取消') + '</a>'+
 					    	'<button class="btn  btn-danger" onclick="ajax_post($(\'#quick_publish\'), _quick_publish_processer); return false;">' + _t('发起') + '</button>'+
 					    '</div>'+
 				    '</form>'+
@@ -83,7 +83,7 @@ var TSB_MOBILE_TEMPLATE = {
 					    	'<input type="text" name="recipient" class="aw-message-input form-control" placeholder="' + _t('搜索用户...') + '" value="{{data-name}}">'+
 					    	'<div class="dropdown-list"><ul></ul></div>'+
 					    	'<textarea class="form-control" name="message" placeholder="' + _t('私信内容...') + '" rows="4"></textarea>'+
-					    	'<input type="hidden" name="return_url" value="/tsbm/people/" />'+
+					    	'<input type="hidden" name="return_url" value="/tsbm/inbox/" />'+
 					    '</div>'+
 					    '<div class="modal-footer">'+
 					    	'<a data-dismiss="modal" aria-hidden="true">' + _t('取消') + '</a>&nbsp;&nbsp;'+

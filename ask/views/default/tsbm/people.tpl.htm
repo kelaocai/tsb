@@ -10,7 +10,7 @@
         </div>
         <div class="aw-mod-body">
             <img src="<?php echo get_avatar_url($this->user['uid'], 'max'); ?>" alt="" />
-            <?php echo $this->user['user_name']; ?><span class="list-info"><i class="glyphicon glyphicon-cloud-upload"></i>&nbsp;<?php echo $this->user['city']; ?></span>
+            <?php echo $this->user['user_name']; ?><span class="list-info"><i class="glyphicon glyphicon-globe"></i>&nbsp;<?php echo $this->user['city']; ?></span>
             <?php if ($this->user['verified']) { ?><i class="icon-v<?php if ($this->user['verified'] == 'enterprise') { ?> i-ve<?php } ?>" title="<?php if ($this->user['verified'] == 'enterprise') { ?>企业认证<?php } else { ?>个人认证<?php } ?>"></i><?php } ?>
             <?php if ($this->user['signature']) { ?>
             <div>
@@ -49,7 +49,7 @@
                 </li>
                 <?php } ?>
             </ul>
-            <?php } ?>
+            <?php } else { echo("暂无");} ?> 
         </div>
     </div>
     <!-- end 擅长话题 -->

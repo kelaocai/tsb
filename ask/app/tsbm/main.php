@@ -41,6 +41,7 @@ class main extends AWS_CONTROLLER {
 		//TPL::import_css('css/tsb/responsive-nav.css');
 		
 		TPL::import_js('js/tsb/flipsnap.min.js');
+		fb($user_info,'user_info');
 		// TPL::import_js('js/tsb/unslider.min.js');
 		
 		TPL::output('tsbm/index');

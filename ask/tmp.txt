@@ -17,3 +17,6 @@ load_list_view(G_BASE_URL + '/tsbm/ajax/discuss/sort_type-new__feature_id-'+feat
     	</ul>
     </div>
 </div>
+
+
+html body div.aw-content div.replay-list ul li.active div.aw-item i.tsb-i-private-replay-triangle
