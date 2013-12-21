@@ -664,7 +664,7 @@ var aw_loading_bg_count = 12;
 $.loading = function (s) {
 	if ($('#aw-loading').length == 0)
     {
-        $('#aw-ajax-box').append('<div id="aw-loading" class="hide"><div id="aw-loading-box"></div></div>');
+        $('#aw-ajax-box').append('<div id="aw-loading" ><div id="aw-loading-box"></div></div>');
     }
     
 	if (s == 'show')
