@@ -1,10 +1,21 @@
 <nav class="navbar navbar-default navbar-fixed-top tsb-navbar" role="navigation" >
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
+        <div class="container">
+            <div class="row ">
+                <div class="col-xs-2">
+                    <a class="pull-left tsb-navbar-btn" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" > <i class="glyphicon glyphicon-align-justify"></i> </a>
+                </div>
+                <div class="col-xs-8 text-center">
+                    <a href="tsbm/index/"><img class="tsb-navbar-logo" src="<?php echo G_STATIC_URL; ?>/css/default/img/logo_txt.png" alt=""  /></a>
+                </div>
+                <div class="col-xs-2">
+                    <?php if (!$this->user_id){ ?><a href="tsbm/login/"> <i class="glyphicon glyphicon-log-in tsb-navbar-btn"></i></a><?php } else{?> <a class="tsb-navbar-btn pull-right" onclick="alert_box('publish', {'category_enable':'<?php echo (get_setting('category_enable') == 'Y') ? '1' : '0'; ?>', 'category_id':'<?php echo intval($_GET['category']); ?>'});" > <i class="glyphicon glyphicon-pencil"></i> </a><?php }?>
+                </div>
 
-        <a class="pull-left tsb-navbar-btn" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" > <i class="glyphicon glyphicon-align-justify"></i> </a>
-        <a href="tsbm/index/"><img class="tsb-navbar-logo" src="<?php echo G_STATIC_URL; ?>/css/default/img/logo_txt.png" alt=""  /></a>
-        <a class="pull-right tsb-navbar-btn" onclick="alert_box('publish', {'category_enable':'<?php echo (get_setting('category_enable') == 'Y') ? '1' : '0'; ?>', 'category_id':'<?php echo intval($_GET['category']); ?>'});" > <i class="glyphicon glyphicon-pencil"></i> </a>
+            </div>
+
+        </div>
     </div>
 
     <div id="bs-example-navbar-collapse-1" class="collapse">
@@ -49,7 +60,7 @@
                         <a href="tsbm/inbox/"><i class="glyphicon glyphicon-send"></i>&nbsp;私信&nbsp;<?php if ($this->user_info['notice_unread']) { ?>(<?php echo $this->user_info['notice_unread']; ?>)<?php } ?></a>
                     </li>
                     <!-- <li>
-                        <a href="#"><i class="glyphicon glyphicon-volume-up"></i>&nbsp;通知&nbsp;<?php if ($this->user_info['notification_unread']) { ?>(<?php echo $this->user_info['notification_unread']; ?>)<?php } ?></a>
+                    <a href="#"><i class="glyphicon glyphicon-volume-up"></i>&nbsp;通知&nbsp;<?php if ($this->user_info['notification_unread']) { ?>(<?php echo $this->user_info['notification_unread']; ?>)<?php } ?></a>
                     </li> -->
 
                 </ul>

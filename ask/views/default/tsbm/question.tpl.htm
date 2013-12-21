@@ -186,7 +186,7 @@
     <?php } ?>
     
     <?php if (!$this->user_id) { ?>
-    <p align="center"><?php _e('要回复问题请先登录或注册'); ?></p>
+    <p align="center"><a href="tsbm/login/" class="btn btn-mini btn-danger"><?php _e('要回复问题请先登录或注册'); ?></a></p>
     <?php } else if ($this->question_info['lock']) { ?>
     <p align="center"><?php _e('该问题目前已经被锁定, 无法添加新回复'); ?></p>
     <?php } else if ($this->user_answered) { ?>

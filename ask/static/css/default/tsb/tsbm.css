@@ -22,21 +22,32 @@
 	padding: 0px 0px;
 }
 
+.form-group{
+	margin-top:0px;
+	
+}
+
+.form-group label{
+	margin-top:10px;
+	
+}
+
+
 /*导航条菜单*/
 .tsb-navbar {
 	background: #e74c3c !important;
 }
 
 .tsb-navbar-logo {
-	width: 40%;
-	height: 40%;
-	margin: 12px 50px;
+	width: 150px;
+	height: 32px;
+	margin:10px auto;
 }
 
 .tsb-navbar-btn {
 	font-size: 22px;
 	color: #FFFFFF;
-	padding: 10px 12px;
+	margin:10px auto;
 }
 
 .tsb-navbar-btn:hover {
