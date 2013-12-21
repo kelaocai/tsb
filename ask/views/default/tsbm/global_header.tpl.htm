@@ -4,7 +4,7 @@
         <div class="container">
             <div class="row ">
                 <div class="col-xs-2">
-                    <a class="pull-left tsb-navbar-btn" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" > <i class="glyphicon glyphicon-align-justify"></i> </a>
+                    <a class="pull-left tsb-navbar-btn" data-toggle="collapse" data-target="#tsb_nav_menu" > <i class="glyphicon glyphicon-align-justify"></i> </a>
                 </div>
                 <div class="col-xs-8 text-center">
                     <a href="tsbm/index/"><img class="tsb-navbar-logo" src="<?php echo G_STATIC_URL; ?>/css/default/img/logo_txt.png" alt=""  /></a>
@@ -18,7 +18,7 @@
         </div>
     </div>
 
-    <div id="bs-example-navbar-collapse-1" class="collapse">
+    <div id="tsb_nav_menu" class="collapse">
         <div class="tsb-search-bar">
             <form class="aw-relative" action="tsbm/search/" method="post">
                 <input type="hidden" name="_is_mobile" value="true" />
@@ -87,7 +87,7 @@
 <div id="accordion" class="panel-group " style="margin-left: -5px;margin-right: -5px; margin-top: 0px;">
     <div class="panel panel-default">
         <div class="panel-heading"  >
-            <span class="badge badge-info"><?php echo $this->user_info['notification_unread']; ?></span><a  data-toggle="collapse" data-target="#collapse_noticefaction">条新的通知</a>
+            <span class="badge badge-info"><?php echo $this->user_info['notification_unread']; ?></span><a  data-toggle="collapse" data-target="#collapse_noticefaction" id="btn_notifactions">条新的通知</a>
         </div>
         <div class="panel-collapse collapse" id="collapse_noticefaction" style="height: 0px;">
             <div class="panel-body">

@@ -16,13 +16,12 @@
         function back() {
             window.location.href = urlback;
         }
-
-    }); 
-</script>
-
-<script type="text/javascript">
-    $(document).ready(function() {
+        
         if (G_USER_ID) {
+            getNotifactions();
+        }
+
+        function getNotifactions() {
             $.get(G_BASE_URL + '/tsbm/ajax/notifications_list/flag-0__limit-10', function(data) {
                 if (data) {
                     //alert(data);
@@ -32,8 +31,16 @@
                 }
             });
         }
+
+
+        $("#btn_notifactions").click(function() {
+            getNotifactions();
+        });
+
     }); 
 </script>
+
+
 
 </body>
 </html>
