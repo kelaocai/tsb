@@ -25,7 +25,7 @@ define('SYS_PHPFILE', DIR_ROOT . '/configure/system.php');
 define('WWW_ROOT', rtrim(dirname(DIR_ROOT),'/'));
 define('IMG_ROOT', dirname(DIR_ROOT) . '/static');
 //redefine web_root
-define('WEB_ROOT','/tuan');
+define('WEB_ROOT','/tuan'); 
 
 /* encoding */
 mb_internal_encoding('UTF-8');
