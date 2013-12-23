@@ -16,7 +16,7 @@ function mail_custom($emails=array(), $subject, $message) {
 	} else {
 		Mailer::SmtpMail($from, $to, $subject, $message, $options, $emails);
 	}
-}
+} 
 
 function mail_sign($user) {
 	global $INI;

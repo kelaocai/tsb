@@ -13,7 +13,7 @@ function sms_send($phone, $content) {
 			return sms_send_owner($phone, $content);
 		}
 	}
-	/* end include */
+	/* end include */ 
 
 	$user = strval($INI['sms']['user']); 
 	$pass = strtolower(md5($INI['sms']['pass']));

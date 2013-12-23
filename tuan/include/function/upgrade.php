@@ -11,7 +11,7 @@ function zuitu_action($action, $version='V1.0') {
 function zuitu_upgrade($action, $version='V1.0') {
 	$result = zuitu_action($action, $version);
 	if (is_array($result) && 'db'==$action) {
-		foreach($result As $onesql) {
+		foreach($result As $onesql) { 
 			$r = DB::Query($onesql);
 		}
 		return true;

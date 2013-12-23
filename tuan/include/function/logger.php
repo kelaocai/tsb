@@ -17,7 +17,7 @@
 	'vote'=>'调查',
 	'credit'=>'积分',
 	'system'=>'设置',
- * @param string $type 记录类型 
+ * @param string $type 记录类型  
  * @param string $operation 具体操作信息
  * @param string $relate_data 相关操作数据	
  * @return mixed

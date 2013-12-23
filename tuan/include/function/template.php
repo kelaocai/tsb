@@ -14,7 +14,7 @@ function __parse($tFile,$cFile) {
     $fileContent = false;
 
     if(!($fileContent = file_get_contents($tFile)))
-        return false;
+        return false; 
 
 	$fileContent = preg_replace( '/^(\xef\xbb\xbf)/', '', $fileContent ); //EFBBBF   
     $fileContent = preg_replace("/\<\!\-\-\s*\\\$\{(.+?)\}\s*\-\-\>/ies", "__replace('<?php \\1; ?>')", $fileContent);

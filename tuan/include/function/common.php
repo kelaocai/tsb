@@ -11,7 +11,7 @@ import('upgrade');
 import('uc');
 import('cron');
 import('logger');
-
+ 
 function template($tFile) {
 	global $INI;
 	if ( 0===strpos($tFile, 'manage') ) {

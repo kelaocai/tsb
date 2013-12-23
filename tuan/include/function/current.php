@@ -15,7 +15,7 @@ function current_frontend() {
 	elseif (preg_match('#/help#',$r)) $l = '/help/tour.php';
 	elseif (preg_match('#/subscribe#',$r)) $l = '/subscribe.php';
 	else $l = '/index.php';
-	return current_link(null, $a);
+	return current_link(null, $a); 
 }
 
 function current_backend() {

@@ -17,7 +17,7 @@ function rewrite_city($c) {
 		$p = "#\"{$pre}/index.php\"#";
 		$r = "{$pre}/{$city['ename']}";
 		$c = preg_replace($p, $r, $c);
-		//deals
+		//deals 
 		$p = "#{$pre}/team/index.php#";
 		$r = "{$pre}/{$city['ename']}/deals";
 		$c = preg_replace($p, $r, $c);

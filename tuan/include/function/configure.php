@@ -11,7 +11,7 @@ function configure_keys() {
 		'alipay',
 		'tenpay',
         'sdopay',
-		'bill',
+		'bill', 
 		'chinabank',
 		'paypal',
 		'yeepay',

@@ -9,7 +9,7 @@ function backup_write_file($sql, $filename) {
 	if(!@fwrite($fp,$sql)) { return "failed to write file";}
 	if(!@fclose($fp)) { return "failed to close target file";}
 	return true;
-}
+} 
 
 function backup_down_file($sql,$filename){
 	ob_get_clean();

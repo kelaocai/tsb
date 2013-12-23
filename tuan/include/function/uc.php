@@ -12,7 +12,7 @@ function zuitu_uc_login($email, $pass) {
 	}
 	$ucresult = uc_user_login($email, $pass, $isuid, 0);
 	$uckey = array( 'uid', 'username', 'password', 'email', 'duplicate' );
-	$ucresult = array_combine($uckey, $ucresult);
+	$ucresult = array_combine($uckey, $ucresult); 
 	$ucresult = zuitu_encode_array($ucresult);
 	$ucresult = zuitu_encode_detect($ucresult);
 	DB::Query('SET NAMES UTF8;');

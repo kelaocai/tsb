@@ -18,7 +18,7 @@ function ip_location_baidu($ip) {
 	$r = mb_convert_encoding(Utility::HttpRequest($u), 'UTF-8', 'GBK');
 	preg_match('#来自：<b>(.+)</b>#Ui', $r, $m);
 	return strval($m[1]);
-}
+} 
 
 function ip_location_youdao($ip) {
 	$u = "http://www.youdao.com/smartresult-xml/search.s?type=ip&q={$ip}";

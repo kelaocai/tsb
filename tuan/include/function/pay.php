@@ -17,7 +17,7 @@ function pay_team_alipay($total_money, $order) {
 	$itbpay = strval($INI['alipay']['itbpay']);
 
 	$sign_type = 'MD5';
-	$out_trade_no = $pay_id;
+	$out_trade_no = $pay_id; 
 
 	$return_url = $INI['system']['wwwprefix'] . '/order/alipay/return.php';
 	$notify_url = $INI['system']['wwwprefix'] . '/order/alipay/notify.php';
