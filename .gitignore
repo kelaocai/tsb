@@ -34,13 +34,6 @@ webapp/tmp
 webapp/include/config.php
 ask/cache
 tuan/include/compiled
-tuan/include/compiled/account_login.php
-tuan/include/compiled/account_signup.php
-tuan/include/compiled/block_side_mobile.php
-tuan/include/compiled/block_side_news.php
-tuan/include/compiled/block_side_subscribe.php
-tuan/include/compiled/team_index.php
 tuan/include/data
 tuan/include/db/db.sql
 tuan/include/template
-tuan/include
