@@ -60,7 +60,7 @@ if (!function_exists('json_decode')){function json_decode($v,$t){$js = new JsonS
 /* import */
 import('template');
 import('common');
-
+ 
 /* ob_handler */
 if(SYS_REQUEST){ ob_get_clean(); ob_start(); }
 /* end ob */
