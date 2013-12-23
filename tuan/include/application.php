@@ -5,7 +5,7 @@ if (isset($_SERVER['HTTP_X_ORIGINAL_URL'])) {
 } else if (isset($_SERVER['HTTP_X_REWRITE_URL'])) {
 	$_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_REWRITE_URL'];
 }
-/* end */
+/* end */ 
 
 error_reporting(E_ALL^E_WARNING^E_NOTICE);
 define('SYS_VERSION', 'CV2.0');
