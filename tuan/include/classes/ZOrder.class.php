@@ -51,7 +51,7 @@ class ZOrder {
 						'pay_id' => $pay_id,
 						'money' => $money,
 						'state' => 'pay',
-						'trade_no' => $trade_no,
+						//'trade_no' => $trade_no,
 						'service' => $service,
 						'quantity' => $quantity,
 						'pay_time' => time(),
