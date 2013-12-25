@@ -78,7 +78,7 @@ class ajax extends AWS_CONTROLLER {
 
 		TPL::assign('question_list', $question_list);
 
-		//fb($_GET['page'], 'aa');
+		//fb($question_list ,'$question_list2');
 
 		if ($_GET['template'] == 'm') {
 			TPL::output('tsbm/ajax/question_list');
@@ -475,7 +475,6 @@ class ajax extends AWS_CONTROLLER {
 			}
 		}
 
-		fb($search_result, '$search_result');
 
 		TPL::assign('search_result', $search_result);
 
@@ -653,7 +652,6 @@ class ajax extends AWS_CONTROLLER {
 
 		TPL::assign('flag', $_GET['flag']);
 		TPL::assign('list', $list);
-		fb($list,'list');
 
 		// if ($_GET['template'] == 'header_list') {
 			// TPL::output("notifications/ajax/header_list");

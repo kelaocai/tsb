@@ -1321,6 +1321,14 @@ function disagreeVote(element, answer_id)
     }
 }
 
+function getList(feature_id, category_id, listview, more) {
+
+            var url = G_BASE_URL + "/tsbm/ajax/discuss/?sort_type=new&feature_id=" + feature_id + "&category=" + category_id + "&template=m&";
+            //alert("ur__aa-b"+"__cc");
+            load_list_view(url, listview, more, 1);
+
+}
+
 function answer_user_rate(answer_id, type, element)
 {
     $.post(G_BASE_URL + '/question/ajax/question_answer_rate/', 'type=' + type + '&answer_id=' + answer_id, function (result)

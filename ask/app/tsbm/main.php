@@ -39,11 +39,32 @@ class main extends AWS_CONTROLLER {
 	public function index_action() {
 
 		//TPL::import_css('css/tsb/responsive-nav.css');
-		
+		$board_items = array();
+		//板块信息
+		$category_list = $this -> model('system') -> get_category_list('question');
+		//fb($category_list,'category_list');
+		foreach ($category_list as $key => $value) {
+			$category_id = $value['id'];
+			$board_items[$key]['board_name'] = $value['title'];
+			$board_items[$key]['board_id'] = $value['id'];
+			$question_list = $this -> model('question') -> get_questions_list("1", "30", "new", "", $category_id, "", "", "");
+			if (count($question_list) > 0) {
+				$board_items[$key]['last_question'] = $question_list[0]['question_content'];
+				foreach ($question_list as $key2 => $value2) {
+					if (!empty($value2['user_info']['avatar_file'])) {
+						$board_items[$key]['avatars'][$key2] = "uploads/avatar/".$value2['user_info']['avatar_file'];
+					} else {
+						$board_items[$key]['avatars'][$key2]= "static/common/avatar-min-img.png";
+					}
+				}
+				$board_items[$key]['avatars'] = array_unique($board_items[$key]['avatars']);
+			}
+			unset($question_list);
+		}
+		fb($board_items, '$board_items');
+		TPL::assign('board_items', $board_items);
 		TPL::import_js('js/tsb/flipsnap.min.js');
-		fb($user_info,'user_info');
 		// TPL::import_js('js/tsb/unslider.min.js');
-		
 		TPL::output('tsbm/index');
 	}
 
@@ -85,7 +106,7 @@ class main extends AWS_CONTROLLER {
 
 	public function question_action() {
 		//TPL::import_css('js/mobile/mobile.css');
-		
+
 		if (!isset($_GET['id'])) {
 			HTTP::redirect('/m/explore/');
 		}
@@ -472,7 +493,6 @@ class main extends AWS_CONTROLLER {
 
 		TPL::assign('split_keyword', $split_keyword);
 
-
 		TPL::output('tsbm/search');
 	}
 
@@ -507,7 +527,7 @@ class main extends AWS_CONTROLLER {
 			$this -> crumb(AWS_APP::lang() -> _t('私信对话') . ': ' . $recipient_user['user_name'], '/tsbm/inbox/dialog_id-' . intval($_GET['dialog_id']));
 
 			TPL::assign('list', $list_data);
-			
+
 			TPL::assign('recipient_user', $recipient_user);
 
 			TPL::output('tsbm/inbox_read');

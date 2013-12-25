@@ -222,7 +222,7 @@ class system_class extends AWS_MODEL
 	{
 		$category_list = array();
 		
-		$category_all = $this->fetch_all('category', '`type` = \'' . $this->quote($type) . '\'', 'id ASC');
+		$category_all = $this->fetch_all('category', '`type` = \'' . $this->quote($type) . '\'', 'sort ASC');
 		
 		foreach($category_all as $key => $val)
 		{
