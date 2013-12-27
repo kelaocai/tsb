@@ -1,21 +1,30 @@
 <nav class="navbar navbar-default navbar-fixed-top tsb-navbar" role="navigation" >
     <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-        <div class="container">
-            <div class="row ">
-                <div class="col-xs-2">
-                    <a class="pull-left tsb-navbar-btn" data-toggle="collapse" data-target="#tsb_nav_menu" > <i class="glyphicon glyphicon-align-justify"></i> </a>
-                </div>
-                <div class="col-xs-8 text-center">
-                    <a href="tsbm/index/"><img class="tsb-navbar-logo" src="<?php echo G_STATIC_URL; ?>/css/default/img/logo_txt.png" alt=""  /></a>
-                </div>
-                <div class="col-xs-2">
-                    <?php if (!$this->user_id){ ?><a href="tsbm/login/"> <i class="glyphicon glyphicon-log-in tsb-navbar-btn"></i></a><?php } else{?> <a class="tsb-navbar-btn pull-right" onclick="alert_box('publish', {'category_enable':'<?php echo (get_setting('category_enable') == 'Y') ? '1' : '0'; ?>', 'category_id':'<?php echo intval($_GET['category']); ?>'});" > <i class="glyphicon glyphicon-pencil"></i> </a><?php }?>
-                </div>
+    <div class="container">
+        <div class="row ">
+            <ul class="list-inline">
+                <li >
+                    <a href="tsbm/index/" class="btn navbar-btn btn-mini"><i class="glyphicon glyphicon-home tsb-navbar-btn"></i><span class="tsb-navbar-search-text">首页</span></a>
+                </li>
 
-            </div>
+                <li>
+                    <!-- <a href="tsbm/index/"><img class="tsb-navbar-logo" src="<?php echo G_STATIC_URL; ?>/css/default/img/logo_txt.png" alt=""  /></a> -->
+                    <a  data-toggle="collapse" data-target="#tsb_nav_menu" class="btn navbar-btn btn-mini"> <i class="glyphicon glyphicon-search tsb-navbar-btn"></i><span class="tsb-navbar-search-text">搜索</span></a>
+
+
+
+                </li>
+                <li >
+                    <?php if ($this->user_id){ ?><a class="btn navbar-btn btn-mini" onclick="alert_box('publish', {'category_enable':'<?php echo (get_setting('category_enable') == 'Y') ? '1' : '0'; ?>', 'category_id':'<?php echo intval($_GET['category']); ?>'});" > <i class="glyphicon glyphicon-pencil tsb-navbar-btn"></i><span class="tsb-navbar-search-text">发帖</span></a><?php }?>
+                </li>
+                <li  <?php if (!$this->user_id) { ?> class="pull-right" style="margin-right:10px;" <?php }?> >
+                    <?php if (!$this->user_id) {?>
+                    <a href="tsbm/login/" class="btn btn-default btn-mini navbar-btn" ><i  style="color:#999999;" class="glyphicon glyphicon-off tsb-navbar-btn"></i><span class="tsb-navbar-search-text" style="color:#999999;">&nbsp;登录</span></a><?php } else {?> <a href="tsbm/people/" class="btn btn-default btn-mini navbar-btn" ><span class="tsb-navbar-search-text" style="color:#999999;"><small>&nbsp;<img class="tsb-navbar-avtar" src="<?php echo get_avatar_url($this->user_id, 'min'); ?>" alt="" />&nbsp;我的帮&nbsp;&nbsp;</small></span></a><?php }?>
+                </li>
+            </ul>
 
         </div>
+
     </div>
 
     <div id="tsb_nav_menu" class="collapse">
@@ -31,71 +40,59 @@
             </form>
         </div>
 
-        <ul class="nav navbar-nav">
-            <li class="tsb-menu-active" >
-                <a href="tsbm/index/"><i class="glyphicon glyphicon-home"></i>&nbsp;首页</a>
-            </li>
-            <li >
-                <a href="tsbm/people/"><i class="glyphicon glyphicon-user"></i>&nbsp;个人资料</a>
-            </li>
+        <!-- <ul class="nav navbar-nav">
+        <li class="tsb-menu-active" >
+        <a href="tsbm/index/"><i class="glyphicon glyphicon-home"></i>&nbsp;首页</a>
+        </li>
+        <li >
+        <a href="tsbm/people/"><i class="glyphicon glyphicon-user"></i>&nbsp;个人资料</a>
+        </li>
 
-            <!-- <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-file"></i>&nbsp;问题 <b class="caret"></b></a>
-            <ul class="dropdown-menu">
-            <li>
-            <a href="#"><i class="glyphicon glyphicon-bullhorn"></i>&nbsp;我发起的</a>
-            </li>
-            <li>
-            <a href="#"><i class="glyphicon glyphicon-share-alt"></i>&nbsp;我回复的</a>
-            </li>
+        <?php $unread=$this->user_info['notice_unread'];  ?>
 
-            </ul>
-            </li> -->
-            <?php $unread=$this->user_info['notice_unread'];  ?>
+        <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-envelope"></i>&nbsp;消息<?php if ($unread) { ?><span class="badge badge-info" style="background: #FFFFFF;color: #E02722;"><?php echo $unread; ?></span><?php } ?> <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+        <li>
+        <a href="tsbm/inbox/"><i class="glyphicon glyphicon-send"></i>&nbsp;私信&nbsp;<?php if ($this->user_info['notice_unread']) { ?>(<?php echo $this->user_info['notice_unread']; ?>)<?php } ?></a>
+        </li>
 
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-envelope"></i>&nbsp;消息<?php if ($unread) { ?><span class="badge badge-info" style="background: #FFFFFF;color: #E02722;"><?php echo $unread; ?></span><?php } ?> <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li>
-                        <a href="tsbm/inbox/"><i class="glyphicon glyphicon-send"></i>&nbsp;私信&nbsp;<?php if ($this->user_info['notice_unread']) { ?>(<?php echo $this->user_info['notice_unread']; ?>)<?php } ?></a>
-                    </li>
-                    <!-- <li>
-                    <a href="#"><i class="glyphicon glyphicon-volume-up"></i>&nbsp;通知&nbsp;<?php if ($this->user_info['notification_unread']) { ?>(<?php echo $this->user_info['notification_unread']; ?>)<?php } ?></a>
-                    </li> -->
-
-                </ul>
-            </li>
-            <li>
-                <a href="#"><i class="glyphicon glyphicon-cog"></i>&nbsp;设置</a>
-            </li>
-            <li class="divider">
-
-            </li>
-            <li>
-                <a href="#"><i class="glyphicon glyphicon-info-sign"></i>&nbsp;关于同事帮</a>
-            </li>
-            <li>
-                <a href="tsbm/logout/"><i class="glyphicon glyphicon-off"></i>&nbsp;退出</a>
-            </li>
         </ul>
+        </li>
+        <li>
+        <a href="#"><i class="glyphicon glyphicon-cog"></i>&nbsp;设置</a>
+        </li>
+        <li class="divider">
+
+        </li>
+        <li>
+        <a href="#"><i class="glyphicon glyphicon-info-sign"></i>&nbsp;关于同事帮</a>
+        </li>
+        <li>
+        <a href="tsbm/logout/"><i class="glyphicon glyphicon-off"></i>&nbsp;退出</a>
+        </li>
+        </ul> -->
+
+        <p></p>
 
     </div><!-- /.navbar-collapse -->
 </nav>
+
 <!-- 通知  -->
 
-<?php if ($this->user_info['notification_unread']) { ?>
+<!-- <?php if ($this->user_info['notification_unread']) { ?>
 <div id="accordion" class="panel-group " style="margin-left: -5px;margin-right: -5px; margin-top: 0px;">
-    <div class="panel panel-default">
-        <div class="panel-heading"  >
-            <span class="badge badge-info"><?php echo $this->user_info['notification_unread']; ?></span><a  data-toggle="collapse" data-target="#collapse_noticefaction" id="btn_notifactions">条新的通知</a>
-        </div>
-        <div class="panel-collapse collapse" id="collapse_noticefaction" style="height: 0px;">
-            <div class="panel-body">
-                <ul id="notifications_list"></ul>
-            </div>
-        </div>
-    </div>
+<div class="panel panel-default">
+<div class="panel-heading"  >
+<span class="badge badge-info"><?php echo $this->user_info['notification_unread']; ?></span><a  data-toggle="collapse" data-target="#collapse_noticefaction" id="btn_notifactions">条新的通知</a>
 </div>
-<?php } ?>
+<div class="panel-collapse collapse" id="collapse_noticefaction" style="height: 0px;">
+<div class="panel-body">
+<ul id="notifications_list"></ul>
+</div>
+</div>
+</div>
+</div>
+<?php } ?> -->
 <!-- 通知end  -->
 

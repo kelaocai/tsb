@@ -47,6 +47,7 @@ class main extends AWS_CONTROLLER {
 			$category_id = $value['id'];
 			$board_items[$key]['board_name'] = $value['title'];
 			$board_items[$key]['board_id'] = $value['id'];
+			$board_items[$key]['board_icon'] = $value['icon'];
 			$question_list = $this -> model('question') -> get_questions_list("1", "30", "new", "", $category_id, "", "", "");
 			if (count($question_list) > 0) {
 				$board_items[$key]['last_question'] = $question_list[0]['question_content'];

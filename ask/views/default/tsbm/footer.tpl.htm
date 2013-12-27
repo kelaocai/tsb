@@ -1,4 +1,12 @@
-
+<!-- 底部 -->
+<footer class="text-center">
+    Copyright © <?php echo date('Y'); ?> - <?php echo get_setting('site_name'); ?>
+    <p>
+        <a href="<?php echo get_setting('base_url'); ?>/<?php if (get_setting('url_rewrite_enable') != 'Y') { ?><?php echo G_INDEX_SCRIPT; ?><?php } ?>ignore_ua_check-TRUE"></a>
+        <br>
+    </p>
+</footer>
+<!-- end 底部 -->
 <!-- DO NOT REMOVE -->
 <div id="aw-ajax-box" class="aw-ajax-box"></div>
 
