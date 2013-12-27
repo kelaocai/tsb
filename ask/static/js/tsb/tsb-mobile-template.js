@@ -15,7 +15,7 @@ var TSB_MOBILE_TEMPLATE = {
 							'<input type="hidden" name="post_hash" value="' + G_POST_HASH + '" />'+
 							'<input type="hidden" name="ask_user_id" value="{{ask_user_id}}" />'+
 							
-					    	'<textarea class="form-control" name="question_content" placeholder="' + _t('写下你的问题') + '..." id="quick_publish_question_content" onkeydown="if (event.keyCode == 13) { return false; }" rows="1"></textarea>'+
+					    	'<textarea class="form-control" name="question_content" placeholder="' + _t('标题') + '..." id="quick_publish_question_content" onkeydown="if (event.keyCode == 13) { return false; }" rows="1"></textarea>'+
 					    	
 					    	'<div class="aw-publish-title clearfix" id="quick_publish_category_chooser">'+
                                 '<div class="aw-publish-dropdown">'+
@@ -26,7 +26,7 @@ var TSB_MOBILE_TEMPLATE = {
                                 '</div>'+
                             '</div>'+
                             
-					    	'<textarea class="form-control" name="question_detail" placeholder="' + _t('问题背景、条件等详细信息') + '..." rows="4"></textarea>'+
+					    	'<textarea class="form-control" name="question_detail" placeholder="' + _t('内容') + '..." rows="4"></textarea>'+
 					    	'<div class="aw-topic-edit-box" id="quick_publish_topic_chooser">'+
 					    		'<div class="aw-topic-box"><a class="aw-add-topic-box">' + _t('编辑话题') + '</a></div>'+
 						    '</div>'+

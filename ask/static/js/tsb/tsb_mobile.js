@@ -1321,11 +1321,26 @@ function disagreeVote(element, answer_id)
     }
 }
 
-function getList(feature_id, category_id, listview, more) {
+function getList(key,feature_id, category_id, listview, more) {
 
             var url = G_BASE_URL + "/tsbm/ajax/discuss/?sort_type=new&feature_id=" + feature_id + "&category=" + category_id + "&template=m&";
             //alert("ur__aa-b"+"__cc");
-            load_list_view(url, listview, more, 1);
+            if($('#board-collapse_btn_'+key).hasClass('glyphicon-collapse-down')){
+                $('#board-collapse_btn_'+key).removeClass('glyphicon-collapse-down ');
+                $('#board-collapse_btn_'+key).addClass('glyphicon-collapse-up');
+                var scroll_offset = $('#panel_'+key).offset(); //得到pos这个div层的offset，包含两个值，top和left
+                $("body,html").animate({
+                    scrollTop:scroll_offset.top
+                },0);
+                load_list_view(url, listview, more, 1);
+            }else{
+                $('#board-collapse_btn_'+key).removeClass('glyphicon-collapse-up ');
+                $('#board-collapse_btn_'+key).addClass('glyphicon-collapse-down');
+            }
+            
+            
+            
+            
 
 }
 

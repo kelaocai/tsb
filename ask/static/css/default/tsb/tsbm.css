@@ -33,6 +33,24 @@
 }
 
 
+/*按钮颜色*/
+.btn-danger {
+    background-color: #76C2AF;
+    border-color: #76C2AF;
+    color: #FFFFFF;
+}
+
+.btn-danger:hover,
+.btn-danger:focus,
+.btn-danger:active,
+.btn-danger.active,
+.open .dropdown-toggle.btn-danger {
+  color: #ffffff;
+  background-color: #76C2AF;
+  border-color: #76C2AF;
+}
+
+
 /*导航条菜单*/
 .tsb-navbar {
 	background: #76C2AF !important;
@@ -290,6 +308,16 @@ a {
 	width: 25px;height: 25px; 
 	float: left;
 }
+
+.board-collapse-down{
+	/*position:absolute;*/
+	font-size:24px;
+	color:#999999;
+	float: right;
+	margin-right:-20px;
+	top:93px;
+}
+
 
 
 .panel-heading p{
