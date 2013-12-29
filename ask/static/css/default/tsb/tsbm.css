@@ -275,7 +275,8 @@ ul.nav li a i {
 /*板块*/
 
 .board-item{
-	line-height:50px;	
+	line-height:50px;
+	margin-right:-40px;	
 }
 
 .board-title {
@@ -300,7 +301,8 @@ a {
 
 .board-text {
 	padding-left: 15px;
-	padding-right:0px;
+	padding: 0px 5px; 
+	width:220px;
 }
 
 .board-avtarlist img{

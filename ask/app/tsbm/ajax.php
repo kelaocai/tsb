@@ -144,6 +144,21 @@ class ajax extends AWS_CONTROLLER {
 
 			H::ajax_json_output(AWS_APP::RSM(array('url' => get_js_url('/publish/wait_approval/question_id-' . intval($_POST['question_id']) . '__is_mobile-' . $_POST['_is_mobile'])), 1, null));
 		} else {
+
+			//移动版上传图片
+			if ($_POST['_is_mobile'] && $_POST['_is_attach']) {
+				$file_name = load_class('tsb_common') -> m_upload($_POST['image_data'], $_POST['image_name'], 'answer', $_POST['attach_access_key']);
+				if (!$file_name) {
+					H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang() -> _t('图片上传失败')));
+				}
+				//插入附件数据
+				$attach_id = $this -> model('publish') -> add_attach('answer', $_POST['image_name'], $_POST['attach_access_key'], time(), $file_name, '1');
+				if (!$attach_id) {
+					H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang() -> _t('图片保存失败')));
+				}
+
+			}
+
 			$answer_id = $this -> model('publish') -> publish_answer($_POST['question_id'], $answer_content, $this -> user_id, $_POST['anonymous'], $_POST['attach_access_key'], $_POST['auto_focus']);
 
 			if ($_POST['_is_mobile']) {
@@ -475,7 +490,6 @@ class ajax extends AWS_CONTROLLER {
 			}
 		}
 
-
 		TPL::assign('search_result', $search_result);
 
 		if ($_GET['template'] == 'm') {
@@ -654,13 +668,13 @@ class ajax extends AWS_CONTROLLER {
 		TPL::assign('list', $list);
 
 		// if ($_GET['template'] == 'header_list') {
-			// TPL::output("notifications/ajax/header_list");
+		// TPL::output("notifications/ajax/header_list");
 		// } else if ($_GET['template'] == 'm') {
-			// TPL::output('tsbm/ajax/notifications_list');
+		// TPL::output('tsbm/ajax/notifications_list');
 		// } else {
-			// TPL::output("notifications/ajax/list");
+		// TPL::output("notifications/ajax/list");
 		// }
-		
+
 		TPL::output('tsbm/ajax/notifications_list');
 	}
 

@@ -1,6 +1,6 @@
 同事帮二次开发文件清单
 
-增加文件：
+1、增加文件：
 -static/js/tsb_search.js
 -static/fonts
 -static/images/bg.gif
@@ -9,22 +9,23 @@
 -system/fb.php
 -system/FirePHP.class.php
 -system/tsb_functions.inc.php
+-system/tsb/common.php
+-------------------------------------------
+2、修改系统原文件：
 
 --system/init.php
-
 .引用firephp库
 .增加tsb_functions
 
-
 --app/home/main.php
 
-修改setup()移动首页为tsbm
+.修改setup()移动首页为tsbm
 
 --system/functions.inc.php
-修改ipad浏览页面规则，采用移动端页面
+.修改ipad浏览页面规则，采用移动端页面
 
 --views/default/account/login.tpl.htm
-屏蔽左侧文字
+.屏蔽左侧文字
 
 --models/system.php
-修改get_category_list,按照后台sort升序排序
+.修改get_category_list,按照后台sort升序排序

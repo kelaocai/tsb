@@ -62,7 +62,6 @@ class main extends AWS_CONTROLLER {
 			}
 			unset($question_list);
 		}
-		fb($board_items, '$board_items');
 		TPL::assign('board_items', $board_items);
 		TPL::import_js('js/tsb/flipsnap.min.js');
 		// TPL::import_js('js/tsb/unslider.min.js');
@@ -106,14 +105,13 @@ class main extends AWS_CONTROLLER {
 	}
 
 	public function question_action() {
-		//TPL::import_css('js/mobile/mobile.css');
-
+		TPL::import_js('js/tsb/tsb_upload.js');
 		if (!isset($_GET['id'])) {
-			HTTP::redirect('/m/explore/');
+			HTTP::redirect('/tsbm/explore/');
 		}
 
 		if (!$question_id = intval($_GET['id'])) {
-			H::redirect_msg(AWS_APP::lang() -> _t('问题不存在或已被删除'), '/m/explore/');
+			H::redirect_msg(AWS_APP::lang() -> _t('问题不存在或已被删除'), '/tsbm/explore/');
 		}
 
 		if ($_GET['notification_id']) {
@@ -121,7 +119,7 @@ class main extends AWS_CONTROLLER {
 		}
 
 		if (!$question_info = $this -> model("question") -> get_question_info_by_id($question_id)) {
-			H::redirect_msg(AWS_APP::lang() -> _t('问题不存在或已被删除'), '/m/explore/');
+			H::redirect_msg(AWS_APP::lang() -> _t('问题不存在或已被删除'), '/tsbm/explore/');
 		}
 
 		$question_info['redirect'] = $this -> model("question") -> get_redirect($question_info['question_id']);
@@ -132,19 +130,19 @@ class main extends AWS_CONTROLLER {
 
 		if (is_numeric($_GET['rf']) and $_GET['rf']) {
 			if ($from_question = $this -> model("question") -> get_question_info_by_id($_GET['rf'])) {
-				$redirect_message[] = AWS_APP::lang() -> _t('从问题') . ' <a href="' . get_js_url('/m/question/' . $_GET['rf'] . '?rf=false') . '">' . $from_question['question_content'] . '</a> ' . AWS_APP::lang() -> _t('跳转而来');
+				$redirect_message[] = AWS_APP::lang() -> _t('从问题') . ' <a href="' . get_js_url('/tsbm/question/' . $_GET['rf'] . '?rf=false') . '">' . $from_question['question_content'] . '</a> ' . AWS_APP::lang() -> _t('跳转而来');
 			}
 		}
 
 		if ($question_info['redirect'] and !$_GET['rf']) {
 			if ($target_question) {
-				HTTP::redirect('/m/question/' . $question_info['redirect']['target_id'] . '?rf=' . $question_info['question_id']);
+				HTTP::redirect('/tsbm/question/' . $question_info['redirect']['target_id'] . '?rf=' . $question_info['question_id']);
 			} else {
 				$redirect_message[] = AWS_APP::lang() -> _t('重定向目标问题已被删除, 将不再重定向问题');
 			}
 		} else if ($question_info['redirect']) {
 			if ($target_question) {
-				$message = AWS_APP::lang() -> _t('此问题将跳转至') . ' <a href="' . get_js_url('/m/question/' . $question_info['redirect']['target_id'] . '?rf=' . $question_info['question_id']) . '">' . $target_question['question_content'] . '</a>';
+				$message = AWS_APP::lang() -> _t('此问题将跳转至') . ' <a href="' . get_js_url('/tsbm/question/' . $question_info['redirect']['target_id'] . '?rf=' . $question_info['question_id']) . '">' . $target_question['question_content'] . '</a>';
 
 				if ($this -> user_id && ($this -> user_info['permission']['is_administortar'] OR $this -> user_info['permission']['is_moderator'] OR (!$this -> question_info['lock'] AND $this -> user_info['permission']['redirect_question']))) {
 					$message .= '&nbsp; (<a href="javascript:;" onclick="ajax_request(G_BASE_URL + \'/question/ajax/redirect/\', \'item_id=' . $question_id . '\');">' . AWS_APP::lang() -> _t('撤消重定向') . '</a>)';
@@ -175,8 +173,9 @@ class main extends AWS_CONTROLLER {
 		TPL::assign('question_info', $question_info);
 		TPL::assign('question_focus', $this -> model("question") -> has_focus_question($question_id, $this -> user_id));
 		TPL::assign('question_topics', $this -> model('topic') -> get_topics_by_item_id($question_id, 'question'));
+		TPL::assign('attach_access_key', md5($this->user_id . time()));
 
-		$this -> crumb($question_info['question_content'], '/m/question/' . $question_id);
+		$this -> crumb($question_info['question_content'], '/tsbm/question/' . $question_id);
 
 		TPL::assign('redirect_message', $redirect_message);
 
@@ -280,6 +279,8 @@ class main extends AWS_CONTROLLER {
 			TPL::assign('next_page', $_GET['page']);
 		}
 
+		fb($question_info,'$question_info');
+
 		TPL::output('tsbm/question');
 	}
 
@@ -295,7 +296,7 @@ class main extends AWS_CONTROLLER {
 
 			if (!$this -> user_info['permission']['is_administortar'] AND !$this -> user_info['permission']['is_moderator'] AND !$this -> user_info['permission']['edit_question']) {
 				if ($question_info['published_uid'] != $this -> user_id) {
-					H::redirect_msg(AWS_APP::lang() -> _t('你没有权限编辑这个问题'), '/m/question/' . $_GET['id']);
+					H::redirect_msg(AWS_APP::lang() -> _t('你没有权限编辑这个问题'), '/tsbm/question/' . $_GET['id']);
 				}
 			}
 
@@ -355,7 +356,7 @@ class main extends AWS_CONTROLLER {
 			}
 
 			if (!$user) {
-				H::redirect_msg(AWS_APP::lang() -> _t('用户不存在'), '/m/');
+				H::redirect_msg(AWS_APP::lang() -> _t('用户不存在'), '/tsbm/');
 			}
 
 			if (urldecode($user['url_token']) != $_GET['id']) {
@@ -434,7 +435,7 @@ class main extends AWS_CONTROLLER {
 		//TPL::assign('body_class', 'explore-body');
 		TPL::assign('return_url', strip_tags($return_url));
 
-		$this -> crumb(AWS_APP::lang() -> _t('登录'), '/m/login/');
+		$this -> crumb(AWS_APP::lang() -> _t('登录'), '/tsbm/login/');
 
 		TPL::output('tsbm/login');
 	}
@@ -466,7 +467,7 @@ class main extends AWS_CONTROLLER {
 			}
 		}
 
-		$this -> crumb(AWS_APP::lang() -> _t('注册'), '/m/register/');
+		$this -> crumb(AWS_APP::lang() -> _t('注册'), '/tsbm/register/');
 
 		TPL::assign('body_class', 'explore-body');
 
