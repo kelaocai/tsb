@@ -48,17 +48,20 @@ class main extends AWS_CONTROLLER {
 			$board_items[$key]['board_name'] = $value['title'];
 			$board_items[$key]['board_id'] = $value['id'];
 			$board_items[$key]['board_icon'] = $value['icon'];
-			$question_list = $this -> model('question') -> get_questions_list("1", "30", "new", "", $category_id, "", "", "");
+			
+			$question_list = $this -> model('question') -> get_questions_list("1", "10", "new", "", $category_id, null, "", TRUE);
 			if (count($question_list) > 0) {
 				$board_items[$key]['last_question'] = $question_list[0]['question_content'];
-				foreach ($question_list as $key2 => $value2) {
-					if (!empty($value2['user_info']['avatar_file'])) {
-						$board_items[$key]['avatars'][$key2] = "uploads/avatar/".$value2['user_info']['avatar_file'];
-					} else {
-						$board_items[$key]['avatars'][$key2]= "static/common/avatar-min-img.png";
-					}
-				}
-				$board_items[$key]['avatars'] = array_unique($board_items[$key]['avatars']);
+				//fb($question_list[0],'q0');
+				$board_items[$key]['board_date'] = $question_list[0]['update_time'];
+				// foreach ($question_list as $key2 => $value2) {
+					// if (!empty($value2['user_info']['avatar_file'])) {
+						// $board_items[$key]['avatars'][$key2] = "uploads/avatar/".$value2['user_info']['avatar_file'];
+					// } else {
+						// $board_items[$key]['avatars'][$key2]= "static/common/avatar-min-img.png";
+					// }
+				// }
+				// $board_items[$key]['avatars'] = array_unique($board_items[$key]['avatars']);
 			}
 			unset($question_list);
 		}
@@ -169,6 +172,7 @@ class main extends AWS_CONTROLLER {
 		//$question_info['question_detail'] = FORMAT::parse_attachs(FORMAT::parse_links(nl2br(FORMAT::parse_markdown($question_info['question_detail']))));
 		$str = FORMAT::parse_links(nl2br(FORMAT::parse_markdown($question_info['question_detail'])));
 		$question_info['question_detail'] = preg_replace_callback('/\[attach\]([0-9]+)\[\/attach\]/i', 'tsb_parse_attachs_callback', $str);
+		TPL::assign('published_uid', $question_info['published_uid']);
 		TPL::assign('question_id', $question_id);
 		TPL::assign('question_info', $question_info);
 		TPL::assign('question_focus', $this -> model("question") -> has_focus_question($question_id, $this -> user_id));
@@ -279,7 +283,6 @@ class main extends AWS_CONTROLLER {
 			TPL::assign('next_page', $_GET['page']);
 		}
 
-		fb($question_info,'$question_info');
 
 		TPL::output('tsbm/question');
 	}

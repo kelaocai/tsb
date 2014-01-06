@@ -1,47 +1,47 @@
 <?php
 /*
-+--------------------------------------------------------------------------
-|   WeCenter [#RELEASE_VERSION#]
-|   ========================================
-|   by WeCenter Software
-|   © 2011 - 2013 WeCenter. All Rights Reserved
-|   http://www.wecenter.com
-|   ========================================
-|   Support: WeCenter@qq.com
-|   
-+---------------------------------------------------------------------------
-*/
+ +--------------------------------------------------------------------------
+ |   WeCenter [#RELEASE_VERSION#]
+ |   ========================================
+ |   by WeCenter Software
+ |   © 2011 - 2013 WeCenter. All Rights Reserved
+ |   http://www.wecenter.com
+ |   ========================================
+ |   Support: WeCenter@qq.com
+ |
+ +---------------------------------------------------------------------------
+ */
 
 class core_upload {
 
-	public $max_size				= 0;
-	public $max_width				= 0;
-	public $max_height				= 0;
-	public $max_filename			= 0;
-	public $allowed_types			= '';
-	public $file_temp				= '';
-	public $file_name				= '';
-	public $orig_name				= '';
-	public $file_type				= '';
-	public $file_size				= '';
-	public $file_ext				= '';
-	public $upload_path				= '';
-	public $overwrite				= FALSE;
-	public $encrypt_name			= TRUE;
-	public $is_image				= FALSE;
-	public $image_width				= '';
-	public $image_height			= '';
-	public $image_type				= '';
-	public $image_size_str			= '';
-	public $error_code				= false;
-	public $mimes					= array();
-	public $remove_spaces			= TRUE;
-	public $xss_clean				= FALSE;
-	public $temp_prefix				= "temp_file_";
-	public $client_name				= '';
+	public $max_size = 0;
+	public $max_width = 0;
+	public $max_height = 0;
+	public $max_filename = 0;
+	public $allowed_types = '';
+	public $file_temp = '';
+	public $file_name = '';
+	public $orig_name = '';
+	public $file_type = '';
+	public $file_size = '';
+	public $file_ext = '';
+	public $upload_path = '';
+	public $overwrite = FALSE;
+	public $encrypt_name = TRUE;
+	public $is_image = FALSE;
+	public $image_width = '';
+	public $image_height = '';
+	public $image_type = '';
+	public $image_size_str = '';
+	public $error_code = false;
+	public $mimes = array();
+	public $remove_spaces = TRUE;
+	public $xss_clean = FALSE;
+	public $temp_prefix = "temp_file_";
+	public $client_name = '';
 
-	protected $_file_name_override	= '';
-	
+	protected $_file_name_override = '';
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -50,62 +50,27 @@ class core_upload {
 	 * @param	array
 	 * @return	void
 	 */
-	public function initialize($config = array())
-	{
-		$defaults = array(
-			'max_size'			=> 0,
-			'max_width'			=> 0,
-			'max_height'		=> 0,
-			'max_filename'		=> 0,
-			'allowed_types'		=> '',
-			'file_temp'			=> '',
-			'file_name'			=> '',
-			'orig_name'			=> '',
-			'file_type'			=> '',
-			'file_size'			=> '',
-			'file_ext'			=> '',
-			'upload_path'		=> '',
-			'overwrite'			=> FALSE,
-			'encrypt_name'		=> TRUE,
-			'is_image'			=> FALSE,
-			'image_width'		=> '',
-			'image_height'		=> '',
-			'image_type'		=> '',
-			'image_size_str'	=> '',
-			'error_code'		=> false,
-			'mimes'				=> array(),
-			'remove_spaces'		=> TRUE,
-			'xss_clean'			=> TRUE,
-			'temp_prefix'		=> "temp_file_",
-			'client_name'		=> ''
-		);
+	public function initialize($config = array()) {
+		$defaults = array('max_size' => 0, 'max_width' => 0, 'max_height' => 0, 'max_filename' => 0, 'allowed_types' => '', 'file_temp' => '', 'file_name' => '', 'orig_name' => '', 'file_type' => '', 'file_size' => '', 'file_ext' => '', 'upload_path' => '', 'overwrite' => FALSE, 'encrypt_name' => TRUE, 'is_image' => FALSE, 'image_width' => '', 'image_height' => '', 'image_type' => '', 'image_size_str' => '', 'error_code' => false, 'mimes' => array(), 'remove_spaces' => TRUE, 'xss_clean' => TRUE, 'temp_prefix' => "temp_file_", 'client_name' => '');
 
+		foreach ($defaults as $key => $val) {
+			if (isset($config[$key])) {
+				$method = 'set_' . $key;
 
-		foreach ($defaults as $key => $val)
-		{
-			if (isset($config[$key]))
-			{
-				$method = 'set_'.$key;
-				
-				if (method_exists($this, $method))
-				{
-					$this->$method($config[$key]);
+				if (method_exists($this, $method)) {
+					$this -> $method($config[$key]);
+				} else {
+					$this -> $key = $config[$key];
 				}
-				else
-				{
-					$this->$key = $config[$key];
-				}
-			}
-			else
-			{
-				$this->$key = $val;
+			} else {
+				$this -> $key = $val;
 			}
 		}
 
 		// if a file_name was provided in the config, use it instead of the user input
 		// supplied file name for all uploads until initialized again
-		$this->_file_name_override = $this->file_name;
-		
+		$this -> _file_name_override = $this -> file_name;
+
 		return $this;
 	}
 
@@ -116,175 +81,161 @@ class core_upload {
 	 *
 	 * @return	bool
 	 */
-	public function do_upload($field = 'userfile', $xhr_stream = false)
-	{
+	public function do_upload($field = 'userfile', $xhr_stream = false) {
+		require_once('system/tsb/upyun.class.php');
 		// Is the upload path valid?
-		if ( ! $this->validate_upload_path())
-		{
+		if (!$this -> validate_upload_path()) {
 			// errors will already be set by validate_upload_path() so just return FALSE
 			return FALSE;
 		}
-		
+
 		clearstatcache();
-		
-		if ($xhr_stream)
-		{
-			if (!$stream = fopen('php://input', 'r'))
-			{
-				$this->set_error('upload_no_file_selected');
-				
+
+		if ($xhr_stream) {
+			if (!$stream = fopen('php://input', 'r')) {
+				$this -> set_error('upload_no_file_selected');
+
 				return FALSE;
 			}
-			
+
 			$tmp_name = TEMP_PATH . 'xhr_' . md5($field . microtime(TRUE) . rand(1, 999));
-			
-			if (!$file_size = stream_copy_to_stream($stream, fopen($tmp_name, 'w')))
-			{
-				$this->set_error('upload_unable_to_write_file');
-				
+
+			if (!$file_size = stream_copy_to_stream($stream, fopen($tmp_name, 'w'))) {
+				$this -> set_error('upload_unable_to_write_file');
+
 				return FALSE;
 			}
-			
+
 			fclose($stream);
-			
+
 			// Set the uploaded data as class variables
-			$this->file_temp = $tmp_name;
-			$this->file_size = $file_size;
-			
-			$this->file_mime_type(array(
-				'tmp_name' => $tmp_name,
-				'type' => 'application/octet-stream'
-			));
-						
-			$this->file_type = preg_replace("/^(.+?);.*$/", "\\1", $this->file_type);
-			$this->file_type = strtolower(trim(stripslashes($this->file_type), '"'));
-			
-			$this->file_name = $this->prep_filename($field);
-			
-			$this->file_ext	 = $this->get_extension($this->file_name);
-			$this->client_name = $this->file_name;
-		}
-		else
-		{
+			$this -> file_temp = $tmp_name;
+			$this -> file_size = $file_size;
+
+			$this -> file_mime_type(array('tmp_name' => $tmp_name, 'type' => 'application/octet-stream'));
+
+			$this -> file_type = preg_replace("/^(.+?);.*$/", "\\1", $this -> file_type);
+			$this -> file_type = strtolower(trim(stripslashes($this -> file_type), '"'));
+
+			$this -> file_name = $this -> prep_filename($field);
+
+			$this -> file_ext = $this -> get_extension($this -> file_name);
+			$this -> client_name = $this -> file_name;
+		} else {
 			// Is $_FILES[$field] set? If not, no reason to continue.
-			if ( ! isset($_FILES[$field]))
-			{
-				$this->set_error('upload_no_file_selected');
+			if (!isset($_FILES[$field])) {
+				$this -> set_error('upload_no_file_selected');
 				return FALSE;
 			}
-			
+
 			// Was the file able to be uploaded? If not, determine the reason why.
-			if ( ! is_uploaded_file($_FILES[$field]['tmp_name']))
-			{
-				$error = ( ! isset($_FILES[$field]['error'])) ? 4 : $_FILES[$field]['error'];
-	
-				switch($error)
-				{
-					case 1:	// UPLOAD_ERR_INI_SIZE
-						$this->set_error('upload_file_exceeds_limit');
+			if (!is_uploaded_file($_FILES[$field]['tmp_name'])) {
+				$error = (!isset($_FILES[$field]['error'])) ? 4 : $_FILES[$field]['error'];
+
+				switch($error) {
+					case 1 :
+						// UPLOAD_ERR_INI_SIZE
+						$this -> set_error('upload_file_exceeds_limit');
 						break;
-					case 2: // UPLOAD_ERR_FORM_SIZE
-						$this->set_error('upload_file_exceeds_form_limit');
+					case 2 :
+						// UPLOAD_ERR_FORM_SIZE
+						$this -> set_error('upload_file_exceeds_form_limit');
 						break;
-					case 3: // UPLOAD_ERR_PARTIAL
-						$this->set_error('upload_file_partial');
+					case 3 :
+						// UPLOAD_ERR_PARTIAL
+						$this -> set_error('upload_file_partial');
 						break;
-					case 4: // UPLOAD_ERR_NO_FILE
-						$this->set_error('upload_no_file_selected');
+					case 4 :
+						// UPLOAD_ERR_NO_FILE
+						$this -> set_error('upload_no_file_selected');
 						break;
-					case 6: // UPLOAD_ERR_NO_TMP_DIR
-						$this->set_error('upload_no_temp_directory');
+					case 6 :
+						// UPLOAD_ERR_NO_TMP_DIR
+						$this -> set_error('upload_no_temp_directory');
 						break;
-					case 7: // UPLOAD_ERR_CANT_WRITE
-						$this->set_error('upload_unable_to_write_file');
+					case 7 :
+						// UPLOAD_ERR_CANT_WRITE
+						$this -> set_error('upload_unable_to_write_file');
 						break;
-					case 8: // UPLOAD_ERR_EXTENSION
-						$this->set_error('upload_stopped_by_extension');
+					case 8 :
+						// UPLOAD_ERR_EXTENSION
+						$this -> set_error('upload_stopped_by_extension');
 						break;
-					default :   $this->set_error('upload_no_file_selected');
+					default :
+						$this -> set_error('upload_no_file_selected');
 						break;
 				}
-	
+
 				return FALSE;
 			}
-			
+
 			// Set the uploaded data as class variables
-			$this->file_temp = $_FILES[$field]['tmp_name'];
-			$this->file_size = $_FILES[$field]['size'];
-			$this->file_mime_type($_FILES[$field]);
-			$this->file_type = preg_replace("/^(.+?);.*$/", "\\1", $this->file_type);
-			$this->file_type = strtolower(trim(stripslashes($this->file_type), '"'));
-			
-			$this->file_name = $this->prep_filename($_FILES[$field]['name']);
-			$this->file_ext	 = $this->get_extension($this->file_name);
-			$this->client_name = $this->file_name;
+			$this -> file_temp = $_FILES[$field]['tmp_name'];
+			$this -> file_size = $_FILES[$field]['size'];
+			$this -> file_mime_type($_FILES[$field]);
+			$this -> file_type = preg_replace("/^(.+?);.*$/", "\\1", $this -> file_type);
+			$this -> file_type = strtolower(trim(stripslashes($this -> file_type), '"'));
+
+			$this -> file_name = $this -> prep_filename($_FILES[$field]['name']);
+			$this -> file_ext = $this -> get_extension($this -> file_name);
+			$this -> client_name = $this -> file_name;
 		}
 
 		// Is the file type allowed to be uploaded?
-		if ( ! $this->is_allowed_filetype())
-		{
-			$this->set_error('upload_invalid_filetype');
+		if (!$this -> is_allowed_filetype()) {
+			$this -> set_error('upload_invalid_filetype');
 			return FALSE;
 		}
 
 		// if we're overriding, let's now make sure the new name and type is allowed
-		if ($this->_file_name_override != '')
-		{
-			$this->file_name = $this->prep_filename($this->_file_name_override);
+		if ($this -> _file_name_override != '') {
+			$this -> file_name = $this -> prep_filename($this -> _file_name_override);
 
 			// If no extension was provided in the file_name config item, use the uploaded one
-			if (strpos($this->_file_name_override, '.') === FALSE)
-			{
-				$this->file_name .= $this->file_ext;
+			if (strpos($this -> _file_name_override, '.') === FALSE) {
+				$this -> file_name .= $this -> file_ext;
 			}
 
 			// An extension was provided, lets have it!
-			else
-			{
-				$this->file_ext	 = $this->get_extension($this->_file_name_override);
+			else {
+				$this -> file_ext = $this -> get_extension($this -> _file_name_override);
 			}
 
-			if ( ! $this->is_allowed_filetype(TRUE))
-			{
-				$this->set_error('upload_invalid_filetype');
+			if (!$this -> is_allowed_filetype(TRUE)) {
+				$this -> set_error('upload_invalid_filetype');
 				return FALSE;
 			}
 		}
 
 		// Convert the file size to kilobytes
-		if ($this->file_size > 0)
-		{
-			$this->file_size = round($this->file_size/1024, 2);
+		if ($this -> file_size > 0) {
+			$this -> file_size = round($this -> file_size / 1024, 2);
 		}
 
 		// Is the file size within the allowed maximum?
-		if ( ! $this->is_allowed_filesize())
-		{
-			$this->set_error('upload_invalid_filesize');
+		if (!$this -> is_allowed_filesize()) {
+			$this -> set_error('upload_invalid_filesize');
 			return FALSE;
 		}
 
 		// Are the image dimensions within the allowed size?
 		// Note: This can fail if the server has an open_basdir restriction.
-		if ( ! $this->is_allowed_dimensions())
-		{
-			$this->set_error('upload_invalid_dimensions');
+		if (!$this -> is_allowed_dimensions()) {
+			$this -> set_error('upload_invalid_dimensions');
 			return FALSE;
 		}
-		
+
 		// Sanitize the file name for security
-		$this->file_name = $this->clean_file_name($this->file_name);
+		$this -> file_name = $this -> clean_file_name($this -> file_name);
 
 		// Truncate the file name if it's too long
-		if ($this->max_filename > 0)
-		{
-			$this->file_name = $this->limit_filename_length($this->file_name, $this->max_filename);
+		if ($this -> max_filename > 0) {
+			$this -> file_name = $this -> limit_filename_length($this -> file_name, $this -> max_filename);
 		}
 
 		// Remove white spaces in the name
-		if ($this->remove_spaces == TRUE)
-		{
-			$this->file_name = preg_replace("/\s+/", "_", $this->file_name);
+		if ($this -> remove_spaces == TRUE) {
+			$this -> file_name = preg_replace("/\s+/", "_", $this -> file_name);
 		}
 
 		/*
@@ -293,11 +244,10 @@ class core_upload {
 		 * the file if one with the same name already exists.
 		 * If it returns false there was a problem.
 		 */
-		$this->orig_name = $this->file_name;
+		$this -> orig_name = $this -> file_name;
 
-		if ($this->overwrite == FALSE)
-		{
-			$this->file_name = $this->set_filename($this->upload_path, $this->file_name);
+		if ($this -> overwrite == FALSE) {
+			$this -> file_name = $this -> set_filename($this -> upload_path, $this -> file_name);
 		}
 
 		/*
@@ -306,64 +256,75 @@ class core_upload {
 		 * embedded within a file.  Scripts can easily
 		 * be disguised as images or other file types.
 		 */
-		if ($this->xss_clean)
-		{
-			if ($this->do_xss_clean() === FALSE)
-			{
-				$this->set_error('upload_unable_to_write_file');
+		if ($this -> xss_clean) {
+			if ($this -> do_xss_clean() === FALSE) {
+				$this -> set_error('upload_unable_to_write_file');
 				return FALSE;
 			}
 		}
-		
-		if ($xhr_stream)
-		{
+
+		if ($xhr_stream) {
 			/*if ( ! @rename($this->file_temp, $this->upload_path.$this->file_name))
-			{
-				$this->set_error('upload_destination_error');
-				return FALSE;
-			}*/
-			
-			$file_temp = fopen($this->file_temp, 'r');
-			
-			$target = fopen($this->upload_path.$this->file_name, 'w');
-			
-			fseek($file_temp, 0, SEEK_SET);
-			
-			if (!stream_copy_to_stream($file_temp, $target))
-			{
-				$this->set_error('upload_destination_error');
-				return FALSE;
-			}
-			
-        	fclose($target);
-        	fclose($file_temp);
-        	
-        	@unlink($this->file_temp);
-        	
-        	if (!file_exists($this->upload_path.$this->file_name))
-			{
-				$this->set_error('upload_unable_to_write_file');
-				return FALSE;
-			}
-		}
-		else
-		{
-			/*
-			* Move the file to the final destination
-			* To deal with different server configurations
-			* we'll attempt to use copy() first.  If that fails
-			* we'll use move_uploaded_file().  One of the two should
-			* reliably work in most environments
-			*/
+			 {
+			 $this->set_error('upload_destination_error');
+			 return FALSE;
+			 }*/
 			 
-			if ( ! @copy($this->file_temp, $this->upload_path.$this->file_name))
-			{
-				if ( ! @move_uploaded_file($this->file_temp, $this->upload_path.$this->file_name))
-				{
-					$this->set_error('upload_destination_error');
+			$file_temp = fopen($this -> file_temp, 'r');
+
+			$target = fopen($this -> upload_path . $this -> file_name, 'w');
+
+			fseek($file_temp, 0, SEEK_SET);
+
+			if (!stream_copy_to_stream($file_temp, $target)) {
+				$this -> set_error('upload_destination_error');
+				return FALSE;
+			}
+
+			fclose($target);
+			fclose($file_temp);
+			
+			//tsb upyun upload 同步上传到又拍云
+
+			$upyun = new UpYun('tsb-static', 'tongshibang', 'tongshibang');
+			$fh = fopen($this -> file_temp, 'r');
+			$upyun_path=str_replace(get_setting('upload_dir'), '/uploads', $this -> upload_path);
+			$upyun -> writeFile($upyun_path. $this -> file_name, $fh, True);
+			fclose($fh);
+			
+
+			@unlink($this -> file_temp);
+
+			if (!file_exists($this -> upload_path . $this -> file_name)) {
+				$this -> set_error('upload_unable_to_write_file');
+				return FALSE;
+			}
+		} else {
+			/*
+			 * Move the file to the final destination
+			 * To deal with different server configurations
+			 * we'll attempt to use copy() first.  If that fails
+			 * we'll use move_uploaded_file().  One of the two should
+			 * reliably work in most environments
+			*/
+			
+			
+			if (!@copy($this -> file_temp, $this -> upload_path . $this -> file_name)) {
+				if (!@move_uploaded_file($this -> file_temp, $this -> upload_path . $this -> file_name)) {
+					$this -> set_error('upload_destination_error');
 					return FALSE;
 				}
 			}
+			
+			//tsb upyun upload
+			$upyun = new UpYun('tsb-static', 'tongshibang', 'tongshibang');
+			$fh = fopen($this -> file_temp, 'r');
+			
+			$upyun_path=str_replace(get_setting('upload_dir'), '/uploads', $this -> upload_path);
+			fb($upyun_path,'aa');
+			$upyun -> writeFile($upyun_path. $this -> file_name, $fh, True);
+			fclose($fh);
+			
 		}
 
 		/*
@@ -372,7 +333,10 @@ class core_upload {
 		 * file was an image).  We use this information
 		 * in the "data" function.
 		 */
-		$this->set_image_properties($this->upload_path.$this->file_name);
+		$this -> set_image_properties($this -> upload_path . $this -> file_name);
+		
+		
+		
 
 		return TRUE;
 	}
@@ -387,29 +351,12 @@ class core_upload {
 	 *
 	 * @return	array
 	 */
-	public function data()
-	{
-		if (!file_exists($this->upload_path . $this->file_name))
-		{
+	public function data() {
+		if (!file_exists($this -> upload_path . $this -> file_name)) {
 			return FALSE;
 		}
-		
-		return array (
-						'file_name'			=> $this->file_name,
-						'file_type'			=> $this->file_type,
-						'file_path'			=> $this->upload_path,
-						'full_path'			=> $this->upload_path.$this->file_name,
-						'raw_name'			=> str_replace($this->file_ext, '', $this->file_name),
-						'orig_name'			=> $this->orig_name,
-						'client_name'		=> $this->client_name,
-						'file_ext'			=> $this->file_ext,
-						'file_size'			=> $this->file_size,
-						'is_image'			=> $this->is_image(),
-						'image_width'		=> $this->image_width,
-						'image_height'		=> $this->image_height,
-						'image_type'		=> $this->image_type,
-						'image_size_str'	=> $this->image_size_str,
-					);
+
+		return array('file_name' => $this -> file_name, 'file_type' => $this -> file_type, 'file_path' => $this -> upload_path, 'full_path' => $this -> upload_path . $this -> file_name, 'raw_name' => str_replace($this -> file_ext, '', $this -> file_name), 'orig_name' => $this -> orig_name, 'client_name' => $this -> client_name, 'file_ext' => $this -> file_ext, 'file_size' => $this -> file_size, 'is_image' => $this -> is_image(), 'image_width' => $this -> image_width, 'image_height' => $this -> image_height, 'image_type' => $this -> image_type, 'image_size_str' => $this -> image_size_str, );
 	}
 
 	// --------------------------------------------------------------------
@@ -420,10 +367,9 @@ class core_upload {
 	 * @param	string
 	 * @return	void
 	 */
-	public function set_upload_path($path)
-	{
+	public function set_upload_path($path) {
 		// Make sure it has a trailing slash
-		$this->upload_path = rtrim($path, '/').'/';
+		$this -> upload_path = rtrim($path, '/') . '/';
 	}
 
 	// --------------------------------------------------------------------
@@ -439,31 +385,23 @@ class core_upload {
 	 * @param	string
 	 * @return	string
 	 */
-	public function set_filename($path, $filename)
-	{
-		if ($this->encrypt_name == TRUE)
-		{
+	public function set_filename($path, $filename) {
+		if ($this -> encrypt_name == TRUE) {
 			$filename = md5(rand(1, 99999999) . microtime());
-			
-			if ( $this->is_image() )
-			{
-				$filename .= $this->file_ext;
+
+			if ($this -> is_image()) {
+				$filename .= $this -> file_ext;
+			} else {
+
 			}
-			else
-			{
-				
-			}
-			
-			if ( ! file_exists($path . $filename))
-			{
+
+			if (!file_exists($path . $filename)) {
 				return $filename;
-			}
-			else
-			{
-				return $this->set_filename($path, $filename);
+			} else {
+				return $this -> set_filename($path, $filename);
 			}
 		}
-		
+
 		return $filename;
 	}
 
@@ -475,9 +413,8 @@ class core_upload {
 	 * @param	integer
 	 * @return	void
 	 */
-	public function set_max_filesize($n)
-	{
-		$this->max_size = ((int) $n < 0) ? 0: (int) $n;
+	public function set_max_filesize($n) {
+		$this -> max_size = ((int)$n < 0) ? 0 : (int)$n;
 	}
 
 	// --------------------------------------------------------------------
@@ -488,9 +425,8 @@ class core_upload {
 	 * @param	integer
 	 * @return	void
 	 */
-	public function set_max_filename($n)
-	{
-		$this->max_filename = ((int) $n < 0) ? 0: (int) $n;
+	public function set_max_filename($n) {
+		$this -> max_filename = ((int)$n < 0) ? 0 : (int)$n;
 	}
 
 	// --------------------------------------------------------------------
@@ -501,9 +437,8 @@ class core_upload {
 	 * @param	integer
 	 * @return	void
 	 */
-	public function set_max_width($n)
-	{
-		$this->max_width = ((int) $n < 0) ? 0: (int) $n;
+	public function set_max_width($n) {
+		$this -> max_width = ((int)$n < 0) ? 0 : (int)$n;
 	}
 
 	// --------------------------------------------------------------------
@@ -514,9 +449,8 @@ class core_upload {
 	 * @param	integer
 	 * @return	void
 	 */
-	public function set_max_height($n)
-	{
-		$this->max_height = ((int) $n < 0) ? 0: (int) $n;
+	public function set_max_height($n) {
+		$this -> max_height = ((int)$n < 0) ? 0 : (int)$n;
 	}
 
 	// --------------------------------------------------------------------
@@ -527,21 +461,16 @@ class core_upload {
 	 * @param	string
 	 * @return	void
 	 */
-	public function set_allowed_types($types)
-	{
-		if ( ! is_array($types) && $types == '*')
-		{
-			$this->allowed_types = '*';
+	public function set_allowed_types($types) {
+		if (!is_array($types) && $types == '*') {
+			$this -> allowed_types = '*';
 			return;
 		}
-		
-		if (strstr($types, '|'))
-		{
-			$this->allowed_types = explode('|', $types);
-		}
-		else
-		{
-			$this->allowed_types = explode(',', $types);
+
+		if (strstr($types, '|')) {
+			$this -> allowed_types = explode('|', $types);
+		} else {
+			$this -> allowed_types = explode(',', $types);
 		}
 	}
 
@@ -555,23 +484,20 @@ class core_upload {
 	 * @param	string
 	 * @return	void
 	 */
-	public function set_image_properties($path = '')
-	{
-		if ( ! $this->is_image())
-		{
+	public function set_image_properties($path = '') {
+		if (!$this -> is_image()) {
 			return;
 		}
 
-		if (function_exists('getimagesize'))
-		{
-			if (FALSE !== ($D = @getimagesize($path)))
-			{
+		if (function_exists('getimagesize')) {
+			if (FALSE !== ($D = @getimagesize($path))) {
 				$types = array(1 => 'gif', 2 => 'jpeg', 3 => 'png');
 
-				$this->image_width		= $D['0'];
-				$this->image_height		= $D['1'];
-				$this->image_type		= ( ! isset($types[$D['2']])) ? 'unknown' : $types[$D['2']];
-				$this->image_size_str	= $D['3'];  // string containing height and width
+				$this -> image_width = $D['0'];
+				$this -> image_height = $D['1'];
+				$this -> image_type = (!isset($types[$D['2']])) ? 'unknown' : $types[$D['2']];
+				$this -> image_size_str = $D['3'];
+				// string containing height and width
 			}
 		}
 	}
@@ -587,9 +513,8 @@ class core_upload {
 	 * @param	bool
 	 * @return	void
 	 */
-	public function set_xss_clean($flag = FALSE)
-	{
-		$this->xss_clean = ($flag == TRUE) ? TRUE : FALSE;
+	public function set_xss_clean($flag = FALSE) {
+		$this -> xss_clean = ($flag == TRUE) ? TRUE : FALSE;
 	}
 
 	// --------------------------------------------------------------------
@@ -599,43 +524,28 @@ class core_upload {
 	 *
 	 * @return	bool
 	 */
-	public function is_image()
-	{
-		if (!in_array(strtolower($this->file_ext), array(
-			'.jpg',
-			'.jpe',
-			'.jpeg',
-			'.bmp',
-			'.gif',
-			'.png'
-		)))
-		{
+	public function is_image() {
+		if (!in_array(strtolower($this -> file_ext), array('.jpg', '.jpe', '.jpeg', '.bmp', '.gif', '.png'))) {
 			return FALSE;
 		}
-		
+
 		// IE will sometimes return odd mime-types during upload, so here we just standardize all
 		// jpegs or pngs to the same file type.
 
-		$png_mimes  = array('image/x-png');
+		$png_mimes = array('image/x-png');
 		$jpeg_mimes = array('image/jpg', 'image/jpe', 'image/jpeg', 'image/pjpeg');
 
-		if (in_array($this->file_type, $png_mimes))
-		{
-			$this->file_type = 'image/png';
+		if (in_array($this -> file_type, $png_mimes)) {
+			$this -> file_type = 'image/png';
 		}
 
-		if (in_array($this->file_type, $jpeg_mimes))
-		{
-			$this->file_type = 'image/jpeg';
+		if (in_array($this -> file_type, $jpeg_mimes)) {
+			$this -> file_type = 'image/jpeg';
 		}
 
-		$img_mimes = array(
-			'image/gif',
-			'image/jpeg',
-			'image/png',
-		);
+		$img_mimes = array('image/gif', 'image/jpeg', 'image/png', );
 
-		return (in_array($this->file_type, $img_mimes, TRUE)) ? TRUE : FALSE;
+		return (in_array($this -> file_type, $img_mimes, TRUE)) ? TRUE : FALSE;
 	}
 
 	// --------------------------------------------------------------------
@@ -645,33 +555,27 @@ class core_upload {
 	 *
 	 * @return	bool
 	 */
-	public function is_allowed_filetype($ignore_mime = FALSE)
-	{
-		if ($this->allowed_types == '*')
-		{
+	public function is_allowed_filetype($ignore_mime = FALSE) {
+		if ($this -> allowed_types == '*') {
 			return TRUE;
 		}
 
-		if (count($this->allowed_types) == 0 OR ! is_array($this->allowed_types))
-		{
-			$this->set_error('upload_no_file_types');
+		if (count($this -> allowed_types) == 0 OR !is_array($this -> allowed_types)) {
+			$this -> set_error('upload_no_file_types');
 			return FALSE;
 		}
 
-		$ext = strtolower(ltrim($this->file_ext, '.'));
+		$ext = strtolower(ltrim($this -> file_ext, '.'));
 
-		if ( ! in_array($ext, $this->allowed_types))
-		{
+		if (!in_array($ext, $this -> allowed_types)) {
 			return FALSE;
 		}
 
 		// Images get some additional checks
 		$image_types = array('gif', 'jpg', 'jpeg', 'png', 'jpe');
 
-		if (in_array($ext, $image_types))
-		{
-			if (getimagesize($this->file_temp) === FALSE)
-			{
+		if (in_array($ext, $image_types)) {
+			if (getimagesize($this -> file_temp) === FALSE) {
 				return FALSE;
 			}
 		}
@@ -686,14 +590,10 @@ class core_upload {
 	 *
 	 * @return	bool
 	 */
-	public function is_allowed_filesize()
-	{
-		if ($this->max_size != 0  AND  $this->file_size > $this->max_size)
-		{
+	public function is_allowed_filesize() {
+		if ($this -> max_size != 0 AND $this -> file_size > $this -> max_size) {
 			return FALSE;
-		}
-		else
-		{
+		} else {
 			return TRUE;
 		}
 	}
@@ -705,24 +605,19 @@ class core_upload {
 	 *
 	 * @return	bool
 	 */
-	public function is_allowed_dimensions()
-	{
-		if ( ! $this->is_image())
-		{
+	public function is_allowed_dimensions() {
+		if (!$this -> is_image()) {
 			return TRUE;
 		}
 
-		if (function_exists('getimagesize'))
-		{
-			$D = @getimagesize($this->file_temp);
+		if (function_exists('getimagesize')) {
+			$D = @getimagesize($this -> file_temp);
 
-			if ($this->max_width > 0 AND $D['0'] > $this->max_width)
-			{
+			if ($this -> max_width > 0 AND $D['0'] > $this -> max_width) {
 				return FALSE;
 			}
 
-			if ($this->max_height > 0 AND $D['1'] > $this->max_height)
-			{
+			if ($this -> max_height > 0 AND $D['1'] > $this -> max_height) {
 				return FALSE;
 			}
 
@@ -742,40 +637,33 @@ class core_upload {
 	 *
 	 * @return	bool
 	 */
-	public function validate_upload_path()
-	{		
-		if ($this->upload_path == '')
-		{
-			$this->set_error('upload_no_filepath');
+	public function validate_upload_path() {
+		if ($this -> upload_path == '') {
+			$this -> set_error('upload_no_filepath');
 			return FALSE;
 		}
 
-		if (function_exists('realpath') AND @realpath($this->upload_path) !== FALSE)
-		{
-			$this->upload_path = str_replace("\\", "/", realpath($this->upload_path));
+		if (function_exists('realpath') AND @realpath($this -> upload_path) !== FALSE) {
+			$this -> upload_path = str_replace("\\", "/", realpath($this -> upload_path));
 		}
-		
-		if (!defined('IN_SAE'))
-		{
-			if ( ! is_dir($this->upload_path))
-			{
-				if (! make_dir($this->upload_path))
-				{
-					$this->set_error('upload_not_writable');
-					
+
+		if (!defined('IN_SAE')) {
+			if (!is_dir($this -> upload_path)) {
+				if (!make_dir($this -> upload_path)) {
+					$this -> set_error('upload_not_writable');
+
 					return FALSE;
 				}
 			}
-			
-			if ( ! is_really_writable($this->upload_path))
-			{
-				$this->set_error('upload_not_writable');
-				
+
+			if (!is_really_writable($this -> upload_path)) {
+				$this -> set_error('upload_not_writable');
+
 				return FALSE;
 			}
 		}
 
-		$this->upload_path = preg_replace("/(.+?)\/*$/", "\\1/",  $this->upload_path);
+		$this -> upload_path = preg_replace("/(.+?)\/*$/", "\\1/", $this -> upload_path);
 		return TRUE;
 	}
 
@@ -787,10 +675,9 @@ class core_upload {
 	 * @param	string
 	 * @return	string
 	 */
-	public function get_extension($filename)
-	{
+	public function get_extension($filename) {
 		$x = explode('.', $filename);
-		return '.'.end($x);
+		return '.' . end($x);
 	}
 
 	// --------------------------------------------------------------------
@@ -801,36 +688,20 @@ class core_upload {
 	 * @param	string
 	 * @return	string
 	 */
-	public function clean_file_name($filename)
-	{
-		$bad = array(
-						"<!--",
-						"-->",
-						"'",
-						"<",
-						">",
-						'"',
-						'&',
-						'$',
-						'=',
-						';',
-						'?',
-						'/',
-						"%20",
-						"%22",
-						"%3c",		// <
-						"%253c",	// <
-						"%3e",		// >
-						"%0e",		// >
-						"%28",		// (
-						"%29",		// )
-						"%2528",	// (
-						"%26",		// &
-						"%24",		// $
-						"%3f",		// ?
-						"%3b",		// ;
-						"%3d"		// =
-					);
+	public function clean_file_name($filename) {
+		$bad = array("<!--", "-->", "'", "<", ">", '"', '&', '$', '=', ';', '?', '/', "%20", "%22", "%3c", // <
+		"%253c", // <
+		"%3e", // >
+		"%0e", // >
+		"%28", // (
+		"%29", // )
+		"%2528", // (
+		"%26", // &
+		"%24", // $
+		"%3f", // ?
+		"%3b", // ;
+		"%3d"	// =
+		);
 
 		$filename = str_replace($bad, '', $filename);
 
@@ -845,22 +716,19 @@ class core_upload {
 	 * @param	string
 	 * @return	string
 	 */
-	public function limit_filename_length($filename, $length)
-	{
-		if (strlen($filename) < $length)
-		{
+	public function limit_filename_length($filename, $length) {
+		if (strlen($filename) < $length) {
 			return $filename;
 		}
 
 		$ext = '';
-		if (strpos($filename, '.') !== FALSE)
-		{
-			$parts		= explode('.', $filename);
-			$ext		= '.'.array_pop($parts);
-			$filename	= implode('.', $parts);
+		if (strpos($filename, '.') !== FALSE) {
+			$parts = explode('.', $filename);
+			$ext = '.' . array_pop($parts);
+			$filename = implode('.', $parts);
 		}
 
-		return substr($filename, 0, ($length - strlen($ext))).$ext;
+		return substr($filename, 0, ($length - strlen($ext))) . $ext;
 	}
 
 	// --------------------------------------------------------------------
@@ -874,20 +742,16 @@ class core_upload {
 	 *
 	 * @return	void
 	 */
-	public function do_xss_clean()
-	{
-		$file = $this->file_temp;
-		
+	public function do_xss_clean() {
+		$file = $this -> file_temp;
+
 		//	部分 IIS 环境下返回值始终为 0
 		//if (filesize($file) == 0)
-		if ($this->file_size == 0)
-		{
+		if ($this -> file_size == 0) {
 			return FALSE;
 		}
-		
-		
-		if (function_exists('memory_get_usage') && memory_get_usage() && ini_get('memory_limit') != '')
-		{
+
+		if (function_exists('memory_get_usage') && memory_get_usage() && ini_get('memory_limit') != '') {
 			$current = ini_get('memory_limit') * 1024 * 1024;
 
 			// There was a bug/behavioural change in PHP 5.2, where numbers over one million get output
@@ -896,7 +760,8 @@ class core_upload {
 
 			$new_memory = number_format(ceil(filesize($file) + $current), 0, '.', '');
 
-			@ini_set('memory_limit', $new_memory); // When an integer is used, the value is measured in bytes. - PHP.net
+			@ini_set('memory_limit', $new_memory);
+			// When an integer is used, the value is measured in bytes. - PHP.net
 		}
 
 		// If the file being uploaded is an image, then we should have no problem with XSS attacks (in theory), but
@@ -906,11 +771,11 @@ class core_upload {
 		// processor power and time if it is actually a clean image, as it will be in nearly all instances _except_ an
 		// attempted XSS attack.
 
-		if (function_exists('getimagesize') && @getimagesize($file) !== FALSE)
-		{
-			if (($file = @fopen($file, 'rb')) === FALSE) // "b" to force binary
+		if (function_exists('getimagesize') && @getimagesize($file) !== FALSE) {
+			if (($file = @fopen($file, 'rb')) === FALSE)// "b" to force binary
 			{
-				return FALSE; // Couldn't open the file, return FALSE
+				return FALSE;
+				// Couldn't open the file, return FALSE
 			}
 
 			$opening_bytes = fread($file, 256);
@@ -920,21 +785,18 @@ class core_upload {
 			// <a, <body, <head, <html, <img, <plaintext, <pre, <script, <table, <title
 			// title is basically just in SVG, but we filter it anyhow
 
-			if ( ! preg_match('/<(a|body|head|html|img|plaintext|pre|script|table|title)[\s>]/i', $opening_bytes))
-			{
-				return TRUE; // its an image, no "triggers" detected in the first 256 bytes, we're good
-			}
-			else
-			{
+			if (!preg_match('/<(a|body|head|html|img|plaintext|pre|script|table|title)[\s>]/i', $opening_bytes)) {
+				return TRUE;
+				// its an image, no "triggers" detected in the first 256 bytes, we're good
+			} else {
 				return FALSE;
 			}
 		}
 
-		if (($data = @file_get_contents($file)) === FALSE)
-		{
+		if (($data = @file_get_contents($file)) === FALSE) {
 			return FALSE;
 		}
-		
+
 		return $data;
 	}
 
@@ -946,26 +808,23 @@ class core_upload {
 	 * @param	string
 	 * @return	void
 	 */
-	public function set_error($code)
-	{		
-		$this->error_code = $code;
+	public function set_error($code) {
+		$this -> error_code = $code;
 	}
-	
+
 	/**
 	 * Get an error message
 	 *
 	 * @return	array
 	 */
-	public function get_error()
-	{
-		if ($this->error_code)
-		{
-			@unlink($this->file_temp);
+	public function get_error() {
+		if ($this -> error_code) {
+			@unlink($this -> file_temp);
 		}
-		
-		return $this->error_code;
+
+		return $this -> error_code;
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -977,31 +836,25 @@ class core_upload {
 	 * @param	string
 	 * @return	string
 	 */
-	protected function prep_filename($filename)
-	{		
-		if (strpos($filename, '.') === FALSE OR $this->allowed_types == '*')
-		{
+	protected function prep_filename($filename) {
+		if (strpos($filename, '.') === FALSE OR $this -> allowed_types == '*') {
 			return $filename;
 		}
 
-		$parts		= explode('.', $filename);
-		$ext		= array_pop($parts);
-		$filename	= array_shift($parts);
+		$parts = explode('.', $filename);
+		$ext = array_pop($parts);
+		$filename = array_shift($parts);
 
-		foreach ($parts as $part)
-		{
-			if ( ! in_array(strtolower($part), $this->allowed_types))
-			{
-				$filename .= '.'.$part.'_';
-			}
-			else
-			{
-				$filename .= '.'.$part;
+		foreach ($parts as $part) {
+			if (!in_array(strtolower($part), $this -> allowed_types)) {
+				$filename .= '.' . $part . '_';
+			} else {
+				$filename .= '.' . $part;
 			}
 		}
 
-		$filename .= '.'.$ext;
-		
+		$filename .= '.' . $ext;
+
 		return $filename;
 	}
 
@@ -1016,8 +869,7 @@ class core_upload {
 	 * @param	array
 	 * @return	void
 	 */
-	protected function file_mime_type($file)
-	{
+	protected function file_mime_type($file) {
 		// We'll need this to validate the MIME info string (e.g. text/plain; charset=us-ascii)
 		$regexp = '/^([a-z\-]+\/[a-z0-9\-\.\+]+)(;\s.+)?$/';
 
@@ -1026,10 +878,9 @@ class core_upload {
 		 * Unfortunately, prior to PHP 5.3 - it's only available as a PECL extension and the
 		 * more convenient FILEINFO_MIME_TYPE flag doesn't exist.
 		 */
-		if (function_exists('finfo_file'))
-		{
+		if (function_exists('finfo_file')) {
 			$finfo = finfo_open(FILEINFO_MIME);
-			if (is_resource($finfo)) // It is possible that a FALSE value is returned, if there is no magic MIME database file found on the system
+			if (is_resource($finfo))// It is possible that a FALSE value is returned, if there is no magic MIME database file found on the system
 			{
 				$mime = @finfo_file($finfo, $file['tmp_name']);
 				finfo_close($finfo);
@@ -1038,9 +889,8 @@ class core_upload {
 				 * it is possible that this function returns an empty string
 				 * for some files (e.g. if they don't exist in the magic MIME database)
 				 */
-				if (is_string($mime) && preg_match($regexp, $mime, $matches))
-				{
-					$this->file_type = $matches[1];
+				if (is_string($mime) && preg_match($regexp, $mime, $matches)) {
+					$this -> file_type = $matches[1];
 					return;
 				}
 			}
@@ -1057,52 +907,42 @@ class core_upload {
 		 *	- many system admins would disable the exec(), shell_exec(), popen() and similar functions
 		 *	  due to security concerns, hence the function_exists() checks
 		 */
-		if (DIRECTORY_SEPARATOR !== '\\')
-		{
+		if (DIRECTORY_SEPARATOR !== '\\') {
 			$cmd = 'file --brief --mime ' . @escapeshellarg($file['tmp_name']) . ' 2>&1';
 
-			if (function_exists('exec'))
-			{
+			if (function_exists('exec')) {
 				/* This might look confusing, as $mime is being populated with all of the output when set in the second parameter.
 				 * However, we only neeed the last line, which is the actual return value of exec(), and as such - it overwrites
 				 * anything that could already be set for $mime previously. This effectively makes the second parameter a dummy
 				 * value, which is only put to allow us to get the return status code.
 				 */
 				$mime = @exec($cmd, $mime, $return_status);
-				if ($return_status === 0 && is_string($mime) && preg_match($regexp, $mime, $matches))
-				{
-					$this->file_type = $matches[1];
+				if ($return_status === 0 && is_string($mime) && preg_match($regexp, $mime, $matches)) {
+					$this -> file_type = $matches[1];
 					return;
 				}
 			}
 
-			if ( (bool) @ini_get('safe_mode') === FALSE && function_exists('shell_exec'))
-			{
+			if ((bool)@ini_get('safe_mode') === FALSE && function_exists('shell_exec')) {
 				$mime = @shell_exec($cmd);
-				if (strlen($mime) > 0)
-				{
+				if (strlen($mime) > 0) {
 					$mime = explode("\n", trim($mime));
-					if (preg_match($regexp, $mime[(count($mime) - 1)], $matches))
-					{
-						$this->file_type = $matches[1];
+					if (preg_match($regexp, $mime[(count($mime) - 1)], $matches)) {
+						$this -> file_type = $matches[1];
 						return;
 					}
 				}
 			}
 
-			if (function_exists('popen'))
-			{
+			if (function_exists('popen')) {
 				$proc = @popen($cmd, 'r');
-				if (is_resource($proc))
-				{
+				if (is_resource($proc)) {
 					$mime = @fread($proc, 512);
 					@pclose($proc);
-					if ($mime !== FALSE)
-					{
+					if ($mime !== FALSE) {
 						$mime = explode("\n", trim($mime));
-						if (preg_match($regexp, $mime[(count($mime) - 1)], $matches))
-						{
-							$this->file_type = $matches[1];
+						if (preg_match($regexp, $mime[(count($mime) - 1)], $matches)) {
+							$this -> file_type = $matches[1];
 							return;
 						}
 					}
@@ -1111,28 +951,25 @@ class core_upload {
 		}
 
 		// Fall back to the deprecated mime_content_type(), if available (still better than $_FILES[$field]['type'])
-		if (function_exists('mime_content_type'))
-		{
-			$this->file_type = @mime_content_type($file['tmp_name']);
-			if (strlen($this->file_type) > 0) // It's possible that mime_content_type() returns FALSE or an empty string
+		if (function_exists('mime_content_type')) {
+			$this -> file_type = @mime_content_type($file['tmp_name']);
+			if (strlen($this -> file_type) > 0)// It's possible that mime_content_type() returns FALSE or an empty string
 			{
 				return;
 			}
 		}
-		
-		if (function_exists('getimagesize'))
-		{
+
+		if (function_exists('getimagesize')) {
 			$imageinfo = @getimagesize($file['tmp_name']);
-		
-			if ($imageinfo['mime'])
-			{
-				$this->file_type = $imageinfo['mime'];
-				
+
+			if ($imageinfo['mime']) {
+				$this -> file_type = $imageinfo['mime'];
+
 				return;
 			}
 		}
-		
-		$this->file_type = $file['type'];
+
+		$this -> file_type = $file['type'];
 	}
 
 	// --------------------------------------------------------------------

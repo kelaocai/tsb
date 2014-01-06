@@ -129,6 +129,11 @@ class ajax extends AWS_CONTROLLER
 					'width' => $val['w'],
 					'height' => $val['h']
 				))->resize();	
+				
+				//tsb upload
+				$remote_path=$upyun_path=str_replace(get_setting('upload_dir'), '/uploads', $thumb_file[$key]);
+				//fb($remote_path,'aa');	
+				load_class('tsb_common') -> upload_upyun_file($thumb_file[$key],$remote_path);
 			}
 		}
 		

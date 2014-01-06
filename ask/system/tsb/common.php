@@ -63,11 +63,53 @@ class tsb_common {
 		// @fclose($fp);
 
 		file_put_contents($full_path, base64_decode($uri));
-		
+
 		//fb($file_name,'$file_name');
 
 		return $file_name;
 
+	}
+
+	/**
+	 * 又拍云上传图片
+	 */
+
+	function upload_upyun_img($image_data, $type) {
+		require_once ('system/tsb/upyun.class.php');
+		$upyun = new UpYun('tsb-static', 'tongshibang', 'tongshibang');
+		$data = $image_data;
+		switch ($type) {
+			case 'question' :
+				$item_type = 'questions';
+				break;
+
+			default :
+				$item_type = 'answer';
+
+				$_POST['id'] = 'answer';
+				break;
+		}
+
+		$file_name = md5(rand(1, 99999999) . microtime()) . '.png';
+
+		$file_dir = '/uploads/' . $item_type . '/' . date('Ymd');
+		$full_path = $file_dir . '/' . $file_name;
+		$uri = substr($data, strpos($data, ",") + 1);
+		$rsp = $upyun -> writeFile($full_path, base64_decode($uri), True);
+		// 上传图片，自动创建目录
+		return $file_name;
+
+	}
+
+	/**
+	 * 又拍云上传文件
+	 */
+	function upload_upyun_file($local_path, $remote_path) {
+		require_once ('system/tsb/upyun.class.php');
+		$upyun = new UpYun('tsb-static', 'tongshibang', 'tongshibang');
+		$fh = fopen($local_path, 'r');
+		$upyun -> writeFile($remote_path, $fh, True);
+		fclose($fh);
 	}
 
 }

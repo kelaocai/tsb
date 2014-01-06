@@ -145,9 +145,11 @@ class ajax extends AWS_CONTROLLER {
 			H::ajax_json_output(AWS_APP::RSM(array('url' => get_js_url('/publish/wait_approval/question_id-' . intval($_POST['question_id']) . '__is_mobile-' . $_POST['_is_mobile'])), 1, null));
 		} else {
 
-			//移动版上传图片
+			// tsb 移动版上传图片
 			if ($_POST['_is_mobile'] && $_POST['_is_attach']) {
-				$file_name = load_class('tsb_common') -> m_upload($_POST['image_data'], $_POST['image_name'], 'answer', $_POST['attach_access_key']);
+				//$file_name = load_class('tsb_common') -> m_upload($_POST['image_data'], $_POST['image_name'], 'answer', $_POST['attach_access_key']);
+				$file_name = load_class('tsb_common') -> upload_upyun_img($_POST['image_data'],'answer');
+				
 				if (!$file_name) {
 					H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang() -> _t('图片上传失败')));
 				}

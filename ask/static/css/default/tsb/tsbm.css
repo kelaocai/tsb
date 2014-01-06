@@ -1,9 +1,14 @@
+A:link {color: #000000;text-decoration: none}
+A:visited {color: #000000;text-decoration: none} 
+A:hover {color: #000000;text-decoration: none} 
 .container {
 	margin-left: auto;
 	margin-right: auto;
 	padding-left: 15px;
 	padding-right: 15px;
 }
+
+.num {color:#929292;}
 
 .home-body {
 	margin-top: 1px;
@@ -39,6 +44,13 @@
     border-color: #76C2AF;
     color: #FFFFFF;
 }
+
+.btn-default {
+  color: #F2901C;
+  background-color: #ffffff;
+  border-color: #cccccc;
+}
+
 
 .btn-danger:hover,
 .btn-danger:focus,
@@ -273,21 +285,39 @@ ul.nav li a i {
 }
 
 /*板块*/
-
-.board-item{
-	line-height:50px;
-	margin-right:-40px;	
+.board-accordion{
+	margin-left: -5px;
+	margin-right: -5px; 
+	margin-top: 10px;
 }
 
-.board-title {
+
+.board-head{
+	border-bottom: #929292 1px dotted;
+}
+
+.board-item{
+    height: 65px;
+    width: 300px;
+    margin:5px 0px;
+}
+
+.board-item-text-title {
 	font-size: 16px;
 	font-weight:bold;
 	text-align: left;
 }
-.board-sum {
+
+.board-item-text-date {
 	font-size: 12px;
-	line-height:16px;
-	color: #494A4B;
+	text-align: left;
+	color:#929292;
+}
+
+
+.board-item-text-sum {
+	font-size: 14px;
+	color: #929292;
 	text-align: left;
 }
 
@@ -299,11 +329,29 @@ a {
 	color: #34495e;
 }
 
-.board-text {
-	padding-left: 15px;
-	padding: 0px 5px; 
-	width:220px;
+.board-item-icon{
+	padding-left: 0px; 
+	/*border-right: solid 1px #F0F0F0; */
+	width: 60px; 
+	height: 60px;
+	float: left;
 }
+.board-item-icon img
+{
+	width: 45px;height: 45px; margin: 7px 5px;
+}
+
+.board-item-text {
+	padding-left: 15px;
+	float: left;
+	width:240px;
+	height: 60px;
+}
+
+.board-item-text p {
+	margin-bottom: 0px;
+}
+
 
 .board-avtarlist img{
 	margin-right:10px;
@@ -405,7 +453,7 @@ a {
 	height: 56px;
 	width: 280px;
 	margin-top: 10px;
-	border-bottom: 1px dotted #bdc3c7;
+	/*border-bottom: 1px dotted #bdc3c7;*/
 }
 
 .list-avatar {
@@ -415,10 +463,10 @@ a {
 }
 
 .list-sum {
-	width: 240px;
+	width: 235px;
 	position: relative;
 	float: right;
-	font-size: 12px;
+	font-size: 14px;
 	margin-left: 10px;
 }
 
@@ -434,6 +482,7 @@ a {
 .list-date {
 	font-size: 12px;
 	float: left;
+	color: #929292;
 	overflow: hidden;
 }
 
@@ -780,7 +829,7 @@ input[type="text"]:focus, input[type="password"]:focus {
 .aw-question-detail-page .aw-answers-list .avatar img {
 	width: 25px;
 	height: 25px;
-	border-radius: 2px;
+	/*border-radius: 2px;*/
 }
 .aw-question-detail-page .aw-answers-list h3 {
 	min-height: 26px;
@@ -1207,9 +1256,7 @@ input[type="text"]:focus, input[type="password"]:focus {
 	margin-bottom: 10px;
 	box-shadow: 0 1px 0 #F2F4F5;
 }
-.aw-mod img {
-	border-radius: 10px 10px;
-}
+
 .aw-people-page .aw-mod .aw-mod-head h2 {
 	padding: 7px 10px;
 }
