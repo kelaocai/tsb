@@ -240,8 +240,7 @@ class weixin_class extends AWS_MODEL
 		}
 		else
 		{
-			//echo $this->create_response($input_message, $response_message, $action);
-			echo $input_message;
+			echo $this->create_response($input_message, $response_message, $action);
 		}
 		
 		die;
