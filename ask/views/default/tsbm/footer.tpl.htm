@@ -45,6 +45,12 @@
         $("#btn_notifactions").click(function() {
             getNotifactions();
         });
+        
+        
+       //隐藏微信底部导航条
+        document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+            WeixinJSBridge.call('hideToolbar');
+        });
 
     }); 
 </script>
