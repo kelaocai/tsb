@@ -49,7 +49,6 @@ class api extends AWS_CONTROLLER
 	public function index_action()
 	{		
 		
-		fb($this->model('weixin')->response_message($this->input_message),'wx');
-		echo "hello weixin";
+		$this->model('weixin')->response_message($this->input_message);
 	}
 }
