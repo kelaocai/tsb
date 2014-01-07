@@ -44,7 +44,6 @@ class api extends AWS_CONTROLLER
 		}
 		
 		$this->input_message = $this->model('weixin')->fetch_message();
-		fb($this->input_message,'wxmsg');
 	}
 	
 	public function index_action()
