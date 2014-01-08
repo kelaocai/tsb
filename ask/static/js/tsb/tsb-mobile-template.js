@@ -4,10 +4,7 @@ var TSB_MOBILE_TEMPLATE = {
 		    '<div class="modal-dialog">'+
 				'<div class="modal-content">'+
 				    '<form action="' + G_BASE_URL + '/tsbm/ajax/publish_question/" method="post" id="quick_publish" onsubmit="return false">'+
-				    	'<div class="modal-header">'+
-					    	'<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>'+
-					    	'<h3 class="modal-title" id="myModalLabel">' + _t('发起问题') + '</h3>'+
-					    '</div>'+
+				    	
 					    '<div class="modal-body clearfix">'+
 					    	'<div id="quick_publish_error" class="error-message alert  alert-error hide"><em></em></div>'+
 					    	
@@ -40,8 +37,8 @@ var TSB_MOBILE_TEMPLATE = {
 						'</div>'+
 					    '<div class="modal-footer">'+
 					    	//'<a class="pull-left" href="'+ G_BASE_URL +'/tsbm/publish/">高级模式</a>'+
-					    	'<a class="btn  btn-default pull-left" data-dismiss="modal" aria-hidden="true">' + _t('取消') + '</a>'+
-					    	'<button class="btn  btn-danger" onclick="ajax_post($(\'#quick_publish\'), _quick_publish_processer); return false;">' + _t('发布') + '</button>'+
+					    	'<a class="btn pull-left tsb-navbar-btn" data-dismiss="modal" aria-hidden="true" style="color:#76C2AF"><i class="glyphicon glyphicon-remove"></i></a>'+
+					    	'<button class="btn tsb-navbar-btn" onclick="ajax_post($(\'#quick_publish\'), _quick_publish_processer); return false;"><i class="glyphicon glyphicon-ok" style="color:#76C2AF"></i></a></button>'+
 					    '</div>'+
 				    '</form>'+
 				'</div>'+
@@ -75,10 +72,10 @@ var TSB_MOBILE_TEMPLATE = {
 		   '<div class="modal-dialog">'+
 				'<div class="modal-content">'+
 				   '<form id="publish" action="' + G_BASE_URL + '/inbox/ajax/send/" method="post" id="quick_publish" onsubmit="return false">'+
-				    	'<div class="modal-header">'+
-					    	'<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>'+
-					    	'<h3 class="modal-title" id="myModalLabel">' + _t('发送私信') + '</h3>'+
-					    '</div>'+
+				    	// '<div class="modal-header">'+
+					    	// '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>'+
+					    	// '<h3 class="modal-title" id="myModalLabel">' + _t('发送私信') + '</h3>'+
+					    // '</div>'+
 					    '<div class="modal-body">'+
 					    	'<input type="text" name="recipient" class="aw-message-input form-control" placeholder="' + _t('搜索用户...') + '" value="{{data-name}}">'+
 					    	'<div class="dropdown-list"><ul></ul></div>'+
@@ -86,8 +83,8 @@ var TSB_MOBILE_TEMPLATE = {
 					    	'<input type="hidden" name="return_url" value="/tsbm/inbox/" />'+
 					    '</div>'+
 					    '<div class="modal-footer">'+
-					    	'<a data-dismiss="modal" aria-hidden="true">' + _t('取消') + '</a>&nbsp;&nbsp;'+
-					    	'<button class="btn btn-primary" onclick="ajax_post($(\'#publish\'))">' + _t('发送') + '</button>'+
+					    	'<a data-dismiss="modal" aria-hidden="true"><i class="glyphicon glyphicon-remove pull-left tsb-navbar-btn" style="color:#76C2AF"></i></a>'+
+					    	'<button class="tsb-navbar-btn btn pull-right" onclick="ajax_post($(\'#publish\'))" style="color:#76C2AF"><i class="glyphicon glyphicon-ok"></i></button>'+
 					    '</div>'+
 				    '</form>'+
 				'</div>'+
