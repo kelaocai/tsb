@@ -69,6 +69,31 @@ class tsb_common {
 		return $file_name;
 
 	}
+	
+	
+	/**
+	 * 移动版上传头像
+	 */
+
+	function m_upload_avatar($image_data,$full_path) {
+
+		$data = $image_data;
+
+		//$full_path = '/'.get_setting('upload_dir') . '/avatar/' . $this->model('account')->get_avatar($this->user_id, '', 1);
+
+		$uri = substr($data, strpos($data, ",") + 1);
+
+		if (!is_dir($file_dir)) {
+			if (!make_dir($file_dir)) {
+				return FALSE;
+			}
+		}
+
+		file_put_contents($full_path, base64_decode($uri));
+
+		return $full_path;
+
+	}
 
 	/**
 	 * 又拍云上传图片

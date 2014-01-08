@@ -87,6 +87,33 @@ class ajax extends AWS_CONTROLLER {
 		}
 	}
 
+	public function upload_avatar_action() {
+		//移动版上传头像
+		$full_path = '/'.get_setting('upload_dir') . '/avatar/' . $this->model('account')->get_avatar($this->user_id, '', 1).$this->model('account')->get_avatar($this->user_id, '', 2);
+		//fb($full_path,'$full_path');
+		load_class('tsb_common') ->m_upload_avatar($_POST['image_data'],$full_path);
+		
+		foreach(AWS_APP::config()->get('image')->avatar_thumbnail AS $key => $val)
+		{			
+				$thumb_file[$key] = '/'.get_setting('upload_dir') . '/avatar/' . $this->model('account')->get_avatar($this->user_id, '', 1). $this->model('account')->get_avatar($this->user_id, $key, 2);
+				
+				AWS_APP::image()->initialize(array(
+					'quality' => 90,
+					'source_image' => $full_path,
+					'new_image' => $thumb_file[$key],
+					'width' => $val['w'],
+					'height' => $val['h']
+				))->resize();
+				//tsb upload
+				$remote_path='/uploads/avatar/'.$this->model('account')->get_avatar($this->user_id, $key, 1).$this->model('account')->get_avatar($this->user_id, $key, 2);	
+				load_class('tsb_common') -> upload_upyun_file($thumb_file[$key],$remote_path);
+		}
+		
+		$url = get_js_url('/tsbm/people/');
+		H::ajax_json_output(AWS_APP::RSM(array('url' => $url), 1, null));
+
+	}
+
 	public function save_answer_action() {
 		if ($this -> user_info['integral'] < 0 and get_setting('integral_system_enabled') == 'Y') {
 			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang() -> _t('你的剩余积分已经不足以进行此操作')));

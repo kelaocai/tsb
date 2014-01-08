@@ -1,0 +1,40 @@
+<?php TPL::output('tsbm/header.tpl.htm'); ?>
+<?php TPL::output('tsbm/global_header.tpl.htm'); ?>
+
+<!-- 内容 -->
+<div class="aw-content aw-people-page">
+    <!-- 个人资料 -->
+    <div class="aw-mod aw-people-detail">
+        <div class="aw-mod-head">
+            <!-- <h2><?php if ($this->user_id == $this->user['uid']) { ?><?php _e('我的资料'); ?><?php } else { ?><?php _e('资料'); ?><?php } ?></h2> -->
+        </div>
+        <div class="aw-mod-body">
+            <!-- <img src="<?php echo get_avatar_url($this->user['uid'], 'max'); ?>" alt="" /> -->
+            
+             <form action="tsbm/ajax/upload_avatar/" onsubmit="return false;" method="post" id="avatar_form" class="form-inline">
+                    <input type="hidden" name="post_hash" value="<?php echo new_post_hash(); ?>" />
+                    <input type="hidden" name="question_id" value="<?php echo $this->question_info['question_id']; ?>" />
+                    <input type="hidden" name="_is_attach" id="_is_attach"  />
+                    <input type="hidden" name="attach_access_key" value="<?php echo $this->attach_access_key; ?>" />
+                    <input type="hidden" name="image_name" id="image_name" value="answer" />
+                    <input type="hidden" name="image_data" id="image_data"  />
+                <div class="aw-mod-body">
+                    <input type="file" name="image_file" id="image_file" style="display: none"/>
+                    <button class="btn btn-register" id="btn_image" style="float: left;">
+                        <i class="glyphicon glyphicon-picture"></i>选择图片
+                    </button>
+                    <button class="btn btn-default" id="btn_image" style="float: left;" onclick="ajax_post($('#avatar_form'));">
+                        上传
+                    </button>
+                    <img id="preview" style="width: 40px; height: 40px; display: none; float: left; margin:0px 10px;" class="img-circle" />
+                    <canvas id="canvas"  style="display: none" width="280px" height="210px">
+                        对不起，你的浏览器不支持图片上传功能
+                    </canvas>
+                </div>
+            </form>    
+        </div>
+    </div>
+
+</div>
+
+<?php TPL::output('tsbm/footer.tpl.htm'); ?>

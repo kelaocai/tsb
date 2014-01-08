@@ -334,8 +334,16 @@ class main extends AWS_CONTROLLER {
 		TPL::output('tsbm/publish');
 	}
 
-	public function people_action() {
+	public function upload_avatar_action() {
+		TPL::import_js('js/tsb/tsb_upload.js');
+		if (!$this -> user_id) {
+			HTTP::redirect('/tsbm/login/url-' . base64_encode(get_js_url($_SERVER['QUERY_STRING'])));
+		}
+		TPL::output('tsbm/upload_avatar');
+	}
 
+	public function people_action() {
+		TPL::import_js('js/tsb/tsb_upload.js');
 		if (!$this -> user_id) {
 			HTTP::redirect('/tsbm/login/url-' . base64_encode(get_js_url($_SERVER['QUERY_STRING'])));
 		}
