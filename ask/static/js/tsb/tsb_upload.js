@@ -1,6 +1,8 @@
 $(document).ready(function() {
 
     $('#image_file').change(function() {
+        $.loading('show');
+        
         fileSelected();
     });
 
@@ -396,6 +398,7 @@ $(document).ready(function() {
                 $('#image_data').val(dataurl);
                 $('#_is_attach').val('1');
                 $('#image_name').val($('#image_file').val());
+                $.loading('hide');
 
             };
         };

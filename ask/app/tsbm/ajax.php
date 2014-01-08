@@ -88,6 +88,10 @@ class ajax extends AWS_CONTROLLER {
 	}
 
 	public function upload_avatar_action() {
+		
+		if(!$_POST['image_data']){
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang() -> _t('请选择头像图片')));
+		}
 		//移动版上传头像
 		$full_path = '/'.get_setting('upload_dir') . '/avatar/' . $this->model('account')->get_avatar($this->user_id, '', 1).$this->model('account')->get_avatar($this->user_id, '', 2);
 		//fb($full_path,'$full_path');

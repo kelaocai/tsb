@@ -18,7 +18,7 @@
             </div>
             <?php } ?>
             <div class="num" style="margin-top: 5px;">
-                <?php _e('%s 人访问', $this->user['views_count']); ?> <a href="tsbm/upload_avatar/" class="btn btn-mini btn-default">上传头像</a>
+                <?php _e('%s 人访问', $this->user['views_count']); ?> <?php if ($this->user['uid'] == $this->user_id ){ ?> <a href="tsbm/upload_avatar/" class="btn btn-mini btn-default">上传头像</a><?php }?>
             </div>
         </div>
         <!-- <div class="aw-mod-footer">

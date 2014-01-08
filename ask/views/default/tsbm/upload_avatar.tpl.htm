@@ -5,9 +5,7 @@
 <div class="aw-content aw-people-page">
     <!-- 个人资料 -->
     <div class="aw-mod aw-people-detail">
-        <div class="aw-mod-head">
-            <!-- <h2><?php if ($this->user_id == $this->user['uid']) { ?><?php _e('我的资料'); ?><?php } else { ?><?php _e('资料'); ?><?php } ?></h2> -->
-        </div>
+        
         <div class="aw-mod-body">
             <!-- <img src="<?php echo get_avatar_url($this->user['uid'], 'max'); ?>" alt="" /> -->
             
@@ -18,14 +16,17 @@
                     <input type="hidden" name="attach_access_key" value="<?php echo $this->attach_access_key; ?>" />
                     <input type="hidden" name="image_name" id="image_name" value="answer" />
                     <input type="hidden" name="image_data" id="image_data"  />
-                <div class="aw-mod-body">
-                    <input type="file" name="image_file" id="image_file" style="display: none"/>
-                    <button class="btn btn-register" id="btn_image" style="float: left;">
+                <div class="">
+                    <p>上传头像后5分钟生效，请刷新页面查看</p>
+                    <p>
+                        <input type="file" name="image_file" id="image_file" style="display: none"/>
+                    <button class="btn btn-default" id="btn_image" style="color: #000000;">
                         <i class="glyphicon glyphicon-picture"></i>选择图片
                     </button>
-                    <button class="btn btn-default" id="btn_image" style="float: left;" onclick="ajax_post($('#avatar_form'));">
-                        上传
+                    <button class="btn btn-default pull-right" id="btn_image" style="color: #000000;" onclick="ajax_post($('#avatar_form'));">
+                        <i class="glyphicon glyphicon-ok"></i>提交
                     </button>
+                    </p>
                     <img id="preview" style="width: 40px; height: 40px; display: none; float: left; margin:0px 10px;" class="img-circle" />
                     <canvas id="canvas"  style="display: none" width="280px" height="210px">
                         对不起，你的浏览器不支持图片上传功能
