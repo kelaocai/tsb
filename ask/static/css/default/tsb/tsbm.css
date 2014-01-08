@@ -62,6 +62,12 @@ A:hover {color: #000000;text-decoration: none}
   border-color: #76C2AF;
 }
 
+/*焦点图*/
+
+.tsb-focus-img{
+	width: 320px;
+	height:140px;
+}
 
 /*导航条菜单*/
 .tsb-navbar {
@@ -248,7 +254,7 @@ ul.nav li a i {
 }
 
 .flipsnap {
-	width: 960px; /* 320px(item width) * 3(item count) */
+	width: 640px; /* 320px(item width) * 2(item count) */
 }
 
 .item {

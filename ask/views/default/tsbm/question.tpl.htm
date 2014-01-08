@@ -211,12 +211,12 @@
                 <div class="aw-mod-head">
                     <!-- <a href="tsbm/people/" class="avatar"><img src="<?php echo get_avatar_url($this->user_id, 'mid'); ?>" alt="" /></a> -->
                     <!-- <?php echo $this->user_info['user_name']; ?> -->
-                    <span class="pull-right"> <label class="pull-left"> <?php if (!$this->question_focus) { ?>
+                    <!-- <span class="pull-right"> <label class="pull-left"> <?php if (!$this->question_focus) { ?>
                             <input type="checkbox" checked="checked" value="1" name="auto_focus" />
                             <?php _e('关注问题'); ?>
                             <?php } ?> </label> <label class="pull-left"> <?php if (get_setting('anonymous_enable') == 'Y') { ?>
                             <input type="checkbox" value="1" name="anonymous" />
-                            <?php _e('匿名回复'); ?><?php } ?> </label> </span>
+                            <?php _e('匿名回复'); ?><?php } ?> </label> </span> -->
                 </div>
                 <div class="aw-mod-body">
                     <input type="hidden" name="post_hash" value="<?php echo new_post_hash(); ?>" />
