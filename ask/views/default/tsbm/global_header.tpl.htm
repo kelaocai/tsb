@@ -12,7 +12,7 @@
                     <a  data-toggle="collapse" data-target="#tsb_nav_menu" class="btn navbar-btn btn-mini"> <i class="glyphicon glyphicon-search tsb-navbar-btn"></i></a>
                 </li>
                 <li >
-                    <?php if ($this->user_id){ ?><a class="btn navbar-btn btn-mini" onclick="alert_box('publish', {'category_enable':'<?php echo (get_setting('category_enable') == 'Y') ? '1' : '0'; ?>', 'category_id':'<?php echo intval($_GET['category']); ?>'});" > <i class="glyphicon glyphicon-pencil tsb-navbar-btn"></i></a><?php }?>
+                    <?php if ($this->user_id){ ?><!-- <a class="btn navbar-btn btn-mini" onclick="alert_box('publish', {'category_enable':'<?php echo (get_setting('category_enable') == 'Y') ? '1' : '0'; ?>', 'category_id':'<?php echo intval($_GET['category']); ?>'});" > <i class="glyphicon glyphicon-pencil tsb-navbar-btn"></i></a> --><a class="btn navbar-btn btn-mini"  href="tsbm/publish/"> <i class="glyphicon glyphicon-pencil tsb-navbar-btn"></i></a><?php }?>
                 </li>
                 <li  <?php if (!$this->user_id) { ?> class="pull-right" style="margin-right:10px;" <?php }?> >
                     <?php if (!$this->user_id) {?>

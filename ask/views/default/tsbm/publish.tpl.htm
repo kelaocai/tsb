@@ -2,16 +2,19 @@
 <?php TPL::output('tsbm/global_header.tpl.htm'); ?>
 <!-- 内容 -->
 <div class="aw-content aw-publish">
-	<div class="aw-title" >
+	<!-- <div class="aw-title" >
 		<h2><?php _e('发起问题'); ?></h2>
-	</div>
-
+	</div> -->
 	<div class="aw-mod aw-mod-publish clearfix" >
 		<form action="tsbm/ajax/<?php if ($this->question_info['question_id']) { ?>modify<?php } else { ?>publish<?php } ?>_question/" method="post" id="question_form" onsubmit="return false;">
 			<input type="hidden" name="post_hash" value="<?php echo new_post_hash(); ?>" />
 			<input type="hidden" name="question_id" id="question_id" value="<?php echo $this->question_info['question_id']; ?>" />
 			<input type="hidden" name="ask_user_id" value="<?php echo $_POST['ask_user_id']; ?>" />
-			
+			<input type="hidden" name="image_name" id="image_name" value="answer" />
+            <input type="hidden" name="image_data" id="image_data"  />
+            <input type="hidden" name="_is_attach" id="_is_attach"  />
+            <input type="hidden" name="attach_access_key" id="attach_access_key" value="<?php echo $this->attach_access_key; ?>" />
+           
 			<?php if ($this->question_category_list) { ?>
 			<select name="category_id" class="hide" id="category_id">
 				<option value="0">- <?php _e('请选择分类'); ?> -</option>
@@ -20,7 +23,7 @@
 			<?php } ?>
 			
 			<div class="aw-mod-head clearfix">
-		    	<h3 ><?php _e('问题标题'); ?>:</h3>
+		    	<h3 ><?php _e('标题'); ?></h3>
 		    	<div class="aw-publish-title">
 		    		<input type="text" class="pull-left<?php if (!$this->question_category_list) { ?> active<?php } ?>" placeholder="<?php _e('问题标题'); ?>..." name="question_content" value="<?php echo $this->question_info['question_content']; ?>" />
 		    		<?php if ($this->question_category_list) { ?>
@@ -34,17 +37,27 @@
 		    	</div>
 			</div>
 		    <div class="aw-mod-body clearfix">
-		    	<h3><?php _e('问题补充 (选填)'); ?>:</h3>
+		    	<h3><?php _e('内容'); ?></h3>
 		    	<textarea name="question_detail" class="form-control" id="question_detail" rows="4"><?php echo $this->question_info['question_detail']; ?></textarea>
 		    	
-		    	<?php if (!$this->question_info['question_id']) { ?>
+		    	<!-- <?php if (!$this->question_info['question_id']) { ?>
 	    		<div class="aw-topic-edit-box" id="quick_publish_topic_chooser">
 					<div class="aw-topic-box">
 						<a class="aw-add-topic-box"><i class="fa fa-edit"></i> <?php _e('编辑话题'); ?></a>				
 					</div>
 				</div>
-				<?php } ?>
-				<div id="file_uploader_answer"></div>
+				<?php } ?> -->
+				<div class="aw-mod-body">
+                    <input type="file" name="image_file" id="image_file" style="display: none"/>
+                    <button class="btn btn-register" id="btn_image" style="float: left;">
+                        <i class="glyphicon glyphicon-picture"></i>图片
+                    </button>
+                    <img id="preview" style="width: 40px; height: 30px; display: none; float: left; margin:0px 10px;" class="img-polaroid" />
+                    <canvas id="canvas"  style="display: none" width="280px" height="210px">
+                        对不起，你的浏览器不支持图片上传功能
+                    </canvas>
+                </div>
+				<!-- <div id="file_uploader_answer"></div> -->
 			</div>
 		    <div class="aw-mod-footer">
 		    	<button class="btn btn-danger btn-mini pull-right" onclick="ajax_post($('#question_form')); return false;"><?php _e('确认'); ?></button>

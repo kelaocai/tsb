@@ -24,19 +24,16 @@ var TSB_MOBILE_TEMPLATE = {
                             '</div>'+
                             
 					    	'<textarea class="form-control" name="question_detail" placeholder="' + _t('内容') + '..." rows="4"></textarea>'+
-					    	'<div class="aw-topic-edit-box" id="quick_publish_topic_chooser">'+
-					    		'<div class="aw-topic-box"><a class="aw-add-topic-box">' + _t('编辑话题') + '</a></div>'+
-						    '</div>'+
-						    
-						    
-					    	
+					    	'<a class="pull-left btn btn-mini btn-default" href="'+ G_BASE_URL +'/tsbm/publish/">发图模式</a>'+
+					    	//'<div class="aw-topic-edit-box" id="quick_publish_topic_chooser">'+
+					    	//	'<div class="aw-topic-box"><a class="aw-add-topic-box">' + _t('编辑话题') + '</a></div>'+
+						    //'</div>'+
 						    '<div class="aw-verify hide" id="quick_publish_captcha">'+
 								'<input id="seccode_verify" name="seccode_verify" placeholder="' + _t('验证码') + '" type="text" />'+
 								'<img id="captcha" class="verify_code" onclick="this.src = \'' +G_BASE_URL + '/account/captcha/\' + Math.floor(Math.random() * 10000);" src="'+ G_BASE_URL +'/account/captcha/" />'+
 						    '</div>'+
 						'</div>'+
 					    '<div class="modal-footer">'+
-					    	//'<a class="pull-left" href="'+ G_BASE_URL +'/tsbm/publish/">高级模式</a>'+
 					    	'<a class="btn pull-left tsb-navbar-btn" data-dismiss="modal" aria-hidden="true" style="color:#76C2AF"><i class="glyphicon glyphicon-remove"></i></a>'+
 					    	'<button class="btn tsb-navbar-btn" onclick="ajax_post($(\'#quick_publish\'), _quick_publish_processer); return false;"><i class="glyphicon glyphicon-ok" style="color:#76C2AF"></i></a></button>'+
 					    '</div>'+

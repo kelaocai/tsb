@@ -339,6 +339,22 @@ class ajax extends AWS_CONTROLLER {
 
 			H::ajax_json_output(AWS_APP::RSM(array('url' => get_js_url('/publish/wait_approval/')), 1, null));
 		} else {
+			// tsb 移动版上传图片
+			if ($_POST['_is_mobile'] && $_POST['_is_attach']) {
+				//$file_name = load_class('tsb_common') -> m_upload($_POST['image_data'], $_POST['image_name'], 'answer', $_POST['attach_access_key']);
+				$file_name = load_class('tsb_common') -> upload_upyun_img($_POST['image_data'],'question');
+				
+				if (!$file_name) {
+					H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang() -> _t('图片上传失败')));
+				}
+				//插入附件数据
+				$attach_id = $this -> model('publish') -> add_attach('question', $_POST['image_name'], $_POST['attach_access_key'], time(), $file_name, '1');
+				if (!$attach_id) {
+					H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang() -> _t('图片保存失败')));
+				}
+
+			}
+			
 			$question_id = $this -> model('publish') -> publish_question($_POST['question_content'], $_POST['question_detail'], $_POST['category_id'], $this -> user_id, $_POST['topics'], $_POST['anonymous'], $_POST['attach_access_key'], $_POST['ask_user_id'], $this -> user_info['permission']['create_topic']);
 
 			if ($_POST['_is_mobile']) {

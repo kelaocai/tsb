@@ -34,6 +34,7 @@ class main extends AWS_CONTROLLER {
 		TPL::import_css('css/tsb/bootstrap/main/bootstrap.min.css');
 		TPL::import_css('css/tsb/tsbm.css');
 		TPL::import_js('js/tsb/bootstrap.min.js');
+		TPL::import_js('js/tsb/tsb_upload.js');
 	}
 
 	public function index_action() {
@@ -102,13 +103,13 @@ class main extends AWS_CONTROLLER {
 
 	public function test_action() {
 		$user_agent = strtolower($_SERVER['HTTP_USER_AGENT']);
-
-		echo "hello:" . $user_agent;
+		fb(time(),'tm');
+		echo "hello:" . gmdate('Ymd', time()+84600).','.date('Ymd');
 
 	}
 
 	public function question_action() {
-		TPL::import_js('js/tsb/tsb_upload.js');
+		
 		if (!isset($_GET['id'])) {
 			HTTP::redirect('/tsbm/explore/');
 		}
@@ -330,12 +331,12 @@ class main extends AWS_CONTROLLER {
 		}
 
 		//TPL::assign('human_valid', human_valid('question_valid_hour'));
-
+		TPL::assign('attach_access_key', md5($this->user_id . time()));
 		TPL::output('tsbm/publish');
 	}
 
 	public function upload_avatar_action() {
-		TPL::import_js('js/tsb/tsb_upload.js');
+		//TPL::import_js('js/tsb/tsb_upload.js');
 		if (!$this -> user_id) {
 			HTTP::redirect('/tsbm/login/url-' . base64_encode(get_js_url($_SERVER['QUERY_STRING'])));
 		}
@@ -343,7 +344,7 @@ class main extends AWS_CONTROLLER {
 	}
 
 	public function people_action() {
-		TPL::import_js('js/tsb/tsb_upload.js');
+		//TPL::import_js('js/tsb/tsb_upload.js');
 		if (!$this -> user_id) {
 			HTTP::redirect('/tsbm/login/url-' . base64_encode(get_js_url($_SERVER['QUERY_STRING'])));
 		}
