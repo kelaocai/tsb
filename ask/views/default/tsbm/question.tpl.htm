@@ -16,6 +16,10 @@
             <a href="tsbm/people/<?php echo $this->published_uid?>"><img src="<?php echo get_avatar_url($this->published_uid, 'min'); ?>" alt="" class="img-circle"/> </a><span class=""><?php echo date_friendly($this->question_info['add_time']); ?> 发起 </span><h1><?php echo $this->question_info['question_content']; ?></h1>
             <div class="aw-topic-edit-box" data-id="<?php echo $this->question_info['question_id']?>">
                 <div class="aw-topic-box">
+                    
+                    <input type="hidden" id="wx_descContent" value="<?php echo $this->question_info['question_content']; ?>">
+                    <input type="hidden" id="wx_lineLink" value="http://tongshibang.com/ask/?/tsbm/question/<?php echo $this->question_info['question_id']?>">
+                    
                     <!-- 话题 -->
                     <!-- <?php if ($this->question_topics) { ?>
                     <?php foreach($this->question_topics as $key => $val) { if ($key > 2) { break; } ?>

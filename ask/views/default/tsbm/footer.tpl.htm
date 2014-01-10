@@ -2,7 +2,7 @@
 <footer class="text-center">
     Copyright © <?php echo date('Y'); ?> - <?php echo get_setting('site_name'); ?>&nbsp;&nbsp;<?php if ($this->user_id) {?><a class="" href="tsbm/logout/">退出</a><?php } ?>
     <p>
-        <a href="<?php echo get_setting('base_url'); ?>/<?php if (get_setting('url_rewrite_enable') != 'Y') { ?><?php echo G_INDEX_SCRIPT; ?><?php } ?>ignore_ua_check-TRUE"></a> 
+        <a href="<?php echo get_setting('base_url'); ?>/<?php if (get_setting('url_rewrite_enable') != 'Y') { ?><?php echo G_INDEX_SCRIPT; ?><?php } ?>ignore_ua_check-TRUE"></a>
         <br>
     </p>
 </footer>
@@ -45,81 +45,83 @@
         $("#btn_notifactions").click(function() {
             getNotifactions();
         });
-        
-        
-       //隐藏微信底部导航条
+
+        //隐藏微信底部导航条
         document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
             WeixinJSBridge.call('hideToolbar');
         });
-        
-        
+
         var imgUrl = 'http://static.tongshibang.com/static/images/taobao80.png';
-            var lineLink = 'http://tongshibang.com/ask';
-            var descContent = "混职场得靠同事帮";
-            var shareTitle = '同事帮';
-            var appid = '';
-
-            function shareFriend() {
-                WeixinJSBridge.invoke('sendAppMessage', {
-                    "appid" : appid,
-                    "img_url" : imgUrl,
-                    "img_width" : "640",
-                    "img_height" : "640",
-                    "link" : lineLink,
-                    "desc" : descContent,
-                    "title" : shareTitle
-                }, function(res) {
-                    _report('send_msg', res.err_msg);
-                })
-            }
-
-            function shareTimeline() {
-                WeixinJSBridge.invoke('shareTimeline', {
-                    "img_url" : imgUrl,
-                    "img_width" : "640",
-                    "img_height" : "640",
-                    "link" : lineLink,
-                    "desc" : descContent,
-                    "title" : shareTitle
-                }, function(res) {
-                    _report('timeline', res.err_msg);
-                });
-            }
-
-            function shareWeibo() {
-                WeixinJSBridge.invoke('shareWeibo', {
-                    "content" : descContent,
-                    "url" : lineLink,
-                }, function(res) {
-                    _report('weibo', res.err_msg);
-                });
-            }
-
-            // 当微信内置浏览器完成内部初始化后会触发WeixinJSBridgeReady事件。
-            document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
-
-                // 发送给好友
-                WeixinJSBridge.on('menu:share:appmessage', function(argv) {
-                    shareFriend();
-                });
-
-                // 分享到朋友圈
-                WeixinJSBridge.on('menu:share:timeline', function(argv) {
-                    shareTimeline();
-                });
-
-                // 分享到微博
-                WeixinJSBridge.on('menu:share:weibo', function(argv) {
-                    shareWeibo();
-                });
-            }, false);
+        var lineLink = 'http://tongshibang.com/ask';
+        var descContent = "混职场得靠同事帮";
+        var shareTitle = '同事帮';
+        var appid = '';
         
+        if($('#wx_descContent')){
+            descContent=$('#wx_descContent').val();
+        }
+        
+        if($('#wx_lineLink')){
+            descContent=$('#wx_lineLink').val();
+        }
+
+        function shareFriend() {
+            WeixinJSBridge.invoke('sendAppMessage', {
+                "appid" : appid,
+                "img_url" : imgUrl,
+                "img_width" : "640",
+                "img_height" : "640",
+                "link" : lineLink,
+                "desc" : descContent,
+                "title" : shareTitle
+            }, function(res) {
+                _report('send_msg', res.err_msg);
+            })
+        }
+
+        function shareTimeline() {
+            WeixinJSBridge.invoke('shareTimeline', {
+                "img_url" : imgUrl,
+                "img_width" : "640",
+                "img_height" : "640",
+                "link" : lineLink,
+                "desc" : descContent,
+                "title" : shareTitle
+            }, function(res) {
+                _report('timeline', res.err_msg);
+            });
+        }
+
+        function shareWeibo() {
+            WeixinJSBridge.invoke('shareWeibo', {
+                "content" : descContent,
+                "url" : lineLink,
+            }, function(res) {
+                _report('weibo', res.err_msg);
+            });
+        }
+
+        // 当微信内置浏览器完成内部初始化后会触发WeixinJSBridgeReady事件。
+        document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+
+            // 发送给好友
+            WeixinJSBridge.on('menu:share:appmessage', function(argv) {
+                shareFriend();
+            });
+
+            // 分享到朋友圈
+            WeixinJSBridge.on('menu:share:timeline', function(argv) {
+                shareTimeline();
+            });
+
+            // 分享到微博
+            WeixinJSBridge.on('menu:share:weibo', function(argv) {
+                shareWeibo();
+            });
+        }, false);
 
     }); 
 </script>
-
-
-
 
 </body>
 </html>
