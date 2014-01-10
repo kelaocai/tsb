@@ -81,6 +81,7 @@
 
         function shareTimeline() {
             WeixinJSBridge.invoke('shareTimeline', {
+                "appid" : appid,
                 "img_url" : imgUrl,
                 "img_width" : "640",
                 "img_height" : "640",
