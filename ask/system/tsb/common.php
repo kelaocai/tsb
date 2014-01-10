@@ -117,11 +117,24 @@ class tsb_common {
 
 		$file_name = md5(rand(1, 99999999) . microtime()) . '.png';
 
-		$file_dir = '/uploads/' . $item_type . '/' . date('Ymd');
-		$full_path = $file_dir . '/' . $file_name;
+		$upyun_dir = '/uploads/' . $item_type . '/' . date('Ymd');
+		$local_dir=get_setting('upload_dir').'/'.$item_type . '/' . date('Ymd') ;
+		$upyun_path = $upyun_dir . '/' . $file_name;
+		$local_path = $local_dir. '/'. $file_name;
 		$uri = substr($data, strpos($data, ",") + 1);
-		$rsp = $upyun -> writeFile($full_path, base64_decode($uri), True);
 		// 上传图片，自动创建目录
+		if (!is_dir($local_dir)) {
+			if (!make_dir($local_dir)) {
+				return FALSE;
+			}
+		}
+		
+		$imgdata=base64_decode($uri);
+		file_put_contents($local_path, $imgdata);
+		
+		//同步到又拍云
+		$rsp = $upyun -> writeFile($upyun_path, $imgdata, True);
+		
 		return $file_name;
 
 	}
