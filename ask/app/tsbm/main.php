@@ -50,7 +50,7 @@ class main extends AWS_CONTROLLER {
 			$board_items[$key]['board_id'] = $value['id'];
 			$board_items[$key]['board_icon'] = $value['icon'];
 			
-			$question_list = $this -> model('question') -> get_questions_list("1", "10", "new", "", $category_id, null, "", TRUE);
+			$question_list = $this -> model('question') -> get_questions_list("1", "10", "new", "", $category_id, null, "", false);
 			if (count($question_list) > 0) {
 				$board_items[$key]['last_question'] = $question_list[0]['question_content'];
 				//fb($question_list[0],'q0');
