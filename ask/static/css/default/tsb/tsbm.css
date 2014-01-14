@@ -254,7 +254,7 @@ ul.nav li a i {
 }
 
 .flipsnap {
-	width: 640px; /* 320px(item width) * 2(item count) */
+	width: 960px; /* 320px(item width) * 2(item count) */
 }
 
 .item {
