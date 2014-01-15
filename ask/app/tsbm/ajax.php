@@ -748,7 +748,7 @@ class ajax extends AWS_CONTROLLER {
 		
 		
 		$active_code_hash =$this->model('active')->active_code_generate();
-		$active_id = $this->model('active')->active_add($uid, (time() + 60 * 60 * 24), $active_code_hash, 11, '', 'FIND_PASSWORD');
+		$active_id = $this->model('active')->active_add($user_info['uid'], (time() + 60 * 60 * 24), $active_code_hash, 11, '', 'FIND_PASSWORD');
         $this->model('email')->action_email('FIND_PASSWORD', $user_info['uid'], get_js_url('/tsbm/find_password_modify/key-' . $active_code_hash));
 
 		AWS_APP::session()->find_password = $_POST['email'];
