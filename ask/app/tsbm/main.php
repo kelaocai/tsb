@@ -509,6 +509,17 @@ class main extends AWS_CONTROLLER {
 
 		TPL::output('tsbm/search');
 	}
+	
+	public function find_password_action(){
+		TPL::output('tsbm/find_password');
+	}
+	
+	public function find_password_success_action(){
+		TPL::assign('email', AWS_APP::session()->find_password);
+		TPL::output('tsbm/find_password_success');
+	}
+	
+	
 
 	public function inbox_action() {
 		if ($_GET['dialog_id']) {

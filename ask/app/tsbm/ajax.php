@@ -726,5 +726,31 @@ class ajax extends AWS_CONTROLLER {
 
 		TPL::output('tsbm/ajax/notifications_list');
 	}
+	
+	function request_find_password_action()
+	{
+		if (!H::valid_email($_POST['email']))
+		{
+			H::ajax_json_output(AWS_APP::RSM(null, -1,  AWS_APP::lang()->_t('请填写正确的邮箱地址')));
+		}		
+			
+		if (!AWS_APP::captcha()->is_validate($_POST['seccode_verify']))
+		{
+			H::ajax_json_output(AWS_APP::RSM(null, '-1',  AWS_APP::lang()->_t('请填写正确的验证码')));
+		}
+
+		if (!$user_info = $this->model('account')->get_user_info_by_email($_POST['email']))
+		{
+			H::ajax_json_output(AWS_APP::RSM(null, -1,  AWS_APP::lang()->_t('邮箱地址错误或帐号不存在')));
+		}
+		
+		$this->model('active')->new_find_password($user_info['uid']);
+		
+		AWS_APP::session()->find_password = $_POST['email'];
+		
+		H::ajax_json_output(AWS_APP::RSM(array(
+			'url' => get_js_url('/tsbm/find_password_success/')
+		), 1, null));
+	}
 
 }

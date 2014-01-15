@@ -13,8 +13,8 @@
                     <input type="hidden" name="return_url" value="<?php echo $this->return_url; ?>" />
                     <input type="hidden" value="1" name="net_auto_login" />
                     <?php if (get_setting('invite_reg_only') == 'N') { ?>
-                    <div class="title clearfix">
-                        <a class="btn pull-right  btn-mini btn-default " href="tsbm/register/" ><i class="glyphicon glyphicon-user" style="color:#bdc3c7"></i> <?php _e('注册'); ?><i class="fa fa-arrow-circle-right"></i></a>
+                    <div class="title clearfix pull-right">
+                        <a class="btn   btn-mini btn-default " href="tsbm/register/" ><i class="glyphicon glyphicon-user" style="color:#bdc3c7"></i> <?php _e('注册'); ?><i class="fa fa-arrow-circle-right"></i></a> &nbsp;<a href="tsbm/find_password/" style="color:#FFFFFF" class="pull-right"><?php _e('找回密码'); ?></a>
                     </div>
                     <?php } ?>
                     <div class="form-group">
