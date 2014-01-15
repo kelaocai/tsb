@@ -744,13 +744,82 @@ class ajax extends AWS_CONTROLLER {
 			H::ajax_json_output(AWS_APP::RSM(null, -1,  AWS_APP::lang()->_t('邮箱地址错误或帐号不存在')));
 		}
 		
-		$this->model('active')->new_find_password($user_info['uid']);
+		//$this->model('active')->new_find_password($user_info['uid']);
+		
+		
+		$active_code_hash =$this->model('active')->active_code_generate();
+		
+		$active_id = $this->model('active')->active_add($uid, (time() + 60 * 60 * 24), $active_code_hash, 11, '', 'FIND_PASSWORD');
+		
+		$this->model('email')->action_email('FIND_PASSWORD', $uid, get_js_url('/tsbm/find_password_modify/key-' . $active_code_hash));
 		
 		AWS_APP::session()->find_password = $_POST['email'];
 		
 		H::ajax_json_output(AWS_APP::RSM(array(
 			'url' => get_js_url('/tsbm/find_password_success/')
 		), 1, null));
+	}
+
+	function find_password_modify_action()
+	{
+		if (!AWS_APP::captcha()->is_validate($_POST['seccode_verify']))
+		{
+			H::ajax_json_output(AWS_APP::RSM(null, -1,  AWS_APP::lang()->_t('请填写正确的验证码')));
+		}
+		
+		$active_data = $this->model('active')->get_active_code_row($_POST['active_code'], 11);
+		
+		if ($active_data)
+		{
+			if ($active_data['active_time'] || $active_data['active_ip'] || $active_data['active_expire'])
+			{
+				H::ajax_json_output(AWS_APP::RSM(null, -1,  AWS_APP::lang()->_t('链接已失效，请重新找回密码')));
+			}
+		}
+		else
+		{
+			H::ajax_json_output(AWS_APP::RSM(null, -1,  AWS_APP::lang()->_t('链接已失效，请重新找回密码')));
+		}
+		
+		if (empty($_POST['password']))
+		{
+			H::ajax_json_output(AWS_APP::RSM(null, -1,  AWS_APP::lang()->_t('请输入密码')));
+		}
+		
+		if ($_POST['password'] != $_POST['re_password'])
+		{
+			H::ajax_json_output(AWS_APP::RSM(null, -1,  AWS_APP::lang()->_t('两次输入的密码不一致')));
+		}
+		
+		if (! $uid = $this->model('active')->active_code_active($_POST['active_code'], 11))
+		{
+			H::ajax_json_output(AWS_APP::RSM(null, -1,  AWS_APP::lang()->_t('链接已失效，请重新找回密码')));
+		}
+		
+		$user_info = $this->model('account')->get_user_info_by_uid($uid);
+		
+		$this->model('account')->update_user_password_ingore_oldpassword($_POST['password'], $uid, $user_info['salt']);
+		
+		$this->model('account')->update_users_fields(array(
+			'valid_email' => 1
+		), $uid);
+			
+		if ($user_info['group_id'] == 3)
+		{
+			$this->model('account')->update_users_fields(array(
+				'group_id' => 4,
+			), $active_data['uid']);
+		}
+			
+		$this->model("account")->setcookie_logout();
+			
+		$this->model("account")->setsession_logout();
+			
+		unset(AWS_APP::session()->find_password);
+
+		H::ajax_json_output(AWS_APP::RSM(array(
+			'url' => get_js_url('/tsbm/login/'),
+		), 1, AWS_APP::lang()->_t('密码修改成功, 请返回登录')));
 	}
 
 }

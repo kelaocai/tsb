@@ -519,6 +519,21 @@ class main extends AWS_CONTROLLER {
 		TPL::output('tsbm/find_password_success');
 	}
 	
+	function find_password_modify_action()
+	{
+		if (!$active_code_row = $this->model('active')->get_active_code_row($_GET['key'], 11))
+		{
+			H::redirect_msg(AWS_APP::lang()->_t('链接已失效'), '/');
+		}
+		
+		if ($active_code_row['active_time'] OR $active_code_row['active_ip'] OR $active_code_row['active_expire'])
+		{
+			H::redirect_msg(AWS_APP::lang()->_t('链接已失效'), '/');
+		}
+		
+		TPL::output("tsbm/find_password_modify");
+	}
+	
 	
 
 	public function inbox_action() {
