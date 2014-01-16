@@ -46,3 +46,7 @@
 
 --models/publish.php
 .调整附件时区计算方式，支持又拍云
+
+--static/js/mobile/framework.js
+.修改移动版上传图片按钮图标
+

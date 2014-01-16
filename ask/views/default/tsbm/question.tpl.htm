@@ -232,19 +232,23 @@
                     <textarea class="form-control" rows="4" name="answer_content"><?php echo htmlspecialchars($this->draft_content['message']); ?></textarea>
                 </div>
                 <div class="aw-mod-body">
-                    <input type="file" name="image_file" id="image_file" style="display: none"/>
-                    <button class="btn btn-register" id="btn_image" style="float: left;">
+                    
+                    <!-- <a class="btn btn-register" id="btn_image" style="float: left;" href="javascript:;">
                         <i class="glyphicon glyphicon-picture"></i>图片
-                    </button>
+                    </a> -->
+                    
+                    <input type="file" name="image_file" id="image_file" title="ssss"  />
                     <img id="preview" style="width: 40px; height: 30px; display: none; float: left; margin:0px 10px;" class="img-polaroid" />
                     <canvas id="canvas"  style="display: none" width="280px" height="210px">
                         对不起，你的浏览器不支持图片上传功能
                     </canvas>
                 </div>
+                
+                 <!-- <div id="file_uploader_answer"></div> -->
 
                 <div class="aw-mod-footer clearfix" style="margin-top: 5px; " >
                     <span class="pull-right" style="margin-bottom: 10px;"> <a class="btn btn-default pull-right btn-mini" onclick="ajax_post($('#answer_form'));" style="color: #FFFFFF"><i class="glyphicon glyphicon-ok tsb-navbar-btn" style="color:#76C2AF"></i></a></a> </span>
-                    <div id="file_uploader_answer"></div>
+                   
                 </div>
                 <div class="aw-mod-body">
                     <span class="num" id="answer_content_message">&nbsp;</span>
@@ -280,7 +284,7 @@
         var ATTACH_ACCESS_KEY = '<?php echo $this->attach_access_key; ?>';
 
         $(document).ready(function() {
-            init_fileuploader('file_uploader_answer', G_BASE_URL + '/publish/ajax/attach_upload/id-answer__attach_access_key-' + ATTACH_ACCESS_KEY);
+            // init_fileuploader('file_uploader_answer', G_BASE_URL + '/publish/ajax/attach_upload/id-answer__attach_access_key-' + ATTACH_ACCESS_KEY);
 
             // 自动保存草稿
             if ($('#answer_form textarea').length) {

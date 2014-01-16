@@ -6,9 +6,9 @@ $(document).ready(function() {
         fileSelected();
     });
 
-    $('#btn_image').click(function() {
-        $('#image_file').click();
-    });
+    // $('#btn_image').click(function() {
+        // $('#image_file').click();
+    // });
 
     // common variables
     var iBytesUploaded = 0;
