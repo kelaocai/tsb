@@ -219,7 +219,8 @@ class weixin_class extends AWS_MODEL
 						
 						$response_message[] = array(
 							'title' => $val['question_content'],
-							'link' => $this->model('openid_weixin')->redirect_url('/tsbm/question/' . $val['question_id']),
+							//'link' => $this->model('openid_weixin')->redirect_url('/tsbm/question/' . $val['question_id']),
+							'link' => 'http://tongshibang.com/ask/?/tsbm/question/' . $val['question_id'],
 							'image_file' => $image_file
 						);
 					}
