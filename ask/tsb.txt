@@ -57,5 +57,7 @@
 
 --models/weixin.php
 .微信解析
+--system/config/weixin.php
+.微信默认图
 
 

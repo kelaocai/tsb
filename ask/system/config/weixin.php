@@ -20,7 +20,7 @@ $config['language_characteristic'] = array(
 /****** 微信自定义菜单选项 ******/
 
 // 热门问题图文列表封面图
-$config['default_list_image'] = G_STATIC_URL . '/common/weixin_default_image.png';
+$config['default_list_image'] = G_STATIC_URL . '/common/weixin_default_image.jpg';
 
 // 公众平台 App ID
 $config['app_id'] = '';
