@@ -9,23 +9,24 @@
 <?php } ?>
 <?php } ?>
 <!-- 内容 -->
-<div class="aw-content aw-question-detail-page">
+<div class="aw-content aw-question-detail-page" >
     <!-- 问题内容详情 -->
     <div class="aw-mod aw-question-detail">
         <div class="aw-mod-head" style="margin-top:10px;">
             <a href="tsbm/people/<?php echo $this->published_uid?>"><img src="<?php echo get_avatar_url($this->published_uid, 'min'); ?>" alt="" class="img-circle"/> </a><span class=""><?php echo date_friendly($this->question_info['add_time']); ?> 发起 </span><h1><?php echo $this->question_info['question_content']; ?></h1>
             <div class="aw-topic-edit-box" data-id="<?php echo $this->question_info['question_id']?>">
                 <div class="aw-topic-box">
-                    
+
                     <input type="hidden" id="wx_descContent" value="<?php echo $this->question_info['question_content']; ?>">
                     <input type="hidden" id="wx_lineLink" value="http://tongshibang.com/ask/?/tsbm/question/<?php echo $this->question_info['question_id']?>">
-                    
+
                     <!-- 话题 -->
-                    <!-- <?php if ($this->question_topics) { ?>
+                    <?php if ($this->question_topics) { ?>
                     <?php foreach($this->question_topics as $key => $val) { if ($key > 2) { break; } ?>
-                    <span class="aw-topic-name" data-id="<?php echo $val['topic_id']?>"><a href="m/topic/<?php echo $val['url_token']; ?>"><?php echo $val['topic_title']; ?></a></span>
+                    <span class="aw-topic-name" data-id="<?php echo $val['topic_id']?>"><a href="tsbm/topic/<?php echo $val['url_token']; ?>"><?php echo $val['topic_title']; ?></a></span>
                     <?php } ?>
                     <?php } ?>
+                    <!--
                     <?php if ($this->user_id AND !$this->question_info['lock']) { ?><a class="aw-add-topic-box"<?php if (sizeof($this->question_topics) == 0) { ?> style="display:none"<?php } ?>> <?php _e('编辑话题'); ?></a><?php } ?>
                     </div> -->
                 </div>
@@ -37,7 +38,7 @@
                 <div class="aw-comment-upload-img-list">
                     <?php foreach ($this->question_info['attachs'] AS $key => $attach) { ?>
                     <?php if ($attach['is_image'] AND !in_array($attach['id'], $this->question_info['attachs_ids'])) { ?>
-                    <!-- <a href="<?php echo $attach['attachment']; ?>" target="_blank"> --><img src="<?php echo $attach['attachment']; ?>" alt="<?php echo $attach['attach_name']; ?>" style="width: 300px; height: auto;"/><!-- </a> -->
+                    <!-- <a href="<?php echo $attach['attachment']; ?>" target="_blank"> --><img src="<?php echo $attach['attachment']; style="width:320px; height:auto;"?>" alt="<?php echo $attach['attach_name']; ?>" style="width: 300px; height: auto;"/><!-- </a> -->
                     <?php } ?>
                     <?php } ?>
                 </div>
@@ -216,11 +217,11 @@
                     <!-- <a href="tsbm/people/" class="avatar"><img src="<?php echo get_avatar_url($this->user_id, 'mid'); ?>" alt="" /></a> -->
                     <!-- <?php echo $this->user_info['user_name']; ?> -->
                     <!-- <span class="pull-right"> <label class="pull-left"> <?php if (!$this->question_focus) { ?>
-                            <input type="checkbox" checked="checked" value="1" name="auto_focus" />
-                            <?php _e('关注问题'); ?>
-                            <?php } ?> </label> <label class="pull-left"> <?php if (get_setting('anonymous_enable') == 'Y') { ?>
-                            <input type="checkbox" value="1" name="anonymous" />
-                            <?php _e('匿名回复'); ?><?php } ?> </label> </span> -->
+                    <input type="checkbox" checked="checked" value="1" name="auto_focus" />
+                    <?php _e('关注问题'); ?>
+                    <?php } ?> </label> <label class="pull-left"> <?php if (get_setting('anonymous_enable') == 'Y') { ?>
+                    <input type="checkbox" value="1" name="anonymous" />
+                    <?php _e('匿名回复'); ?><?php } ?> </label> </span> -->
                 </div>
                 <div class="aw-mod-body">
                     <input type="hidden" name="post_hash" value="<?php echo new_post_hash(); ?>" />
@@ -232,9 +233,9 @@
                     <textarea class="form-control" rows="4" name="answer_content"><?php echo htmlspecialchars($this->draft_content['message']); ?></textarea>
                 </div>
                 <div class="aw-mod-body">
-                    
+
                     <!-- <a class="btn btn-register" id="btn_image" style="float: left;" href="javascript:;">
-                        <i class="glyphicon glyphicon-picture"></i>图片
+                    <i class="glyphicon glyphicon-picture"></i>图片
                     </a> -->
                     <i class="glyphicon glyphicon-picture"></i>图片
                     <input type="file" name="image_file" id="image_file" style="margin-top: -20px; font-size: 20px; padding: 0px; cursor: pointer; opacity: 0;left:-30px;"  />
@@ -243,12 +244,12 @@
                         对不起，你的浏览器不支持图片上传功能
                     </canvas>
                 </div>
-                
-                 <!-- <div id="file_uploader_answer"></div> -->
+
+                <!-- <div id="file_uploader_answer"></div> -->
 
                 <div class="aw-mod-footer clearfix" style="margin-top: 5px; " >
                     <span class="pull-right" style="margin-bottom: 10px;"> <a class="btn btn-default pull-right btn-mini" onclick="ajax_post($('#answer_form'));" style="color: #FFFFFF"><i class="glyphicon glyphicon-ok tsb-navbar-btn" style="color:#76C2AF"></i></a></a> </span>
-                   
+
                 </div>
                 <div class="aw-mod-body">
                     <span class="num" id="answer_content_message">&nbsp;</span>
@@ -279,8 +280,8 @@
     <!-- end 内容 -->
 
     <script type="text/javascript">
-        var QUESTION_ID =     <?php echo $this->question_info['question_id'];?>;
-        var UNINTERESTED_COUNT =     <?php echo get_setting('uninterested_fold'); ?>;
+        var QUESTION_ID =      <?php echo $this->question_info['question_id'];?>;
+        var UNINTERESTED_COUNT =      <?php echo get_setting('uninterested_fold'); ?>;
         var ATTACH_ACCESS_KEY = '<?php echo $this->attach_access_key; ?>';
 
         $(document).ready(function() {
