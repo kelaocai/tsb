@@ -55,4 +55,7 @@
 --static/css/default/common.css
 .markitup-box img 调整移动端图片最大宽度
 
+--models/weixin.php
+.微信解析
+
 
