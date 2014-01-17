@@ -46,7 +46,13 @@
 
 --models/publish.php
 .调整附件时区计算方式，支持又拍云
+-----aliyun upload mode end-------
+
 
 --static/js/mobile/framework.js
 .修改移动版上传图片按钮图标
+
+--static/css/default/common.css
+.markitup-box img 调整移动端图片最大宽度
+
 
