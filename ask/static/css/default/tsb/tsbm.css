@@ -512,6 +512,11 @@ a {
 	border-radius: 5px 5px;
 }
 
+/*问题回复图片大小*/
+.markitup-box img {
+    max-width: 300px !important;
+}
+
 .detail-imges {
 
 }
