@@ -21,11 +21,11 @@
                     <input type="hidden" id="wx_lineLink" value="http://tongshibang.com/ask/?/tsbm/question/<?php echo $this->question_info['question_id']?>">
 
                     <!-- 话题 -->
-                    <?php if ($this->question_topics) { ?>
+                    <!-- <?php if ($this->question_topics) { ?>
                     <?php foreach($this->question_topics as $key => $val) { if ($key > 2) { break; } ?>
                     <span class="aw-topic-name" data-id="<?php echo $val['topic_id']?>"><a href="tsbm/topic/<?php echo $val['url_token']; ?>"><?php echo $val['topic_title']; ?></a></span>
                     <?php } ?>
-                    <?php } ?>
+                    <?php } ?> -->
                     <!--
                     <?php if ($this->user_id AND !$this->question_info['lock']) { ?><a class="aw-add-topic-box"<?php if (sizeof($this->question_topics) == 0) { ?> style="display:none"<?php } ?>> <?php _e('编辑话题'); ?></a><?php } ?>
                     </div> -->
