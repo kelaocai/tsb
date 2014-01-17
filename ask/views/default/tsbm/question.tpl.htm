@@ -38,7 +38,7 @@
                 <div class="aw-comment-upload-img-list">
                     <?php foreach ($this->question_info['attachs'] AS $key => $attach) { ?>
                     <?php if ($attach['is_image'] AND !in_array($attach['id'], $this->question_info['attachs_ids'])) { ?>
-                    <!-- <a href="<?php echo $attach['attachment']; ?>" target="_blank"> --><img src="<?php echo $attach['attachment']; style="width:320px; height:auto;"?>" alt="<?php echo $attach['attach_name']; ?>" style="width: 300px; height: auto;"/><!-- </a> -->
+                    <!-- <a href="<?php echo $attach['attachment']; ?>" target="_blank"> --><img src="<?php echo $attach['attachment']; ?>" alt="<?php echo $attach['attach_name']; ?>" style="width: 300px; height: auto;"/><!-- </a> -->
                     <?php } ?>
                     <?php } ?>
                 </div>
