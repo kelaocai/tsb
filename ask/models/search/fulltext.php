@@ -50,6 +50,10 @@ class search_fulltext_class extends AWS_MODEL
 			case 'article':
 				$order_key = 'votes DESC';
 			break;
+			//tsb 按问题修改日期倒序排列 
+			case 'question':
+				$order_key = 'update_time DESC';
+			break;
 		}
 		
 		return "SELECT *, MATCH(" . $column . "_fulltext) AGAINST('" . $this->quote($this->encode_search_code($keyword)) . "' IN BOOLEAN MODE) AS score FROM " . $this->get_table($table) . " WHERE MATCH(" . $column . "_fulltext) AGAINST('" . $this->quote($this->encode_search_code($keyword)) . "' IN BOOLEAN MODE) " . $where . " ORDER BY score DESC, " . $order_key;
@@ -62,8 +66,8 @@ class search_fulltext_class extends AWS_MODEL
 			$topic_ids = explode(',', $topic_ids);
 			
 			array_walk_recursive($topic_ids, 'intval_string');
-			//tsb 按问题修改日期倒序排列
-			$where = "question_id IN(SELECT item_id FROM " . $this->get_table('topic_relation') . " WHERE topic_id IN(" . implode(',', $topic_ids) . ") AND `type` = 'question' ) order by update_time desc";
+			
+			$where = "question_id IN(SELECT item_id FROM " . $this->get_table('topic_relation') . " WHERE topic_id IN(" . implode(',', $topic_ids) . ") AND `type` = 'question' ) ";
 		}
 		
 		return $this->query_all($this->bulid_query('question', 'question_content', $q, $where), $limit);
