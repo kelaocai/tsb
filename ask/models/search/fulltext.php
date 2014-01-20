@@ -63,7 +63,7 @@ class search_fulltext_class extends AWS_MODEL
 			
 			array_walk_recursive($topic_ids, 'intval_string');
 			
-			$where = "question_id IN(SELECT item_id FROM " . $this->get_table('topic_relation') . " WHERE topic_id IN(" . implode(',', $topic_ids) . ") AND `type` = 'question')";
+			$where = "question_id IN(SELECT item_id FROM " . $this->get_table('topic_relation') . " WHERE topic_id IN(" . implode(',', $topic_ids) . ") AND `type` = 'question' order by add_time desc)";
 		}
 		
 		return $this->query_all($this->bulid_query('question', 'question_content', $q, $where), $limit);

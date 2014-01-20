@@ -201,7 +201,7 @@ class weixin_class extends AWS_MODEL
 				}
 				else if ($this->is_language($input_message['content'], 'bad'))
 				{
-					$response_message = '说脏话都不是好孩子!';
+					$response_message = '说脏话都不是好孩纸!';
 				}
 				else if ($search_result = $this->model('search')->search_questions($input_message['content'], null, 10))
 				{
