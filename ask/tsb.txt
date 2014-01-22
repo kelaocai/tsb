@@ -59,5 +59,7 @@
 .微信解析
 --system/config/weixin.php
 .微信默认图
+--views/default/account/setting/openid.tpl.htm
+.微信关注默认二维码
 
 

@@ -175,6 +175,8 @@ class weixin_class extends AWS_MODEL
 				$response_message = $this->response_message($input_message);
 			break;
 			
+			
+			//tsb 默认MsgType=text
 			default:
 				if ($response_message = $this->create_response_by_reply_rule_keyword($input_message['content']))
 				{
@@ -332,7 +334,7 @@ class weixin_class extends AWS_MODEL
 					{
 						$response_message[] = array(
 							'title' => $user_info['signature'],
-							'link' => $this->model('openid_weixin')->redirect_url('/m/people/' . $user_info['url_token']),
+							'link' => $this->model('openid_weixin')->redirect_url('/tsbm/people/' . $user_info['url_token']),
 							'image_file' => get_avatar_url($user_info['uid'], '')
 						);
 						
@@ -342,7 +344,8 @@ class weixin_class extends AWS_MODEL
 							{								
 								$response_message[] = array(
 									'title' => $val['question_info']['question_content'],
-									'link' => $this->model('openid_weixin')->redirect_url('/m/question/' . $val['question_info']['question_id']),
+									//'link' => $this->model('openid_weixin')->redirect_url('/tsbm/question/' . $val['question_info']['question_id']),
+									'link' => $this->model('openid_weixin')->redirect_url('http://tongshibang.com/ask/?/tsbm/question/' . $val['question_info']['question_id']),
 									'image_file' => get_avatar_url($val['question_info']['published_uid'], 'max')
 								);
 							}
