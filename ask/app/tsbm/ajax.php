@@ -649,8 +649,9 @@ class ajax extends AWS_CONTROLLER {
 		}
 
 		$this -> model('draft') -> delete_draft(1, 'question', $this -> user_id);
-
-		if ($_POST['do_delete'] AND !$this -> user_info['permission']['is_administortar'] AND !$this -> user_info['permission']['is_moderator']) {
+		//tsb 自己可以删自己的贴
+		// if ($_POST['do_delete'] AND !$this -> user_info['permission']['is_administortar'] AND !$this -> user_info['permission']['is_moderator']) {
+		if ($_POST['do_delete'] AND !(($this->user_id==$this->question_info['published_uid']) OR($this->user_info['permission']['is_administortar']))) {	
 			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang() -> _t('对不起, 你没有删除问题的权限')));
 		}
 
