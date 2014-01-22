@@ -482,8 +482,8 @@ class ajax extends AWS_CONTROLLER {
 
 			//tsb 微信注册
 			if ($_POST['wx_oid'] AND $_POST['_is_mobile']) {
-				$access_user=array();
-				$access_token=array('openid'=>$_POST['wx_oid']);
+				$access_user=array('headimgurl'=>'','nickname'=>'','sex'=>'','province'=>'','city'=>'','country'=>'');
+				$access_token=array('openid'=>$_POST['wx_oid'],'access_token'=>'','refresh_token'=>'','scope'=>'');
 				$this -> model('openid_weixin') -> add_user($uid, $access_user, $access_token);
 			}
 				
