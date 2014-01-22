@@ -649,10 +649,11 @@ class ajax extends AWS_CONTROLLER {
 		}
 
 		$this -> model('draft') -> delete_draft(1, 'question', $this -> user_id);
-		//tsb 自己可以删自己的贴
+		// fb($this->user_id,'user_id');
+		// fb($question_info['published_uid'],'uid');
 		// if ($_POST['do_delete'] AND !$this -> user_info['permission']['is_administortar'] AND !$this -> user_info['permission']['is_moderator']) {
-		if ($_POST['do_delete'] AND !(($this->user_id==$this->question_info['published_uid']) OR($this->user_info['permission']['is_administortar']))) {	
-			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang() -> _t('对不起, 你没有删除问题的权限')));
+		if ($_POST['do_delete'] AND !(($this->user_id==$question_info['published_uid']) OR ($this->user_info['permission']['is_administortar']))) {	
+			H::ajax_json_output(AWS_APP::RSM(null, '-1', AWS_APP::lang() -> _t('对不起, 你没有删除问题的权限22')));
 		}
 
 		if ($_POST['do_delete']) {
@@ -662,7 +663,7 @@ class ajax extends AWS_CONTROLLER {
 
 			$this -> model('question') -> remove_question($question_info['question_id']);
 
-			H::ajax_json_output(AWS_APP::RSM(array('url' => get_js_url('/home/explore/')), 1, null));
+			H::ajax_json_output(AWS_APP::RSM(array('url' => get_js_url('/tsbm/')), 1, null));
 		}
 
 		$IS_MODIFY_VERIFIED = TRUE;
