@@ -1,1 +1,4 @@
 /Users/kelaocai/tongshibang/tsb/ask/uploads
+
+
+<!-- <?php if ($this->question_info['question_id'] AND ($this->user_info['permission']['is_administortar'] OR $this->user_info['permission']['is_moderator'])) { ?> -->
