@@ -480,6 +480,14 @@ class ajax extends AWS_CONTROLLER {
 				H::ajax_json_output(AWS_APP::RSM(array('url' => get_js_url('/account/valid_email/')), 1, null));
 			}
 
+			//tsb 微信注册
+			if ($_POST['wx_oid'] AND $_POST['_is_mobile']) {
+				$access_user=array('openid'=>$_POST['wx_oid']);
+				$access_token=array();
+				$this -> model('openid_weixin') -> add_user($uid, $access_user, $access_token);
+			}
+				
+
 			if ($_POST['weixin_id'] AND $_POST['_is_mobile']) {
 				if (!$this -> model('account') -> get_user_info_by_weixin_id($_POST['weixin_id'])) {
 					$this -> model('account') -> update_users_fields(array('weixin_id' => $_POST['weixin_id'], ), $uid);
@@ -487,6 +495,8 @@ class ajax extends AWS_CONTROLLER {
 
 				H::ajax_json_output(AWS_APP::RSM(array('url' => get_js_url('/m/weixin_bind_success/')), 1, null));
 			}
+			
+			
 
 			if ($_POST['_is_mobile']) {
 				H::ajax_json_output(AWS_APP::RSM(array('url' => get_js_url('/tsbm/')), 1, null));

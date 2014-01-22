@@ -2,3 +2,7 @@
 
 
 <!-- <?php if ($this->question_info['question_id'] AND ($this->user_info['permission']['is_administortar'] OR $this->user_info['permission']['is_moderator'])) { ?> -->
+
+
+
+https://wx2.qq.com/cgi-bin/mmwebwx-bin/webwxcheckurl?uin=1044595&sid=JsYSqGRQTpnqTNdJ&skey=2E3AC86E3D97B3DA715078EC39E90201F39F53B61ABD2E3D&deviceid=e208297549250047&opcode=2&requrl=http%3A%2F%2Ftongshibang.com%2Fask%2F%3F%2Ftsbm%2Fregister%2Foid-ov219uOrROMX7jaqJ6xyBhLSkC2w&scene=1&username=kelaocai

@@ -691,7 +691,7 @@ class weixin_class extends AWS_MODEL
 				   if ($this->user_id){
 				   		$response_message = '你已经是同事帮注册用户';
 				   }else{
-				   	  $response_message ='<a href="' . get_js_url('/tsbm/register/').'oid-'.$input_message['fromUsername'] . '">点此注册新账户</a>';
+				   	  $response_message ='<a href="' . get_js_url('/tsbm/register/').'wx_oid-'.$input_message['fromUsername'] . '">点此注册新账户</a>';
 				   }
 			   
 			   break;	

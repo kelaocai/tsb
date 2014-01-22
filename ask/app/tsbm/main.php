@@ -481,6 +481,10 @@ class main extends AWS_CONTROLLER {
 				H::redirect_msg(AWS_APP::lang() -> _t('邀请码无效或已经使用，请使用新的邀请码'), '/');
 			}
 		}
+		
+		if($_GET['wx_oid']){
+			TPL::assign('wx_oid', $_GET['wx_oid']);
+		}
 
 		$this -> crumb(AWS_APP::lang() -> _t('注册'), '/tsbm/register/');
 

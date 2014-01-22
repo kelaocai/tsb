@@ -11,9 +11,14 @@
             <div class="tsb-register">
                 <form id="register_form" method="post" onsubmit="ajax_post($('#register_form')); return false;" action="tsbm/ajax/register_process/" role="form" >
                     <input type="hidden" name="agreement_chk" value="agree" />
+                    <input type="hidden" name="_is_mobile" value="true" />
 
                     <?php if ($_GET['weixin_id']) { ?>
                     <input type="hidden" name="weixin_id" value="<?php echo base64_decode($_GET['weixin_id']); ?>" />
+                    <?php } ?>
+                    
+                    <?php if ($this->wx_oid) { ?>
+                    <input type="hidden" name="wx_oid" value="<?php echo base64_decode($this->wx_oid); ?>" />
                     <?php } ?>
 
                     <?php if ($this->icode) { ?>
