@@ -329,6 +329,9 @@ class main extends AWS_CONTROLLER {
 			$question_category_list = $this -> model('system') -> build_category_html('question', 0, $question_info['category_id']);
 			TPL::assign('question_category_list', $question_category_list);
 		}
+		
+		//fb($question_info,'question_info');
+		//fb($this -> user_info,'user_info');
 
 		//TPL::assign('human_valid', human_valid('question_valid_hour'));
 		TPL::assign('attach_access_key', md5($this->user_id . time()));

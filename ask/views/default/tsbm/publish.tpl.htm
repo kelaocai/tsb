@@ -64,7 +64,8 @@
 		    	
 		    	<span class="aw-anonymity">
 		    	    <a class="btn btn-mini btn-default pull-left" href="tsbm/question/<?php echo $this->question_info['question_id']; ?>">取消</a>
-					<?php if ($this->question_info['question_id'] AND ($this->user_info['permission']['is_administortar'] OR $this->user_info['permission']['is_moderator'])) { ?>
+					
+					<?php if (($this->user_id==$this->question_info['published_uid']) OR($this->user_info['permission']['is_administortar'])) { ?>
 					<label><input type="checkbox" class="pull-left" value="1" name="do_delete" /> <?php _e('删除问题'); ?></label>
 					<?php } ?>
 				</span>
