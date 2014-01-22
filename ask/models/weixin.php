@@ -345,7 +345,7 @@ class weixin_class extends AWS_MODEL
 								$response_message[] = array(
 									'title' => $val['question_info']['question_content'],
 									//'link' => $this->model('openid_weixin')->redirect_url('/tsbm/question/' . $val['question_info']['question_id']),
-									'link' => $this->model('openid_weixin')->redirect_url('http://tongshibang.com/ask/?/tsbm/question/' . $val['question_info']['question_id']),
+									'link' => 'http://tongshibang.com/ask/?/tsbm/question/' . $val['question_info']['question_id'],
 									'image_file' => get_avatar_url($val['question_info']['published_uid'], 'max')
 								);
 							}
