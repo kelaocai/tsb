@@ -681,8 +681,16 @@ class weixin_class extends AWS_MODEL
 				}
 				else
 				{
-					// $response_message = '你的微信帐号没有绑定 ' . get_setting('site_name') . ' 的帐号, 请 <a href="' . $this->model('openid_weixin')->get_oauth_url(get_js_url('/m/weixin/authorization/'), 'snsapi_userinfo') . ' ">点此绑定</a>或<a href="' . get_js_url('/tsbm/register/') . '">注册新账户</a>';if ($this->user_id)
-					$response_message = '未注册或没有绑定微信号,<a href="' . get_js_url('/tsbm/register/') . '">点此注册新账户</a>';
+					$response_message = '你的微信帐号没有绑定 ' . get_setting('site_name') . ' 的帐号, 请 <a href="' . $this->model('openid_weixin')->get_oauth_url(get_js_url('/m/weixin/authorization/'), 'snsapi_userinfo') . ' ">点此绑定</a>或<a href="' . get_js_url('/tsbm/register/') . '">注册新账户</a>';
+					
+				}
+				break;
+                        
+               case 'MY_QUESTION':
+				
+				
+				if ($this->user_id)
+					
 				{
 					if ($user_actions = $this->model('account')->get_user_actions($this->user_id, calc_page_limit($param, 10), 101))
 					{						
