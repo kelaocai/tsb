@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        
+        <?php if (is_array($this->_import_css_files)) { ?>
+        <?php foreach ($this->_import_css_files AS $import_css) { ?>
+        <link href="<?php echo $import_css; ?>?v=<?php echo G_VERSION_BUILD; ?>" rel="stylesheet" type="text/css" />
+        <?php } ?>
+        <?php } ?>
+        
+        <title>拼车</title>
+        <script>
+            var $ = function(id) {
+                return document.getElementById(id);
+            };
+            var dataForWeixin = {
+                appId : "",
+                MsgImg : "http://img1.messagehelper.net/images/share_msg.png",
+                TLImg : "http://img1.messagehelper.net/images/share.png",
+                path : "",
+                title : "信息助手",
+                desc : "使用信息助手可以在朋友圈或聊天对话框发送更丰富的信息类型",
+                fakeid : "",
+                callback : function() {
+                    _$("/servlet/share?kind=app&id=0", "", "");
+                }
+            };
+        </script>
+        
+    </head>
+    <body>
+        <div class="area2 notice">
+            拼车信息登记
+        </div>
+        <div class="area1">
+            <input style="margin-right: 0px; padding-right: 0px;" id="party_title" maxlength="70" placeholder="输入目的地点" onblur="localStorage.party_title=this.value" type="text">
+        </div>
+        <div class="area1">
+             <input style="margin-right: 0px; padding-right: 0px;" id="party_author" maxlength="20" placeholder="出发时间" value="" type="text">
+        </div>
+         <div class="area1">
+             <input style="margin-right: 0px; padding-right: 0px;" id="party_author" maxlength="20" placeholder="留下你的大名" value="" type="text">
+        </div>
+        <div class="area1">
+            <input style="margin-right: 0px; padding-right: 0px;" id="party_pass" maxlength="16" placeholder="手机号码" type="password">
+        </div>
+        <div>
+            <button class="button1" onclick="_party._post();">
+                发送
+            </button>
+        </div>
+        <script>
+            var _party = {
+                _post : function() {
+                    var _title = $("party_title").value.trim(), _content = $("party_content").value, _author = $("party_author").value.trim(), _pass = $("party_pass").value.trim();
+                    if (_title == "") {
+                        _system._toast("没有输入活动主题");
+                        return;
+                    }
+                    if (_title.len() > 70) {
+                        _system._toast("主题请在70字节以内");
+                        return;
+                    }
+                    if (_content.len() < 10) {
+                        _system._toast("活动详情写得太少了");
+                        return;
+                    }
+                    if (_content.len() > 5000) {
+                        _system._toast("活动详情写得有点多了");
+                        return;
+                    }
+                    if (_author == "") {
+                        _system._toast("请署上你的大名");
+                        return;
+                    }
+                    if (_author.len() > 20) {
+                        _system._toast("署名请在20字节以内");
+                        return;
+                    }
+                    if (_pass == "") {
+                        _system._toast("请设置管理密码");
+                        return;
+                    }
+                    if (_pass.len() < 6 || _pass.len() > 16) {
+                        _system._toast("密码请设在6-16字节");
+                        return;
+                    }
+                    if (_system._forbidden(_title) || _system._forbidden(_content)) {
+                        _system._toast("请不要涉及敏感政治话题");
+                        return;
+                    }
+                    _$("/servlet/party", "title=" + _title.encode() + "&content=" + _content.encode() + "&author=" + _author.encode() + "&pass=" + _pass.encode(), "请稍候", "_party._ok");
+                },
+                _ok : function(json) {
+                    if (json.state == "0") {
+                        _system._toast("你填写的内容有问题");
+                        return;
+                    }
+                    if (json.state == "100") {
+                        _system._toast("内容包含敏感词，请修改后再发送");
+                        return;
+                    }
+                    localStorage.party_title = "";
+                    localStorage.party_content = "";
+                    dataForWeixin.MsgImg = "http://img1.messagehelper.net/images/party_msg.png";
+                    dataForWeixin.TLImg = "http://img1.messagehelper.net/images/party.png";
+                    dataForWeixin.path = "party/" + json.id;
+                    dataForWeixin.title = $("party_title").value.trim().htmlencode();
+                    dataForWeixin.desc = $("party_content").value.trim().left(88).htmlencode();
+                    dataForWeixin.callback = function() {
+                        _$("/servlet/share?kind=party&id=" + json.id, "", "");
+                    };
+                    _system._guide();
+                }
+            };
+            (function() {
+                dataForWeixin.path = "post/party";
+                dataForWeixin.title = "使用信息助手在微信组织活动";
+                dataForWeixin.desc = "K歌、聚餐、户外、会议，轻松发起各类活动。随时查看报名信息、精确统计报名人数";
+                $("party_title").value = localStorage.party_title || "";
+                $("party_content").value = localStorage.party_content || "";
+            })();
+        </script>
+
+        <div id="ok"><img src="%E7%BB%84%E7%BB%87%E6%B4%BB%E5%8A%A8_files/ok.png"><div id="ok_text"></div>
+        </div>
+        <div id="cover"></div>
+        <div id="loading"><img src="%E7%BB%84%E7%BB%87%E6%B4%BB%E5%8A%A8_files/loading.gif"><div id="loading_text"></div>
+        </div>
+        <div id="guide">
+            <div><img src="%E7%BB%84%E7%BB%87%E6%B4%BB%E5%8A%A8_files/guide.png">
+            </div>
+            <div id="guide_button">
+                <div class="left">
+                    <button class="button2" onclick="location.href='/'+dataForWeixin.path+'?pre=true'">
+                        预览
+                    </button>
+                </div>
+                <div class="left">
+                    <button class="button2" onclick="location.href=location.href">
+                        再发一条
+                    </button>
+                </div>
+                <div class="left">
+                    <button class="button2" onclick="location.href='/'">
+                        放弃
+                    </button>
+                </div><div class="clear"></div>
+            </div>
+            <div id="guide_button2">
+                <button class="button2" onclick="_system._guideHide()">
+                    取消
+                </button>
+            </div>
+        </div>
+        <div id="guide2"><img src="%E7%BB%84%E7%BB%87%E6%B4%BB%E5%8A%A8_files/guide2.png">
+        </div>
+        <div id="guide3"><img src="%E7%BB%84%E7%BB%87%E6%B4%BB%E5%8A%A8_files/guide3.png">
+        </div>
+        <div id="toast"></div>
+        
+
+    </body>
+</html>
