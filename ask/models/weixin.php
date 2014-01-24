@@ -694,7 +694,12 @@ class weixin_class extends AWS_MODEL
 				   	  $response_message ='<a href="' . get_js_url('/tsbm/register/').'wx_oid-'.base64_encode($input_message['fromUsername']) . '">点此注册新账户</a>';
 				   }
 			   
-			   break;	
+			   break;
+			   
+			   case '拼车':
+				   $response_message ='<a href="' . get_js_url('/tsbm/pinche/').'wx_oid-'.base64_encode($input_message['fromUsername']) . '">点击查看最新拼车信息</a>';
+			   break;
+			   	
                         
                case 'MY_QUESTION':
 				

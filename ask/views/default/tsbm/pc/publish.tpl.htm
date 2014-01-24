@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+
+        <?php if (is_array($this->_import_css_files)) { ?>
+        <?php foreach ($this->_import_css_files AS $import_css) { ?>
+        <link href="<?php echo $import_css; ?>?v=<?php echo G_VERSION_BUILD; ?>" rel="stylesheet" type="text/css" />
+        <?php } ?>
+        <?php } ?>
+
+        <title>拼车</title>
+        <script>
+            var $ = function(id) {
+                return document.getElementById(id);
+            };
+            var dataForWeixin = {
+                appId : "",
+                MsgImg : "http://img1.messagehelper.net/images/share_msg.png",
+                TLImg : "http://img1.messagehelper.net/images/share.png",
+                path : "",
+                title : "信息助手",
+                desc : "使用信息助手可以在朋友圈或聊天对话框发送更丰富的信息类型",
+                fakeid : "",
+                callback : function() {
+                    _$("/servlet/share?kind=app&id=0", "", "");
+                }
+            };
+        </script>
+
+    </head>
+    <body>
+        <form action="tsbm/pinche/publish_process/" method="post">
+            <div class="area1">
+                <input style="margin-right: 0px; padding-right: 0px;" id="destination" name="destination" maxlength="70" placeholder="输入目的地点"  type="text">
+            </div>
+            <div class="area1">
+                <input style="margin-right: 0px; padding-right: 0px;" id="leavedate" name="leavedate"  maxlength="20" placeholder="出发时间" value="" type="text">
+            </div>
+            <div class="area1">
+                <input style="margin-right: 0px; padding-right: 0px;" id="current" name="current" maxlength="10" placeholder="当前人数" value="" type="text">
+            </div>
+            <div class="area1">
+                <input style="margin-right: 0px; padding-right: 0px;" id="max" name="max" maxlength="10" placeholder="最多几人" value="" type="text">
+            </div>
+            <!-- <div class="area2">
+                <div class="select">
+                    <ul>
+                        <li ontouchstart="" class="select_y" id="vote_kind_1">
+                            有车
+                        </li>
+                        <li ontouchstart="" class="select_n" id="vote_kind_2">
+                            无车
+                        </li><div class="clear"></div>
+                    </ul>
+                </div>
+            </div> -->
+            <div class="area1">
+                <input style="margin-right: 0px; padding-right: 0px;" id="contact" name="contact" maxlength="20" placeholder="联系方式" type="text">
+            </div>
+            <div>
+                <button class="button1" type="submit">
+                    提交
+                </button>
+            </div>
+        </form>
+    </body>
+</html>

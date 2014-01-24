@@ -18,7 +18,7 @@ if (!defined('IN_ANWSION')) {
 
 define('IN_MOBILE', true);
 
-class webapp extends AWS_CONTROLLER {
+class pinche extends AWS_CONTROLLER {
 	public function get_access_rule() {
 		$rule_action['rule_type'] = 'black';
 		$rule_action['actions'] = array();
@@ -34,8 +34,17 @@ class webapp extends AWS_CONTROLLER {
 	}
 
 	public function index_action() {
-		TPL::import_css('css/tsb/webapp.css');	
-		TPL::output('tsbm/pc');
+		TPL::output('tsbm/pc/list');
+	}
+	
+	public function publish_action() {
+		TPL::output('tsbm/pc/publish');
+	}
+	
+	public function publish_process_action(){
+		
+		$this->model('pinche')->add_pinche($_POST['destination'],$_POST['leavedate'],$_POST['current'],$_POST['max'],$_POST['car'],$_POST['contact']);
+		TPL::output('tsbm/pc/success');
 	}
 
 }

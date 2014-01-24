@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+
+        <?php if (is_array($this->_import_css_files)) { ?>
+        <?php foreach ($this->_import_css_files AS $import_css) { ?>
+        <link href="<?php echo $import_css; ?>?v=<?php echo G_VERSION_BUILD; ?>" rel="stylesheet" type="text/css" />
+        <?php } ?>
+        <?php } ?>
+
+        <title>拼车</title>
+        <script>
+            var $ = function(id) {
+                return document.getElementById(id);
+            };
+            var dataForWeixin = {
+                appId : "",
+                MsgImg : "http://img1.messagehelper.net/images/share_msg.png",
+                TLImg : "http://img1.messagehelper.net/images/share.png",
+                path : "",
+                title : "信息助手",
+                desc : "使用信息助手可以在朋友圈或聊天对话框发送更丰富的信息类型",
+                fakeid : "",
+                callback : function() {
+                    _$("/servlet/share?kind=app&id=0", "", "");
+                }
+            };
+        </script>
+
+    </head>
+    <body>
+        <div id="more_list">
+
+            <div  class="list_item">
+                <div class="list_icon">
+                </div>
+                <div class="list_title">
+                    我们已经收到您的拼车信息，谢谢！
+                </div>
+                <div class="clear"></div>
+
+            </div>
+        </div>
+        <div class="area3">
+            <button class="button1"  onclick="javascrtpt:window.location.href='tsbm/pinche/';">
+                返回
+            </button>
+        </div>
+    </body>
+</html>
