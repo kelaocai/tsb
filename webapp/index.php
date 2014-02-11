@@ -20,7 +20,7 @@ $spConfig = array(
 				),
 				'auto_display' => TRUE, // 是否使用自动输出模板功能
 				'auto_display_sep' => '/', // 自动输出模板的拼装模式，/为按目录方式拼装，_为按下划线方式，以此类推
-				'auto_display_suffix' => '.html', // 自动输出模板的后缀名
+				//'auto_display_suffix' => '.html', // 自动输出模板的后缀名
 		),
 		'include_path' => array(APP_PATH . '/include') // 用户程序扩展类载入路径
 );
